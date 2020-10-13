@@ -1,0 +1,454 @@
+<template>
+	<div>
+		<map :polyline="polyline" @markertap="markertap" @callouttap="handleEvent" :style="mapSize" show-location :latitude="latitude"
+		 :include-points="points" :longitude="longitude" :markers="markers" :scale="mapScale" >
+		</map>
+		<view hover-class="position_active" class="position_btn p-1 position-absolute" @tap="positionsMe">
+			<image src="../../static/font/position.png" style="width: 40rpx; height: 40rpx;"></image>
+		</view>
+		<div class="flex drawer_menu position-absolute" :style="drawerMenuSize">
+			<view elevation="2px" class="flex handle bg-white justify-center align-center" @touchend="touchend" @touchstart="touchstart"
+			 @touchmove="touchmove" hover-class="line_active">
+				<div class="line"></div>
+			</view>
+			<view class="flex justify-between align-center position-absolute px-2" style="top: 26px; height: 30px; width: 750rpx;">
+				<view class="flex align-center">
+					<text class="font mr-3">顺丰快递</text>
+					<text class="font mr-3">{{ dataList.order_id }}</text>
+					<image src="../../static/font/copy.png" style="width: 30rpx; height: 30rpx"></image>
+				</view>
+				<view class="flex bg-danger py-1 px-2 align-center justify-center">
+					<text class="font-sm text-white">配送中</text>
+				</view>
+			</view>
+			<!-- #ifdef MP-WEIXIN -->
+			<scroll-view scroll-y="true" class="order_list position-absolute">
+				<view class="flex flex-column">
+					<view class="flex">
+						<view>
+							<image src="../../static/map/end1.png" style="width: 40rpx; height: 40rpx;"></image>
+						</view>
+						<view class="bottom_line"></view>
+						<view class="" style="width: 500rpx;">
+							<text style="width: 500rpx;">dsfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasd</text>
+						</view>
+					</view>
+				</view>
+			</scroll-view>
+			<!-- #endif -->
+			<!-- #ifdef APP-PLUS-NVUE -->
+			<list class="order_list position-absolute">
+				<cell class="flex flex-column" v-for="(item, index) in logisticsList" :key="item.id">
+					<view class="flex flex-column px-3">
+						<view>
+							<image :src="item.icon" style="width: 40rpx; height: 40rpx;"></image>
+						</view>
+						<view class="flex justify-center" v-if="(logisticsList.length - 1) !== index" style="width: 40rpx;">
+							<view class="bottom_line"></view>
+						</view>
+						<view class="position-absolute flex flex-column" style="width: 500rpx; left: 100rpx;">
+							<text class="font-sm mb-2" style="width: 500rpx;">{{ item.content }}</text>
+							<text class="font-sm text-muted" style="width: 500rpx;">{{ item.time }}</text>
+						</view>
+					</view>
+				</cell>
+			</list>
+			<!-- #endif -->
+
+		</div>
+	</div>
+</template>
+
+<script>
+	import {
+		drawLine
+	} from '@/js_sdk/Lyn4ever-gaodeRoutePlanning/lyn4ever-gaode.js'
+	export default {
+		data() {
+			return {
+				polyline: [], // 路线
+				latitude: 39.909, // 地图中心点位置，后期应该时配送员的定位位置
+				longitude: 116.39742, // 地图中心点位置，后期应该时配送员的定位位置
+				points: [], // 地图范围
+				touchStart: 0, // 手指刚点击抽屉面板时 Y 值
+				mapScale: 12, // 地图缩放登记
+				lastY: 0, // 拖动抽屉菜单时上一次 Y 值
+				sumY: 0, // 拖动抽屉菜单的差值
+				drawerBottom: 0, // 时抽屉菜单的定位置
+				markers: [],
+				distance: 0,
+				mapHeight: 0, //地图高度
+				logisticsList: [
+					{
+						id: 0,
+						icon: '/static/map/end1.png',
+						content: '北京市 朝阳区 三元桥时间国际8号楼北区 2654',
+						time: '2020-07-12 10:13:19'
+					},
+					{
+						id: 1,
+						icon: '/static/font/compass.png',
+						content: '配送员，正在取货',
+						time: '2020-07-12 10:16:19'
+					},
+					{
+						id: 2,
+						icon: '/static/font/compass.png',
+						content: '配送员，正带着小酒向您赶来',
+						time: '2020-07-12 10:18:19'
+					}
+				],
+				dataList: { //模拟数据 后期请求得到
+					"id": 1,
+					"order_id": "2020071856655465",
+					"uid": 1,
+					"real_name": "liaoxx",
+					"user_phone": "18676684597",
+					"user_address": "明秀东路178号",
+					"freight_price": "0.00",
+					"total_num": 0,
+					"total_price": "50.00",
+					"total_postage": "0.00",
+					"pay_price": "50.00",
+					"pay_postage": "0.00",
+					"paid": 0,
+					"pay_time": 1594519999,
+					"pay_type": "0",
+					"add_time": 1594519999,
+					"status": -1,
+					"refund_status": 0,
+					"refund_reason_wap_explain": null,
+					"refund_reason": null,
+					"refund_price": "0.00",
+					"delivery_name": null,
+					"delivery_id": null,
+					"delivery_man_id": 2,
+					"mark": "到门口打我电话",
+					"unique": "fdefe-05456546fe-frgf",
+					"remark": null,
+					"mer_id": 0,
+					"verify_code": "",
+					"store_id": 1,
+					"shipping_type": 3,
+					"add_time_str": "2020-07-12 10:13:19",
+					"pay_time_str": "2020-07-12 10:13:19",
+					"user": {
+						"uid": 1,
+						"account": "18676684597",
+						"pwd": "e10adc3949ba59abbe56e057f20f883e",
+						"gender": 0,
+						"real_name": "廖永坚",
+						"birthday": 780940800,
+						"card_id": "452427199410013310",
+						"mark": "测试",
+						"partner_id": 0,
+						"group_id": 0,
+						"nickname": "liaoxx",
+						"avatar": "8888",
+						"phone": "18676684597",
+						"add_time": 0,
+						"add_ip": "",
+						"last_time": 0,
+						"last_ip": "",
+						"now_money": "1000.10",
+						"brokerage_price": "0.00",
+						"integral": "0.00",
+						"sign_num": 0,
+						"status": 1,
+						"level": 0,
+						"spread_uid": 0,
+						"spread_time": 0,
+						"user_type": "h5",
+						"is_promoter": 0,
+						"pay_count": 0,
+						"spread_count": 0,
+						"clean_time": 0,
+						"addres": "明秀东路178号",
+						"adminid": 0,
+						"login_type": "",
+						"is_vip": 1,
+						"is_important": 0
+					},
+					"orderDelivery": {
+						"id": 5,
+						"order_id": 1,
+						"deliveryman_id": 2,
+						"create_time": "2020-08-02 01:56:10",
+						"update_time": "2009-01-02 01:56:13",
+						"start_lat": "39.91951",
+						"start_lng": "116.37855",
+						"end_lat": "39.862",
+						"end_lng": "116.387",
+						"linear_distance": 2.4,
+						"route_distance": 3.9,
+						"delivery_amount": 5.5,
+						"delivery_status": "0"
+					}
+				}
+			}
+		},
+		methods: {
+			// 配送员与客户距离
+			initMarker() {
+				let {
+					orderDelivery
+				} = this.dataList
+				console.log('init')
+				let {
+					'start_lat': startLat,
+					'start_lng': startLng,
+					'end_lat': endLat,
+					'end_lng': endLng
+				} = orderDelivery
+				let positions = []
+				let deliveryMan = { // 地图上的定位点   下面的模拟数据是配送员的位置
+					id: 1,
+					latitude: 39.909,
+					longitude: 116.39742,
+					iconPath: '/static/map/delivery_man.png',
+					width: 40,
+					height: 40,
+					callout: {
+						content: ``,
+						borderRadius: 4,
+						padding: 2,
+						textAlign: 'center',
+						display: 'ALWAYS'
+					}
+				}
+				let startPosition = {
+					id: 2,
+					latitude: startLat,
+					longitude: startLng,
+					iconPath: '/static/map/start.png',
+					width: 30,
+					height: 30
+				}
+				let endPosition = {
+					id: 3,
+					latitude: endLat,
+					longitude: endLng,
+					iconPath: '/static/map/end.png',
+					width: 30,
+					height: 30
+				}
+				let start = `${deliveryMan.longitude},${deliveryMan.latitude}`
+				let orgin = `${endLng}, ${endLat}`
+				drawLine(orgin, start, '#0086f1', 4, (data, distance) => {
+
+					this.distance = distance
+					deliveryMan.callout.content = `距离您还有${this.distance}KM`
+					this.points = [{
+						longitude: startLng,
+						latitude: startLat
+					}, {
+						longitude: endLng,
+						latitude: endLat
+					}]
+					positions.push(deliveryMan)
+					positions.push(startPosition)
+					positions.push(endPosition)
+					this.markers = positions
+				})
+
+			},
+			// 定位我的位置
+			positionsMe() {
+				let {
+					orderDelivery
+				} = this.dataList
+				let {
+					'end_lat': endLat,
+					'end_lng': endLng
+				} = orderDelivery
+				this.latitude = endLat
+				this.longitude = endLng
+				this.points = []
+				this.mapScale ++
+				setTimeout(() => {
+					this.mapScale --
+				})
+			},
+			// 刷新地图范围
+			markertap(e) {
+
+			},
+			// 抽屉菜单 滚动动画
+			autoMove(orgin) {
+				let speed = 35;
+				let timer = setInterval(() => {
+					speed *= 0.8
+					if (speed <= 1) {
+						speed = 1
+					}
+					if (orgin === 0) {
+						this.drawerBottom += speed
+					} else {
+						this.drawerBottom -= speed
+					}
+					if (this.drawerBottom >= 0) {
+						this.drawerBottom = 0
+						clearInterval(timer)
+						return
+					}
+
+					if (this.drawerBottom <= -200) {
+						this.drawerBottom = -200
+						clearInterval(timer)
+						return
+					}
+				}, 16)
+			},
+			touchend() {
+				if (Math.abs(this.sumY) > 2) {
+					if (this.sumY < 0) {
+						this.autoMove(0)
+					} else {
+						this.autoMove(200)
+					}
+				} else {
+					if (this.drawerBottom > -100) {
+						this.autoMove(0)
+					} else {
+						this.autoMove(-200)
+					}
+				}
+			},
+			touchstart(e) {
+				// #ifdef APP-PLUS-NVUE
+				this.touchStart = e.touches[0].screenY
+				this.lastY = e.touches[0].screenY
+				// #endif
+				// #ifdef MP-WEIXIN
+				this.touchStart = e.touches[0].clientY
+				this.lastY = e.touches[0].clientY
+				// #endif
+			},
+			// 拖动抽屉菜单
+			touchmove(e) {
+				// #ifdef APP-PLUS-NVUE
+				this.sumY = e.touches[0].screenY - this.lastY
+				// #endif
+
+				// #ifdef MP-WEIXIN
+				this.sumY = e.touches[0].clientY - this.lastY
+				// #endif
+
+				this.drawerBottom -= this.sumY
+				// #ifdef APP-PLUS-NVUE
+				this.lastY = e.touches[0].screenY
+				// #endif
+
+				// #ifdef MP-WEIXIN
+				this.lastY = e.touches[0].clientY
+				// #endif
+
+				if (this.drawerBottom <= -200) {
+					this.drawerBottom = -200
+				}
+				if (this.drawerBottom >= 0) {
+					this.drawerBottom = 0
+				}
+			},
+		},
+		computed: {
+			mapSize() {
+				return `width: 750rpx; height: ${this.mapHeight}px`
+			},
+			drawerMenuSize() {
+				return `width: 750rpx; height: 300px; background-color: rgba(255, 255, 255, 1); bottom: ${this.drawerBottom}px;`
+			}
+		},
+		watch: {
+
+		},
+		onReady() {
+			let {
+				windowHeight
+			} = uni.getSystemInfoSync()
+			this.mapHeight = windowHeight
+		},
+		onLoad() {
+			this.initMarker()
+		}
+	}
+</script>
+
+<style>
+	.flex {
+		/* #ifndef APP-PLUS-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: row;
+	}
+
+	.justify-center {
+		justify-content: center;
+	}
+
+	.position-absolute {
+		position: absolute;
+	}
+
+	.bg-white {
+		background-color: #fff;
+	}
+
+	/* 抽屉菜单样式 */
+	.drawer_menu {
+		border-top-left-radius: 30px;
+		border-top-right-radius: 30px;
+		overflow: hidden;
+		bottom: 0;
+	}
+
+	.handle {
+		height: 26px;
+		width: 750rpx;
+		border-top-left-radius: 30px;
+		border-top-right-radius: 30px;
+		box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+	}
+
+	.line {
+		height: 5px;
+		width: 200rpx;
+		background-color: #a9a9a9;
+		border-radius: 5px;
+	}
+
+	.line_active {
+		background-color: #eaeaea;
+	}
+
+	.order_list {
+		height: 244px;
+		width: 750rpx;
+		top: 56px;
+	}
+
+	.text-blue {
+		color: #0086F1;
+	}
+	
+	.bottom_line {
+		width: 4rpx;
+		height: 60px;
+		background-color: #FF4830;
+	}
+	
+	
+	/*  定位按钮 */
+	.position_btn {
+		left: 20rpx;
+		bottom: 320px;
+		border-width: 4rpx;
+		border-color: #707070;
+		border-style: solid;
+		border-radius: 1000px;
+	}
+	
+	.position_active {
+		opacity: .4;
+	}
+</style>

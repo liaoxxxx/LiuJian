@@ -1,0 +1,250 @@
+<template>
+	<view class="site_map" :style="windowSize">
+		<nav-bar v-model="inputValue" @input="delay(handleInput)" id="nav_bar" bgColor="#ff4b2d" :navTop="'0'" showSearch placeholder="请输入搜索内容">
+			<view slot="leftBtn" class="text-white flex px-2" hover-class="text-hover-secondary">
+				<text class="font mr-1">{{ site.city ? site.city : '定位中'}}</text>
+				<text class="iconfont iconfont2 font">&#xe62b;</text>
+			</view>
+			<view slot="rightBtn" v-if="searchNearby.length > 1" class="text-white px-2" @tap="hideSearch" hover-class="text-hover-secondary">
+				<text class="mr-1 font">取消</text>
+			</view>
+		</nav-bar>
+		<view class="w-100 position-absolute" :style="mapWrapperSize">
+			<map id="2288" class="w-100" :style="mapSize" @regionchange="delay(regionchange, 800)" :latitude="location.lat" :longitude="location.lng">
+			</map>
+			<view class="position-absolute position_take flex justify-center align-center" :style="takePosition">
+				<text class="iconfont" style="color: #ff4b2d; font-size: 80rpx;">&#xe655;</text>
+			</view>
+			<view @tap="nowPosition" class="position-absolute position_btn bg-white rounded-circle flex justify-center align-center">
+				<text class="iconfont" style="font-size: 60rpx;">&#xe619;</text>
+			</view>
+		</view>
+		<view class="flex px-1 w-100 position-absolute justify-center bottom_bar bg-white">
+			<view class="flex px-2 py-1 mt-3 bg-grey position-absolute align-center justify-between" style="width: 700rpx;">
+				<view class="flex align-center justify-center">
+					<text class="font-sm">酒送到这里：</text>
+					<text class="font-sm">{{ nearby[0] ? nearby[0].name : '定位中...' }}</text>
+				</view>
+				<view @tap="showDrawer" class="flex align-center justify-between pl-1 py-1 border rounded" style="height: 60rpx; background-color: rgba(255, 75, 45, .2); border-color: #ff4b2d; width: 110rpx;">
+					<text class="font-sm" style="height: 40rpx; color:#ff4b2d; line-height: 40rpx;">选址</text>
+					<text class="iconfont font-sm" style="color:#ff4b2d;"> &#xe618; </text>
+				</view>
+			</view>
+			<view class=" flex px-2 py-1 mt-3  position-absolute align-center w-100 justify-center" style="bottom: 30rpx;">
+				<button type="warn" style="width: 700rpx;"> 马上喝 </button>
+			</view>
+		</view>
+		<drawer ref="drawer" type="bottom">
+			<!-- #ifdef APP-NVUE -->
+			<list class="w-100 flex bg-white  position-absolute flex-column" @tap="stop" :style="listSzie">
+				<cell v-for="item in nearby" :key="item.id">
+					<position-list-item :title="item.name" :content="site.city + ' ' +site.district+ ' ' + item.address " :icon="'\ue611'">
+						<view slot="right">
+							<radio @tap="checkAddress(item.id)" :checked="radioAddress==item.id" :value="item.id"></radio>
+						</view>
+					</position-list-item>
+				</cell>
+			</list>
+			<!-- #endif -->
+			<!-- #ifdef MP-WEIXIN -->
+			<scroll-view class="w-100 flex bg-white  position-absolute flex-column" :style="listSzie" scroll-y="true">
+				<position-list-item @tap.stop="stop" v-for="item in nearby" :key="item.id" :title="item.name" :content="site.city + ' ' + item.address "
+				 :icon="'\ue611'">
+					<view slot="right">
+						<radio @tap.stop="checkAddress(item.id)" :checked="radioAddress==item.id" :value="item.id"></radio>
+					</view>
+				</position-list-item>
+			</scroll-view>
+			<!-- #endif -->
+		</drawer>
+		<view @tap="hideSearch" v-if="searchNearby.length > 1" class="position-absolute w-100" :style="topScorllPosition">
+			<scroll-view scroll-y="true" class="position-absolute bg-white top_scroll">
+				<position-list-item @handleTap="searchItemTap(item.id)" v-for="item in searchNearby" :key="item.id" :title="item.name"
+				 :icon="'\ue611'">
+					<view slot="right">
+						<text class="font-sm text-grey"> {{item.address}} </text>
+					</view>
+				</position-list-item>
+			</scroll-view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import NavBar from '@/components/navBar.vue'
+	import drawer from '@/components/drawer.vue'
+	import positionListItem from '@/components/position_list_item.vue'
+	import {vuexData} from '../../common/commonMixin.js'
+	import {
+		mapActions,
+		mapGetters
+	} from 'vuex'
+	export default {
+		data() {
+			return {
+				windowHeight: 0,
+				mapContext: null,
+				radioAddress: null,
+				inputValue: ''
+			}
+		},
+		mixins: [vuexData],
+		components: {
+			NavBar,
+			drawer,
+			positionListItem
+		},
+		computed: {
+			windowSize() {
+				console.log(this.windowHeight)
+				return `height: ${this.windowHeight}px;`
+			},
+			mapSize() {
+				let top = 80;
+				let mapHeight = this.windowHeight - uni.upx2px(80) - uni.upx2px(280)
+				return `height: ${mapHeight}px;`
+			},
+			mapWrapperSize() {
+				let top = 80;
+				let mapHeight = this.windowHeight - uni.upx2px(80) - uni.upx2px(280)
+				return `height: ${mapHeight}px; top: 80rpx;`
+			},
+			takePosition() {
+				let mapHeight = this.windowHeight - uni.upx2px(80) - uni.upx2px(280)
+				return `top: ${mapHeight/2}px; left: 375rpx;`
+			},
+			listSzie() {
+				let listHeight = Number(this.windowHeight) * 0.8
+				return `bottom: 0; height: ${listHeight}px;`
+			},
+			topScorllPosition() {
+				let height = this.windowHeight - uni.upx2px(80)
+				return `height: ${height}px; top: 80rpx; background-color: rgba(1, 1,1, .3)`
+			}
+		},
+		methods: {
+			stop() {},
+			hideSearch() {
+				this.inputValue = ''
+				this.getSiteForKeyword({
+					keyword: '',
+					location: `${this.location.lng},${this.location.lat}`
+				})
+			},
+			searchItemTap(id) {
+				let tapItem = this.searchNearby.filter(data => {
+					return data.id == id
+				})[0]
+				this.hideSearch()
+				let location = tapItem.location
+				this.getSite(location)
+			},
+			getElSize(id) {
+				return new Promise((res, rej) => {
+					uni.createSelectorQuery().in(this).select(id).boundingClientRect(data => {
+						console.log(data)
+						res(data);
+					}).exec();
+				})
+			},
+			handleInput() {
+				this.getSiteForKeyword({
+					keyword: this.inputValue,
+					location: `${this.location.lng},${this.location.lat}`
+				})
+			},
+			checkAddress(id) {
+				this.radioAddress = id
+			},
+			showDrawer() {
+				this.$refs.drawer.show()
+			},
+			handleTap(e) {
+				console.log(e)
+			},
+			nowPosition() {
+				uni.showLoading({
+					title: '加载中...'
+				})
+				uni.getLocation({
+					type: 'gcj02',
+					success: data => {
+						let {latitude, longitude} = data
+						this.getSite(`${longitude},${latitude}`)
+						uni.hideLoading()
+					}
+				})
+			},
+			regionchange() {
+				uni.showLoading({
+					title: '加载中...'
+				})
+				this.mapContext.getCenterLocation({
+					success: (data) => {
+						let {
+							latitude,
+							longitude
+						} = data
+						this.getSite(`${longitude},${latitude}`)
+						uni.hideLoading()
+					}
+				})
+			}
+		},
+		onReady() {
+			this.$nextTick(async () => {
+				let {
+					windowHeight
+				} = uni.getSystemInfoSync()
+				this.windowHeight = windowHeight
+			})
+			if (!this.mapContext) {
+				let map = uni.createMapContext('2288', this)
+				this.mapContext = map
+			}
+
+		},
+		onLoad() {
+			if (!this.address) {
+				this.getSite()
+			}
+			// #ifdef APP-PLUS-NVUE
+			// 加载公共图标库
+			const domModule = weex.requireModule('dom')
+			domModule.addRule('fontFace', {
+				'fontFamily': "iconfont",
+				'src': "url('https://at.alicdn.com/t/font_1926998_jg6tsbq5ze.ttf')"
+			});
+			// #endif
+		}
+	}
+</script>
+
+<style scoped>
+	.site_map {
+		height: 100vh;
+	}
+
+	.bottom_bar {
+		height: 280rpx;
+		bottom: 0;
+	}
+
+	.position_take {
+		height: 100rpx;
+		width: 100rpx;
+		margin-top: -50rpx;
+		margin-left: -50rpx;
+	}
+
+	.position_btn {
+		height: 100rpx;
+		width: 100rpx;
+		bottom: 20rpx;
+		right: 20rpx;
+	}
+	
+	.top_scroll {
+		height: 800rpx;
+	}
+</style>
