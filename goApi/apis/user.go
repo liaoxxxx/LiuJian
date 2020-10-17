@@ -85,3 +85,22 @@ func Destroy(c *gin.Context) {
 		"message": "删除成功",
 	})
 }
+
+func Login(c *gin.Context) {
+	var user model.User
+	phone, err := strconv.ParseInt(c.Param("phone"), 10, 64)
+	password, err := c.Param("password")
+
+	result, err := user.Destroy(id)
+	if err != nil || result.ID == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"code":    -1,
+			"message": "删除失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    1,
+		"message": "删除成功",
+	})
+}
