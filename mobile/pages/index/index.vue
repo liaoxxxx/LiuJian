@@ -52,7 +52,7 @@
 
 
 				<view class="create-order-circle">
-					<view class="create-order-inner">
+					<view class="create-order-inner" @click="toAddOrder()">
 						下单
 					</view>
 				</view>
@@ -276,7 +276,13 @@
 						res(data);
 					}).exec();
 				})
+			},
+			toAddOrder(){
+				uni.navigateTo({
+					url: '/pages/order/addOrder'
+				})
 			}
+
 		},
 
 		computed: {
