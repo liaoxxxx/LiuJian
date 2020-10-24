@@ -3,16 +3,6 @@
 		<scroll-view class="position-absolute w-100 top-0" scroll-y="true" :style="scrollStyle">
 			<view>
 				<halving-line bgColor="#eee"></halving-line>
-				<view class="px-2 py-1">
-					<address-item showImg @handleTap="setAddress" v-if="addressList.length > 0" :address="defAddress">
-					</address-item>
-					<view v-else class="border rounded flex align-center justify-between py-5">
-						<view class="flex-2 flex justify-center align-center">
-							<text class="iconfont text-grey" style="font-size: 50rpx;">&#xe60e;</text>
-						</view>
-						<text class=" flex-6 flex align-center justify-between text-grey" style="text-decoration: underline; font-style: oblique;">前往设置收货地址>></text>
-					</view>
-				</view>
 				<halving-line class="font-weight-bolder" color="#111" content="商品清单" bgColor="#eee"></halving-line>
 				<view class="flex flex-column">
 					<list-item v-if="orderInfo.productInfo" class="mb-3" :content="`共`+ orderInfo.productTotalNum +'件' " :wraStyle="{padding: '20rpx 20rpx 20rpx 40rpx '}"
@@ -33,7 +23,7 @@
 							<text class="iconfont text-grey">&#xe708;</text>
 						</view>
 					</list-item>
-					<list-item title="配送时间" :content="time | format">
+					<list-item title="预约时间" :content="time | format">
 						<view slot="right" class="flex-1 flex justify-center">
 							<picker-plus @confirm="checkTime" :startRule="nowTime" mode="YMDhm">
 								<text class="iconfont text-grey">&#xe708;</text>
@@ -43,18 +33,7 @@
 				</view>
 				<halving-line bgColor="#eee"></halving-line>
 				<view class="flex flex-column">
-					<list-item title="发票">
-						<view slot="right" class="flex-1 flex justify-center">
-							<picker :value="billIndex" :range="billTypes" @change="checkBill">
-								<text class="iconfont text-grey">&#xe708;</text>
-							</picker>
-						</view>
-						<view slot="content" class="flex-5 flex justify-end font-sm">
 
-							<text class="text-danger">{{billTypes[billIndex]}} </text>
-							<text>(商品明细-个人)</text>
-						</view>
-					</list-item>
 					<list-item title="优惠卷">
 						<view slot="content" class="flex-5 flex justify-end font-sm">
 							<tag v-if="orderInfo.usableCoupon && orderInfo.usableCoupon.length" :content="`${orderInfo.usableCoupon.length}张可用`"></tag>
@@ -86,44 +65,34 @@
 						</view>
 					</list-item>
 				</view>
-				<halving-line class="font-weight-bolder" color="#111" content="付款方式" bgColor="#eee"></halving-line>
-				
-				<view class="flex flex-column">
-					<list-item v-for="item in payType" :key="item.id">
-						<view class="" slot="left" class="flex align-center">
-							<text class="iconfont font-lg mr-2" style="font-size: 48rpx;" :style="item.color">{{item.title}}</text>
-							<text class="font-sm"> {{item.name}} </text>
-						</view>
-						<view slot="content">
-							<radio @tap="radioAddress = item.id" :checked="radioAddress==item.id" :value="item.id"></radio>
-						</view>
-					</list-item>
-				</view>
+
+
 				<halving-line bgColor="#eee"></halving-line>
 				<halving-line bgColor="#eee"></halving-line>
 			</view>
-			
+			<view class="px-2 py-1">
+				<list-item title="地址" >
+
+				</list-item>
+				<address-item showImg @handleTap="setAddress" v-if="addressList.length > 0" :address="defAddress">
+				</address-item>
+				<view v-else class="border rounded flex align-center justify-between py-5">
+					<view class="flex-2 flex justify-center align-center">
+						<text class="iconfont text-grey" style="font-size: 50rpx;">&#xe60e;</text>
+					</view>
+					<text class=" flex-6 flex align-center justify-between text-grey" style="text-decoration: underline; font-style: oblique;">前往设置收货地址>></text>
+				</view>
+			</view>
 		</scroll-view>
+
 		<!-- 底部 -->
 		<view class="border-top flex w-100 align-center position-fixed bottom-0 bg-white font" style="height: 120rpx;">
-			<view class="flex-4 flex flex-column align-end pr-2">
-				<view class="flex font-sm align-end">
-					<text class="text-grey">共计2件,</text>
-					<view class="ml-2">
-						<text>合计</text>
-						<text class="text-danger ml-2">¥</text>
-						<text class="font font-weight-bold text-danger">{{orderInfo.totalPrice}}</text>
-					</view>
-				</view>
-				<view class="text-grey font-sm">
-					节省:
-					<text class='ml-2'>
-						{{orderInfo.discount}}元
-					</text>
-				</view>
+
+			<view class=" flex ">
+				<my-btn @handleTap="addOrder" bgColor="#f40" color="#fff" content="立即预约"></my-btn>
 			</view>
-			<view class="flex-2 flex align-center justify-center">
-				<my-btn @handleTap="addOrder" bgColor="#f40" color="#fff" content="确认订单"></my-btn>
+			<view class=" flex ">
+				<my-btn @handleTap="addOrder" bgColor="#f40" color="#fff" content="公益赠送"></my-btn>
 			</view>
 		</view>
 	</view>

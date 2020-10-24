@@ -41,7 +41,20 @@
 					<image class="center_img" src="/static/index/to_card.png" mode="widthFix"></image>
 					<broadcast :list="indexRoll"></broadcast>
 				</view> -->
-
+				<view style="width: 80%; margin: auto; margin-bottom: 20px;">
+					<xfl-select
+							:list="prefectureList"
+							:clearable="false"
+							:showItemNum="5"
+							:listShow="true"
+							:isCanInput="true"
+							:style_Container="'height: 50px; font-size: 16px;'"
+							:placeholder = "'placeholder'"
+							:initValue="'苹果'"
+							:selectHideType="'hideAll'"
+					>
+					</xfl-select>
+				</view>
 
 				<view class="index_menu">
 					<view v-for="item in requireList" class="menu_box" :key="item.id" @click="toPrefecture(item.url)">
@@ -64,6 +77,7 @@
 </template>
 
 <script>
+	import xflSelect from '../../components/xfl-select/xfl-select.vue';
 	import {
 		vuexData
 	} from '@/common/commonMixin.js'
@@ -106,6 +120,9 @@
 				// 吸顶高度
 				statusHeight: "0",
 				showTab: true,
+
+				defaultPrefecture:0,
+
 
 				prefectureList: [
 					{
