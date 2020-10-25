@@ -2,15 +2,17 @@ package database
 
 import (
 	"fmt"
-	_ "github.com/go-sql-driver/mysql" //加载mysql
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var Eloquent *gorm.DB
 
 func init() {
 	var err error
-	Eloquent, err = gorm.Open("mysql", "lj_recycling:fMNss3antjMTFWFD@tcp(111.229.128.239:3306)/lj_recycling?charset=utf8&parseTime=True&loc=Local&timeout=10ms")
+	// 参考 https://github.com/go-sql-driver/mysql#dsn-data-source-name 获取详情
+	dsn := "lj_recycling:fMNss3antjMTFWFD@tcp(127.0.0.1:3306)/lj_recycling?charset=utf8mb4&parseTime=True&loc=Local"
+	Eloquent, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		fmt.Printf("mysql connect error %v", err)
