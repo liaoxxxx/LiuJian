@@ -17,6 +17,6 @@ func InitRouter() *gin.Engine {
 	router.DELETE("/user/:id", Destroy)
 	//##################
 
-	router.GET("/user/login/", Users)
+	router.GET("/user/login/:phone/:password", Login)
 	return router
 }
