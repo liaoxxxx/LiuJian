@@ -2,17 +2,20 @@ package models
 
 import (
 	orm "goApi/database"
-	"gorm.io/gorm"
 )
 
 type User struct {
 	ID       int64  `json:"id"`       // 列名为 `id`
 	Username string `json:"username"` // 列名为 `username`
 	Password string `json:"password"` // 列名为 `password`
-	Phone    string
+	Phone    string `json:"phone"`
 }
 
-var Users []User
+func (User) TableName() string {
+	return "rec_user"
+}
+
+var user []User
 
 //添加
 func (uesr User) Insert() (id int64, err error) {
@@ -29,7 +32,7 @@ func (uesr User) Insert() (id int64, err error) {
 
 //列表
 func (uesr *User) Users() (users []User, err error) {
-	if err = orm.Eloquent.Find(&users).Error; err != nil {
+	if err = orm.Eloquent.Find(&uesr).Error; err != nil {
 		return
 	}
 	return
@@ -50,19 +53,11 @@ func (uesr *User) Update(id int64) (updateUser User, err error) {
 	return
 }
 
-/*//单条数据
-func(uesrOne *User ) find(user *User )(res User){
-	res = orm.Eloquent.First(user)
-	return  res
-}*/
-
-/**
 //单条数据
-*/
-func (uesr *User) findWhere(user *User) (res gorm.DB) {
-	res = gorm.DB{}
+/*func (uesr *User) findByPhone(phone string) (res gorm.DB) {
+	res = orm.Eloquent.First(&uesr)
 	return res
-}
+}*/
 
 //删除数据
 func (uesr *User) Destroy(id int64) (Result User, err error) {
