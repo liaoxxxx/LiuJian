@@ -3,6 +3,7 @@ package apis
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	orm "goApi/database"
 	model "goApi/models"
 	"net/http"
 	"strconv"
@@ -89,20 +90,22 @@ func Destroy(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	var user model.User
-	phone, _ := strconv.ParseInt(c.Param("phone"), 10, 64)
-	password:= c.Param("password")
-	user.
-	result, err := user.f(id)
-	/*if err != nil || result.ID == 0 {
+	phone := c.Param("phone")
+	//password:= c.Param("password")
+	user.Phone = phone
+	fmt.Println("++++++++++++++++++++++++++++")
+	fmt.Println(user)
+	fmt.Println("+++++++++++++++++++++++++++++++++")
+	//res:= orm.Eloquent.First(&user)
+	res := orm.Eloquent.Exec("show tables")
+	fmt.Println(res)
+
+	/*
+
 		c.JSON(http.StatusOK, gin.H{
-			"code":    -1,
-			"message": "删除失败",
-		})
-		return
-	}*/
-	c.JSON(http.StatusOK, gin.H{
-		"code":    1,
-		"phone": phone,
-		"password":password,
-	})
+			"code":    1,
+			"phone": phone,
+			"password":password,
+			"users":res,
+		})*/
 }
