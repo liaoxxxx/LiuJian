@@ -63,7 +63,7 @@
 
 	.footer_item {
 		float: left;
-		width: 33%;
+		width: 25%;
 		text-align: center;
 		font-size: 26rpx;
 		height: 120rpx;

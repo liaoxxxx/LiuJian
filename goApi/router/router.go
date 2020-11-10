@@ -4,10 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	. "goApi/apis"
 )
+var router *gin.Engine
 
 func InitRouter() *gin.Engine {
-	router := gin.Default()
+	router = gin.Default()
 
+
+	router.GET("/", Index)
 	router.GET("/users", Users)
 
 	router.POST("/user", Store)

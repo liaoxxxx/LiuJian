@@ -25,6 +25,13 @@
 				"size":"small"
 			},
 			{
+				"pagePath": "pages/order/order",
+				"text": "消息",
+				"iconPath": "static/tabbar/order.png",
+				"selectedIconPath": "static/tabbar/order_2.png",
+				"size":"small"
+			},
+			{
 				"pagePath": "pages/user/user",
 				"text": "我的",
 				"iconPath": "static/tabbar/user.png",
