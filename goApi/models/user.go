@@ -1,7 +1,10 @@
 package models
 
 import (
+	"fmt"
 	orm "goApi/database"
+	"gorm.io/gorm"
+	"time"
 )
 
 type User struct {
@@ -9,6 +12,7 @@ type User struct {
 	Username string `json:"username"` // 列名为 `username`
 	Password string `json:"password"` // 列名为 `password`
 	Phone    string `json:"phone"`
+	gorm.Model
 }
 
 func (User) TableName() string {
@@ -54,10 +58,19 @@ func (uesr *User) Update(id int64) (updateUser User, err error) {
 }
 
 //单条数据
-/*func (uesr *User) findByPhone(phone string) (res gorm.DB) {
-	res = orm.Eloquent.First(&uesr)
-	return res
-}*/
+func (uesr *User) FindByPhone(phone string) (user User) {
+
+	user = User{Username: "liao2020-11-15" + time.Now().Format("2005-01-02 15:04:05")}
+	_ = orm.Eloquent.Create(&user)
+	/*
+		var users User
+		err:= orm.Eloquent.Where("name  like ?", "%liaoxx%").Select("id","name","age").Unscoped().Find(&users)
+		if err !=nil {
+			fmt.Println(err.Error)
+		}*/
+	fmt.Println()
+	return user
+}
 
 //删除数据
 func (uesr *User) Destroy(id int64) (Result User, err error) {
