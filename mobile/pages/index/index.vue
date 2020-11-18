@@ -25,10 +25,16 @@
                     <view class="stat-panel-item" v-for="item in statList">
                         <text class="stat-item-title">累积积分</text>
                         <view class="stat-item-content">
-                            <text class="stat-item-counter">0</text>
-                            <text class="stat-item-suffix">分</text>
+                            <text class="stat-item-counter">{{item.count}}</text>
+                            <br>
+                            <text class="stat-item-unit">{{item.unit}}</text>
                         </view>
                     </view>
+                </view>
+
+                <view class="current-city" >
+                    <text class="left">当前城市</text>
+                    <text class="right">{{currentCity}}</text>
                 </view>
 
                 <!--<view class="swiper_bg"></view>-->
@@ -128,7 +134,7 @@
 
                 defaultPrefecture: 0,
 
-
+                currentCity:"南宁",
                 prefectureList: [
                     {
                         id: 0,
@@ -156,24 +162,25 @@
                 statList: [
                     {
                         id: 0,
-                        src: '/static/index/menu/menu_4.png',
-                        name: '废纸',
-                        subtitle: '杂纸，纯黄纸',
-                        url: ''
+                        name: '累计积分',
+                        url: '',
+                        count:10,
+                        unit:'分'
                     },
                     {
                         id: 1,
-                        src: '/static/index/menu/menu_2.png',
-                        name: '塑料',
-                        subtitle: '塑料瓶，塑料杯',
-                        url: ''
+                        name: '累计回收',
+                        url: '',
+                        count:15,
+                        unit:'kg'
+
                     },
                     {
                         id: 2,
-                        src: '/static/index/menu/menu_1.png',
-                        name: '金属',
-                        subtitle: '废旧不锈钢',
-                        url: '/pages/index/Special_Offer'
+                        name: '累计收益',
+                        url: '/pages/index/Special_Offer',
+                        count:12,
+                        unit:'元'
                     }
                 ],
 
@@ -434,6 +441,7 @@
         background-color: #e7e5e5;
         height: 120rpx;
         overflow: hidden;
+        font-size: 24rpx;
         margin: 0 20rpx;
         position: relative;
         top:-50rpx;
@@ -441,12 +449,24 @@
         display: flex;
         flex-direction: row;
         justify-content: space-around;
+        padding: 20rpx;
     }
     .stat-panel-item{
-        background-color: #937c7c;
+
     }
 
-
+    .stat-item-content .stat-item-counter{
+        color: #1aad19;
+        font-size: 42rpx;
+        text-align: center;
+        position: relative;
+        right: -30rpx;
+    }
+    .stat-item-content .stat-item-unit{
+        color: #1aad19;
+        position: relative;
+        right: -50rpx;
+    }
     .navbar .nav-item {
         display: flex;
         flex: 1;
