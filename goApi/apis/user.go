@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	model "goApi/models"
+	"goApi/util/helper"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 //列表数据
@@ -89,9 +91,8 @@ func Destroy(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	var user model.User
-	phone := c.Param("phone")
-	password := c.Param("password")
-
+	phone := c.PostForm("phone")
+	password := c.PostForm("password")
 	userOne, res := user.FindByPhone(phone)
 
 	if res.RowsAffected < 1 {
@@ -104,13 +105,53 @@ func Login(c *gin.Context) {
 	}
 	//md5 加密后的密码
 	pwdMd5 := userOne.GetMd5Pwd(password, userOne.Salt)
+	if strings.Compare(pwdMd5, userOne.Password) == 0 {
+		jwtTool := helper.NewJWT()
+		userClaims := helper.CustomClaims{ID: userOne.ID, Phone: userOne.Phone, Name: userOne.Username}
+		token, _ := jwtTool.CreateToken(userClaims)
 
-	fmt.Println(pwdMd5)
+		c.JSON(http.StatusOK, gin.H{
+			"code":  http.StatusOK,
+			"msg":   "登陆成功",
+			"token": token,
+		})
+	} else {
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":     1,
-		"phone":    phone,
-		"password": password,
-		"user":     userOne,
-	})
+		c.JSON(http.StatusOK, gin.H{
+			"code": http.StatusOK,
+			"msg":  "密码错误",
+		})
+	}
+
+}
+
+func UserInfo(c *gin.Context) {
+	var user model.User
+	phone := c.Param("phone")
+	token := c.GetHeader("token")
+
+	jwtTool := helper.NewJWT()
+	userClaims, _ := jwtTool.ParseToken(token)
+	fmt.Println("++++++++++++++++++++++++++++++")
+	fmt.Println(token)
+	fmt.Println(userClaims)
+	fmt.Println(userClaims.ID)
+	fmt.Println("++++++++++++++++++++++++++++++")
+
+	userOne, res := user.FindByPhone(phone)
+
+	if res.RowsAffected < 1 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": http.StatusOK,
+			"msg":  "未注册的用户",
+			"user": userOne,
+		})
+		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"code": http.StatusOK,
+			"msg":  "用户的Claims",
+			"user": userClaims,
+		})
+	}
 }
