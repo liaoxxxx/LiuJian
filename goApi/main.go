@@ -8,6 +8,6 @@ func main() {
 
 	//defer orm.Eloquent.Close()
 	initRouter := router.InitRouter()
-	_ = initRouter.Run(":8001")
+	_ = initRouter.Run(":8009")
 
 }

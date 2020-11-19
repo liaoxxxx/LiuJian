@@ -3,20 +3,29 @@ package models
 import (
 	"fmt"
 	orm "goApi/database"
+	"goApi/util/helper"
 	"gorm.io/gorm"
-	"time"
 )
 
 type User struct {
-	ID       int64  `json:"id"`       // 列名为 `id`
+	ID       int64  `gorm:"primaryKey;autoIncrement:true"`
 	Username string `json:"username"` // 列名为 `username`
 	Password string `json:"password"` // 列名为 `password`
 	Phone    string `json:"phone"`
+	Salt     string `json:"salt"`
 	gorm.Model
 }
 
 func (User) TableName() string {
 	return "rec_user"
+}
+
+/**
+获取md5加密后的密码
+*/
+func (uesr *User) GetMd5Pwd(password string, salt string) (md5Pwd string) {
+	fmt.Println(password + salt)
+	return helper.MD5(password + salt)
 }
 
 var user []User
@@ -58,18 +67,14 @@ func (uesr *User) Update(id int64) (updateUser User, err error) {
 }
 
 //单条数据
-func (uesr *User) FindByPhone(phone string) (user User) {
+func (uesr *User) FindByPhone(phone string) (user User, res *gorm.DB) {
 
-	user = User{Username: "liao2020-11-15" + time.Now().Format("2005-01-02 15:04:05")}
-	_ = orm.Eloquent.Create(&user)
-	/*
-		var users User
-		err:= orm.Eloquent.Where("name  like ?", "%liaoxx%").Select("id","name","age").Unscoped().Find(&users)
-		if err !=nil {
-			fmt.Println(err.Error)
-		}*/
-	fmt.Println()
-	return user
+	var users User
+	err := orm.Eloquent.Where(&User{Phone: phone}).Select("*").Unscoped().Find(&users)
+	if err != nil {
+		fmt.Println(err.Error)
+	}
+	return users, err
 }
 
 //删除数据

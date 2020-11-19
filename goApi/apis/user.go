@@ -92,10 +92,20 @@ func Login(c *gin.Context) {
 	phone := c.Param("phone")
 	password := c.Param("password")
 
-	userOne := user.FindByPhone(phone)
+	userOne, res := user.FindByPhone(phone)
 
-	fmt.Println(user)
-	fmt.Println(phone)
+	if res.RowsAffected < 1 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": http.StatusOK,
+			"msg":  "未注册的用户",
+			"user": userOne,
+		})
+		return
+	}
+	//md5 加密后的密码
+	pwdMd5 := userOne.GetMd5Pwd(password, userOne.Salt)
+
+	fmt.Println(pwdMd5)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":     1,
