@@ -3,31 +3,26 @@ package midleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
-	"time"
+	"net/http"
 )
 
 func UserAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		t := time.Now()
-
-		//config.UserAuthRouters
-		// 设置 example 变量
-		//c.Set("example", "12345")
-		// 请求前
-		c.Next()
-
 		token := c.GetHeader("token")
+		//url:=c.Request.URL
+
 		fmt.Println("--------------  midleware  before --------------")
 		fmt.Println(token)
-		fmt.Println(c.Request.URL)
-		fmt.Println("--------------  midleware  next  --------------")
-		// 请求后
-		latency := time.Since(t)
-		log.Print(latency)
-
-		// 获取发送的 status
-		status := c.Writer.Status()
-		log.Println(status)
+		fmt.Println("--------------  midleware  token ^ --------------")
+		if token != "" {
+			// 验证通过，会继续访问下一个中间件
+			c.Next()
+		} else {
+			// 验证不通过，不再调用后续的函数处理
+			c.Abort()
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "token不存在,访问未授权"})
+			// return可省略, 只要前面执行Abort()就可以让后面的handler函数不再执行
+			return
+		}
 	}
 }

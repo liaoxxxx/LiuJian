@@ -14,11 +14,14 @@ func InitRouter() *gin.Engine {
 	router.GET("/", Index)
 
 	// 简单的路由组:  user 模块
-	userGroup := router.Group("/user", midleware.UserAuth())
+	userGroup := router.Group("/user").Use(midleware.UserAuth())
 	{
 		userGroup.POST("/login", Login)
 		userGroup.POST("/userInfo", UserInfo)
 	}
 
 	return router
+}
+
+type routerInstance struct {
 }
