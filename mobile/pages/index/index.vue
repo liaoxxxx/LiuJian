@@ -34,9 +34,9 @@
 
                 <view class="current-city" >
                     <text class="left">当前城市</text>
-                    <text class="right">{{currentCity}}</text>
+                    <text class="right">{{currentCity}}<u-icon name="map" color="#2979ff" size="28"></u-icon></text>
                 </view>
-
+                <u-notice-bar mode="vertical" type="success" :is-circular="false" :list="noticeList"></u-notice-bar>
                 <!--<view class="swiper_bg"></view>-->
                 <view class="swiper_bg_2"></view>
                 <!-- banner轮播 -->
@@ -49,8 +49,25 @@
                     </swiper>
                 </view>
 
-                <view class="index_menu">
-                    <view v-for="item in prefectureList" class="menu_box" :key="item.id"
+                <u-grid :col="2" v-for="(item,index) in prefectureList">
+                    <u-grid-item v-if="(index % 2)===0">
+                        <view  class="menu_box" :key="item.id"
+                              @click="toPrefecture(item.url)">
+                            <u-icon name="photo" :size="46"></u-icon>
+                            <view class="grid-text">{{item.name}}</view>
+                        </view>
+                    </u-grid-item>
+                    <u-grid-item v-if="(index % 2)===1">
+                        <view class="menu_box" :key="item.id"
+                              @click="toPrefecture(item.url)">
+                            <u-icon name="photo" :size="46"></u-icon>
+                            <view class="grid-text">{{item.name}}</view>
+                        </view>
+                    </u-grid-item>
+                </u-grid>
+
+                <view class="index_menu" v-for="item in prefectureList">
+                    <view  class="menu_box" :key="item.id"
                           @click="toPrefecture(item.url)">
                         <image class="menu_img" :src="item.src" mode="widthFix"></image>
                         <view class="required-title">{{item.name}}</view>
@@ -156,6 +173,13 @@
                         name: '金属',
                         subtitle: '废旧不锈钢',
                         url: '/pages/index/Special_Offer'
+                    },
+                    {
+                        id: 2,
+                        src: '/static/index/menu/menu_1.png',
+                        name: '其他废品',
+                        subtitle: '家电，家具，衣物，玻璃',
+                        url: '/pages/index/Special_Offer'
                     }
                 ],
 
@@ -182,6 +206,14 @@
                         count:12,
                         unit:'元'
                     }
+                ],
+
+
+                noticeList:[
+                    "上线运营啦",
+                    "上线运营啦",
+                    "上线运营啦",
+                    "上线运营啦",
                 ],
 
                 requireList: [
@@ -216,6 +248,9 @@
             }
         },
         onLoad(options) {
+            console.log("------------------------");
+            console.log(this.$u.config.v);
+            console.log("------------------------");
             // 页面显示是默认选中第一个
             this.tabCurrentIndex = 0;
             this.CurrentIndex = 0;
@@ -419,9 +454,9 @@
     }
 </script>
 
-<style>
+<style lang="scss" scoped>
     page {
-        background: #f5f5f5;
+        background-color: $u-bg-color;
     }
 
     .content {
@@ -439,7 +474,7 @@
 
     .stat-panel{
         background-color: #e7e5e5;
-        height: 120rpx;
+        height: 160rpx;
         overflow: hidden;
         font-size: 24rpx;
         margin: 0 20rpx;
@@ -467,6 +502,19 @@
         position: relative;
         right: -50rpx;
     }
+
+    .current-city{
+        width: 90%;
+        margin:0 auto;
+        overflow: hidden;
+    }
+    .left{
+        float: left;
+    }
+    .right{
+        float: right;
+    }
+
     .navbar .nav-item {
         display: flex;
         flex: 1;

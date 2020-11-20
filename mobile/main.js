@@ -13,6 +13,10 @@ import halvingLine from './components/halving_line.vue'
 import loadingModule from './components/loadingModule.vue'
 import myBtn from './components/myButton.vue'
 import myLoading from './components/loading.vue'
+
+import uView from 'uview-ui';
+Vue.use(uView);
+
 Vue.component('footer-tabbar', footerTabbar)
 Vue.component('halving-line', halvingLine)
 Vue.component('loading-module', loadingModule)
