@@ -10,7 +10,6 @@ func UserAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("token")
 		//url:=c.Request.URL
-
 		fmt.Println("--------------  midleware  before --------------")
 		fmt.Println(token)
 		fmt.Println("--------------  midleware  token ^ --------------")
