@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	. "goApi/controller"
-	"goApi/midleware"
+	. "goApi/app/controller"
+	"goApi/app/midleware"
 )
 
 var router *gin.Engine

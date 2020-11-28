@@ -50,14 +50,14 @@
                 </view>
 
                 <u-grid :col="2" v-for="(item,index) in prefectureList">
-                    <u-grid-item v-if="(index % 2)===0">
+                    <u-grid-item v-show="item.remainder===0">
                         <view  class="menu_box" :key="item.id"
                               @click="toPrefecture(item.url)">
                             <u-icon name="photo" :size="46"></u-icon>
                             <view class="grid-text">{{item.name}}</view>
                         </view>
                     </u-grid-item>
-                    <u-grid-item v-if="(index % 2)===1">
+                    <u-grid-item v-show="item.remainder===1">
                         <view class="menu_box" :key="item.id"
                               @click="toPrefecture(item.url)">
                             <u-icon name="photo" :size="46"></u-icon>
@@ -158,28 +158,32 @@
                         src: '/static/index/menu/menu_4.png',
                         name: '废纸',
                         subtitle: '杂纸，纯黄纸',
-                        url: ''
+                        url: '',
+                        remainder:0
                     },
                     {
                         id: 1,
                         src: '/static/index/menu/menu_2.png',
                         name: '塑料',
                         subtitle: '塑料瓶，塑料杯',
-                        url: ''
+                        url: '',
+                        remainder:1
                     },
                     {
                         id: 2,
                         src: '/static/index/menu/menu_1.png',
                         name: '金属',
                         subtitle: '废旧不锈钢',
-                        url: '/pages/index/Special_Offer'
+                        url: '/pages/index/Special_Offer',
+                        remainder:0
                     },
                     {
-                        id: 2,
+                        id: 3,
                         src: '/static/index/menu/menu_1.png',
                         name: '其他废品',
                         subtitle: '家电，家具，衣物，玻璃',
-                        url: '/pages/index/Special_Offer'
+                        url: '/pages/index/Special_Offer',
+                        remainder:1
                     }
                 ],
 
