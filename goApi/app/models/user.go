@@ -16,7 +16,7 @@ type User struct {
 }
 
 func (User) TableName() string {
-	return "rec_user"
+	return "eb_user"
 }
 
 var user []User
