@@ -26,6 +26,3 @@ func InitRouter() *gin.Engine {
 
 	return router
 }
-
-type routerInstance struct {
-}
