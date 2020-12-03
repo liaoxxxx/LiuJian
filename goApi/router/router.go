@@ -24,5 +24,12 @@ func InitRouter() *gin.Engine {
 		userGroup.POST("/userInfo", UserInfo)
 	}
 
+	//################################################
+	// 简单的路由组:  user 模块
+	homeGroup := router.Group("/home")
+	{
+		homeGroup.POST("/skeleton", Skeleton)
+	}
+
 	return router
 }

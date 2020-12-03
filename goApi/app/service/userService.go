@@ -1,4 +1,4 @@
-package USerService
+package service
 
 import (
 	"fmt"

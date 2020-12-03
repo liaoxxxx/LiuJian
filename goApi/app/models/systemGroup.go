@@ -20,7 +20,7 @@ func (SystemGroup) TableName() string {
 
 var systemGroup []SystemGroup
 
-func (systemGroup *SystemGroup) getField(gig int32) (sysGroup SystemGroup, err error) {
+func (systemGroup *SystemGroup) GetField(gid int64) (sysGroup SystemGroup, err error) {
 	if err = orm.Eloquent.Find(&systemGroup).Error; err != nil {
 		return
 	}

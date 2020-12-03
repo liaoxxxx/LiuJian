@@ -20,11 +20,11 @@ func (SystemGroupData) TableName() string {
 }
 
 //列表
-func (systemGroupData *SystemGroupData) getList(gid int32) (sysGroupDataList []SystemGroupData, err error) {
+func (systemGroupData *SystemGroupData) getList(gid int32) (sysGroupDataList []SystemGroupData, res *gorm.DB) {
 
-	err = orm.Eloquent.Where(&SystemGroupData{Gid: gid}).Select("*").Find(&sysGroupDataList)
-	if err != nil {
-		fmt.Println(err.Error)
+	res = orm.Eloquent.Where(&SystemGroupData{Gid: gid}).Select("*").Find(&sysGroupDataList)
+	if res != nil {
+		fmt.Println(res.Error)
 	}
 	return
 }

@@ -2,6 +2,8 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	homeService "goApi/app/service"
+	"net/http"
 )
 
 //列表数据
@@ -12,15 +14,8 @@ func Index(c *gin.Context) {
 }
 
 //
-func Skeleton() {
-	//轮播图
-
-	//用户统计数据
-
-	//回收种类
-
-	//滚动通知
-
-	//当前城市
-
+func Skeleton(c *gin.Context) {
+	var groupId = 48
+	resp := homeService.GetHomeMobileData(int64(groupId))
+	c.JSON(http.StatusOK, resp)
 }
