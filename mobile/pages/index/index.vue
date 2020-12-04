@@ -49,22 +49,13 @@
                     </swiper>
                 </view>
 
-                <u-grid :col="2" v-for="(item,index) in prefectureList">
-                    <u-grid-item v-show="item.remainder===0">
-                        <view  class="menu_box" :key="item.id"
-                              @click="toPrefecture(item.url)">
-                            <u-icon name="photo" :size="46"></u-icon>
-                            <view class="grid-text">{{item.name}}</view>
-                        </view>
-                    </u-grid-item>
-                    <u-grid-item v-show="item.remainder===1">
-                        <view class="menu_box" :key="item.id"
-                              @click="toPrefecture(item.url)">
-                            <u-icon name="photo" :size="46"></u-icon>
-                            <view class="grid-text">{{item.name}}</view>
-                        </view>
-                    </u-grid-item>
-                </u-grid>
+                <view class="prefecture-block" v-for="(item,index) in prefectureList">
+                    <view class=" prefecture-item" :key="item.id"
+                          @click="toPrefecture(item.url)">
+                        <u-icon name="photo" :size="46"></u-icon>
+                        <view class="grid-text">{{item.name}}</view>
+                    </view>
+                </view>
 
                 <view class="index_menu" v-for="item in prefectureList">
                     <view  class="menu_box" :key="item.id"
@@ -104,18 +95,11 @@
 </template>
 
 <script>
-    import xflSelect from '../../components/xfl-select/xfl-select.vue';
-    import {
-        vuexData
-    } from '@/common/commonMixin.js'
+    import {vuexData} from '@/common/commonMixin.js'
     import drawer from '@/components/drawer.vue'
     import tag from '@/components/tag.vue'
     import skeleton from '../../components/xinyi-skeleton/skeleton.vue'
-    import {
-        mapActions,
-        mapGetters,
-        mapMutations
-    } from 'vuex'
+    import {mapActions, mapGetters, mapMutations} from 'vuex'
     import goodsItem from '@/components/goods_item.vue'
     import broadcast from '@/components/broadcast.vue'
     import NavBar from '@/components/navBar.vue'
@@ -519,6 +503,11 @@
         float: right;
     }
 
+
+
+
+
+
     .navbar .nav-item {
         display: flex;
         flex: 1;
@@ -549,6 +538,22 @@
         width: 100%;
         height: 240 rpx;
     }
+
+
+
+
+    .prefecture-block{
+        flex-direction: row;
+        flex-wrap:wrap ;
+        justify-content: space-around;
+    }
+
+    .prefecture-item{
+        height: 30vw;
+        width: 50%  ;
+        background-color: darkgray;
+    }
+
 
 
     /* menu宫格 */
