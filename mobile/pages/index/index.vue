@@ -21,6 +21,7 @@
 				<view class="header-bg" style="height: 400rpx;background-color: #55ea55;overflow: hidden">
 					<img src="../../static/img/header-bg.jpg" alt="">
 				</view>
+
                 <view class="stat-panel" >
                     <view class="stat-panel-item" v-for="item in statList">
                         <text class="stat-item-title">累积积分</text>
@@ -37,8 +38,7 @@
                     <text class="right">{{currentCity}}<u-icon name="map" color="#2979ff" size="28"></u-icon></text>
                 </view>
                 <u-notice-bar mode="vertical" type="success" :is-circular="false" :list="noticeList"></u-notice-bar>
-                <!--<view class="swiper_bg"></view>-->
-                <view class="swiper_bg_2"></view>
+
                 <!-- banner轮播 -->
                 <view class="scroll_top">
                     <swiper class="swiper" indicator-dots="true" autoplay="true" circular="true">
@@ -49,44 +49,36 @@
                     </swiper>
                 </view>
 
-                <view class="prefecture-block" v-for="(item,index) in prefectureList">
-                    <view class=" prefecture-item" :key="item.id"
-                          @click="toPrefecture(item.url)">
-                        <u-icon name="photo" :size="46"></u-icon>
-                        <view class="grid-text">{{item.name}}</view>
+                <view class="prefecture-block" >
+                    <view class=" prefecture-item" v-for="(item,index) in prefectureList" :key="item.id"
+                          @click="toPrefecture(item.url)"
+                          v-bind:style="{  background: item.backgroundColor}">
+                        <view class="left" >
+                            <view class="grid-text">{{item.name}}</view>
+                            <view class="grid-text">{{item.subtitle}}</view>
+                        </view>
+                        <view class="right">
+                            <u-icon name="photo" :size="46"></u-icon>
+                        </view>
                     </view>
                 </view>
 
-                <view class="index_menu" v-for="item in prefectureList">
-                    <view  class="menu_box" :key="item.id"
-                          @click="toPrefecture(item.url)">
-                        <image class="menu_img" :src="item.src" mode="widthFix"></image>
-                        <view class="required-title">{{item.name}}</view>
-                        <view class="required-subtitle">{{item.subtitle}}</view>
-                    </view>
-                </view>
 
-                <!-- <view class="center_banner" @tap="toCard">
-                    <image class="center_img" src="/static/index/to_card.png" mode="widthFix"></image>
-                    <broadcast :list="indexRoll"></broadcast>
-                </view> -->
-                <view style="width: 80%; margin: auto; margin-bottom: 20px;">
-                    <select name="" id=""></select>
-                </view>
-
-                <view class="index_menu">
-                    <view v-for="item in requireList" class="menu_box" :key="item.id" @click="toPrefecture(item.url)">
-                        <image class="menu_img" :src="item.src" mode="widthFix"></image>
-                        <view>{{item.name}}</view>
-                    </view>
+                <view class="contact-block" >
+                    <view   class=" contact-item" v-for="(item,index) in prefectureList" >
+                            <view class="left">{{item.title}}</view>
+                            <view class="right">{{currentCity}}<u-icon name="map" color="#2979ff" size="28"></u-icon></view>
+                        </view>
                 </view>
 
 
                 <view class="create-order-circle">
-                    <view class="create-order-inner" @click="toAddOrder()">
-                        下单
+                    <view class="create-order-inner" @click="toAddOrder()" >
+                        <text class="left">{{item.title}}</text>
+                        <text class="right">{{currentCity}}<u-icon name="map" color="#2979ff" size="28"></u-icon></text>
                     </view>
                 </view>
+                <br>
             </view>
 
             <footer-tabbar></footer-tabbar>
@@ -136,6 +128,7 @@
                 defaultPrefecture: 0,
 
                 currentCity:"南宁",
+
                 prefectureList: [
                     {
                         id: 0,
@@ -143,7 +136,8 @@
                         name: '废纸',
                         subtitle: '杂纸，纯黄纸',
                         url: '',
-                        remainder:0
+                        remainder:0,
+                        backgroundColor:"#ffc728"
                     },
                     {
                         id: 1,
@@ -151,7 +145,8 @@
                         name: '塑料',
                         subtitle: '塑料瓶，塑料杯',
                         url: '',
-                        remainder:1
+                        remainder:1,
+                        backgroundColor:"#289bff"
                     },
                     {
                         id: 2,
@@ -159,7 +154,8 @@
                         name: '金属',
                         subtitle: '废旧不锈钢',
                         url: '/pages/index/Special_Offer',
-                        remainder:0
+                        remainder:0,
+                        backgroundColor:"#a9a9fa"
                     },
                     {
                         id: 3,
@@ -167,7 +163,8 @@
                         name: '其他废品',
                         subtitle: '家电，家具，衣物，玻璃',
                         url: '/pages/index/Special_Offer',
-                        remainder:1
+                        remainder:1,
+                        backgroundColor:"#84ff58"
                     }
                 ],
 
@@ -197,6 +194,11 @@
                 ],
 
 
+                contactList: [
+                    {title: '全国服务热线', tel: '400-0055-888'},
+                    {title: '区域服务热线', tel: '0775-0055-888'}
+                ],
+
                 noticeList:[
                     "上线运营啦",
                     "上线运营啦",
@@ -209,30 +211,27 @@
                         id: 0,
                         src: '/static/index/menu/menu_4.png',
                         name: '拒绝掺水',
-                        url: ''
+                        url: '',
+                        backgroundColor:"#ffc728"
                     },
                     {
                         id: 1,
                         src: '/static/index/menu/menu_2.png',
                         name: '拒绝掺杂',
-                        url: ''
+                        url: '',
+                        backgroundColor:"#ffc728"
                     },
                     {
                         id: 2,
                         src: '/static/index/menu/menu_1.png',
                         name: '单次10KG以上',
-                        url: '/pages/index/Special_Offer'
+                        url: '/pages/index/Special_Offer',
+                        backgroundColor:"#ffc728"
                     }
                 ],
 
 
-                images: [{
-                    img: '../../static/index/banner/banner.png'
-                },
-                    {
-                        img: '../../static/index/banner/banner2.png'
-                    }
-                ]
+
             }
         },
         onLoad(options) {
@@ -543,14 +542,19 @@
 
 
     .prefecture-block{
-        flex-direction: row;
-        flex-wrap:wrap ;
+        display: flex;
         justify-content: space-around;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items:center;
+
     }
 
     .prefecture-item{
+        margin-top: 10rpx;
         height: 30vw;
-        width: 50%  ;
+        width: 48%  ;
+        border-radius: 10rpx;
         background-color: darkgray;
     }
 
