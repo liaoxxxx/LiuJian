@@ -64,20 +64,39 @@
                 </view>
 
 
-                <view class="contact-block" >
-                    <view   class=" contact-item" v-for="(item,index) in prefectureList" >
+                <view class="contact-block">
+                    <view  v-for="(item,index) in contactList">
+                        <view class=" contact-item">
                             <view class="left">{{item.title}}</view>
-                            <view class="right">{{currentCity}}<u-icon name="map" color="#2979ff" size="28"></u-icon></view>
+                            <view class="right">{{item.tel}}
+                                <u-icon name="map" color="#2979ff" size="28"></u-icon>
+                            </view>
                         </view>
+                    </view>
+                </view>
+
+                <view class="more-option">
+                    <view class="more-option-title">
+                       <text>{{moreOption.title}}</text>
+                    </view>
+                    <view  v-for="(item,index) in moreOption.optionList">
+                        <view class="more-option-item">
+                            <view class="left">{{item.name}}</view>
+                            <view class="right">{{item.src}}
+                                <u-icon name="map" color="#2979ff" size="28"></u-icon>
+                            </view>
+                        </view>
+                    </view>
                 </view>
 
 
                 <view class="create-order-circle">
                     <view class="create-order-inner" @click="toAddOrder()" >
-                        <text class="left">{{item.title}}</text>
-                        <text class="right">{{currentCity}}<u-icon name="map" color="#2979ff" size="28"></u-icon></text>
+
                     </view>
                 </view>
+                <br>
+                <br>
                 <br>
             </view>
 
@@ -231,7 +250,39 @@
                 ],
 
 
-
+                moreOption:{
+                    title:"其他功能",
+                    optionList:[
+                        {
+                            id: 0,
+                            src: '/static/index/menu/menu_4.png',
+                            name: '附近回收员',
+                            url: '',
+                            backgroundColor:"#ffc728"
+                        },
+                        {
+                            id: 1,
+                            src: '/static/index/menu/menu_2.png',
+                            name: '服务咨询',
+                            url: '',
+                            backgroundColor:"#ffc728"
+                        },
+                        {
+                            id: 2,
+                            src: '/static/index/menu/menu_1.png',
+                            name: '积分商城',
+                            url: '/pages/index/Special_Offer',
+                            backgroundColor:"#ffc728"
+                        },
+                        {
+                            id: 2,
+                            src: '/static/index/menu/menu_1.png',
+                            name: '地址管理',
+                            url: '/pages/index/Special_Offer',
+                            backgroundColor:"#ffc728"
+                        }
+                    ]
+                },
             }
         },
         onLoad(options) {
@@ -308,43 +359,8 @@
                     this.$refs.drawer.hide()
                 }
             },
-            async addCart(id) {
-                let goodsDetail = await this.$api.getProductDetail(id)
-                if (goodsDetail.status != 200) {
-                    uni.showModal({
-                        showCancel: false,
-                        title: '提示',
-                        content: '数据错误请稍后重试。。。'
-                    })
-                    return
-                }
-                this.tempDetail = goodsDetail.data
-                let result
-                let {
-                    productValue
-                } = goodsDetail.data
-                let productArr = Object.values(productValue)
-                if (productArr.length > 0) {
-                    this.$refs.drawer.show()
-                    this.showTab = false
-                } else {
-                    result = await this.$api.addCart({
-                        productId: id,
-                        cartNum: 1,
-                        new: 0
-                    })
-                    this.checkRes(result, '宝贝在购物车里等着您了～～')
-                }
-                // let result = await this.$api.addCart({productId: id, cartNum: 1, uniqueId, new: 0})
 
 
-            },
-            // 跳转到搜索页
-            toSearch() {
-                uni.navigateTo({
-                    url: '/pages/index/search'
-                })
-            },
             getElSize(id) {
                 return new Promise((res, rej) => {
                     uni.createSelectorQuery().in(this).select(id).boundingClientRect(data => {
@@ -433,10 +449,7 @@
             setTimeout(() => {
                 console.log(this.activity)
             }, 2000)
-            // let userCenter = await this.$api.getUserCenter()
-            // let cart = await this.$api.getCartList()
-            // this.getUserCenter(userCenter)
-            // let hot = await this.$api.getHot(`?page=${this.page}&limit=${10}`)
+
         }
     }
 </script>
@@ -455,8 +468,6 @@
         /* #endif */
         padding-top: 20 rpx;
     }
-
-
 
 
     .stat-panel{
@@ -502,26 +513,6 @@
         float: right;
     }
 
-
-
-
-
-
-    .navbar .nav-item {
-        display: flex;
-        flex: 1;
-        justify-content: center;
-        padding-top: 30 upx;
-        font-size: 28 upx;
-        color: #fff;
-    }
-
-
-    .swiper_bg_2 {
-        background: #fff;
-        height: 140 upx;
-    }
-
     .scroll_top {
         border-radius: 20 rpx;
         margin: 0 15 rpx;
@@ -547,7 +538,6 @@
         flex-wrap: wrap;
         flex-direction: row;
         align-items:center;
-
     }
 
     .prefecture-item{
@@ -556,66 +546,47 @@
         width: 48%  ;
         border-radius: 10rpx;
         background-color: darkgray;
+        padding:20rpx ;
     }
 
 
 
-    /* menu宫格 */
-    .index_menu {
+    .contact-block{
+        overflow: hidden;
+        margin:50rpx auto
+
+    }
+    .contact-item{
+        overflow: hidden;
+        height: auto;
+        background-color: darkgray;
+    }
+
+    .more-option{
         display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
         flex-direction: row;
-        padding: 40 rpx 15 rpx 20 rpx 15 rpx;
-        background: #fff;
-        /* background: #4CD964; */
+        align-items:center;
     }
 
-
-    .required-subtitle {
-        color: #1D2124;
-        font-size: 20 rpx;
+    .more-option-item{
+        margin-top: 10rpx;
+        height: 25vw;
+        width: 24%  ;
+        border-radius: 10rpx;
+        background-color: darkgray;
+        padding:20rpx ;
     }
-
-
-    .menu_box {
-        flex: 1;
-        text-align: center;
-        font-size: 30 rpx;
-        font-weight: bold;
-    }
-
-    .menu_img {
-        width: 100 rpx;
-        height: 100 rpx;
-        padding-bottom: 18 rpx;
-    }
-
-
-    .center_banner {
-        padding: 10 rpx 15 rpx;
-        background: #fff;
-    }
-
-    .center_img {
-        width: 100%;
-        height: 99 rpx;
-    }
-
-
-    .yishi_img image {
-        width: 200 rpx;
-        height: 200 rpx;
-    }
-
 
     .create-order-circle {
+        height: 200rpx;
         position: relative;
         bottom: -200 rpx;
 
         width: 300 rpx;
-        height: 300 rpx;
         border-radius: 150 rpx;
         margin: 0 auto;
-        background-color: #7ef57e;
     }
 
     .create-order-inner {
@@ -629,6 +600,7 @@
         color: white;
 
         position: absolute;
+        z-index: 10;
         top: 0;
         left: 0;
         right: 0;
@@ -636,6 +608,4 @@
         margin: auto auto;
 
     }
-
-
 </style>
