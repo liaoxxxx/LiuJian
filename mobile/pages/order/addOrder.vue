@@ -2,8 +2,51 @@
 	<view class="page">
 		<scroll-view class="position-absolute w-100 top-0" scroll-y="true" :style="scrollStyle">
 			<view>
-				<halving-line bgColor="#eee"></halving-line>
-				<halving-line class="font-weight-bolder" color="#111" content="商品清单" bgColor="#eee"></halving-line>
+        <view class="recycle-cate-block">
+          <text>回收品类</text>
+          <view class="recycle-cate-row">
+            <view v-for="item in recycleCateList" class="recycle-cate-item">
+              <view>
+                <img :src="item.src" alt="">
+              </view>
+              <text>{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+
+        <halving-line bgColor="#eee"></halving-line>
+        <view>
+          <text>今日指导价</text>
+          <u-cell-group v-for="gItem in guidePriceList" >
+            <!-- <u-cell-item  title="夕阳无限好" arrow-direction="down">
+               <u-icon slot="icon" size="32" name="search"></u-icon>
+               &lt;!&ndash; <u-badge count="99" :absolute="false" slot="right-icon"></u-badge> &ndash;&gt;
+               <u-switch slot="right-icon" v-model="false"></u-switch>
+             </u-cell-item>-->
+            <u-cell-item   :title="gItem.name" :label="gItem.desc" :arrow="false">
+              <view slot="right-icon" >
+                <text>{{gItem.num}}元/{{gItem.unit}}</text>
+              </view>
+            </u-cell-item>
+          </u-cell-group>
+        </view>
+
+
+        <halving-line bgColor="#eee"></halving-line>
+        <view class="recycle-require-block">
+          <text>回收品类</text>
+          <view class="recycle-require-row">
+            <view v-for="item in requireList" class="recycle-require-item">
+              <view>
+                <img :src="item.src" alt="">
+              </view>
+              <text>{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+
+
+        <halving-line bgColor="#eee"></halving-line>
 				<view class="flex flex-column">
 					<list-item v-if="orderInfo.productInfo" class="mb-3" :content="`共`+ orderInfo.productTotalNum +'件' " :wraStyle="{padding: '20rpx 20rpx 20rpx 40rpx '}"
 					 :contentFont="{fontSize: '26rpx', color: '#123', fontWeight: 400 }">
@@ -23,89 +66,69 @@
 							<text class="iconfont text-grey">&#xe708;</text>
 						</view>
 					</list-item>
-					<list-item title="预约时间" :content="time | format">
-						<view slot="right" class="flex-1 flex justify-center">
-							<picker-plus @confirm="checkTime" :startRule="nowTime" mode="YMDhm">
-								<text class="iconfont text-grey">&#xe708;</text>
-							</picker-plus>
-						</view>
-					</list-item>
-				</view>
-				<halving-line bgColor="#eee"></halving-line>
-				<view class="flex flex-column">
-
-					<list-item title="优惠卷">
-						<view slot="content" class="flex-5 flex justify-end font-sm">
-							<tag v-if="orderInfo.usableCoupon && orderInfo.usableCoupon.length" :content="`${orderInfo.usableCoupon.length}张可用`"></tag>
-							<tag v-else content="无可用优惠卷" bgColor="#adadad"></tag>
-						</view>
-						<view slot="right" class="flex-1 flex justify-center">
-							<text class="iconfont text-grey">&#xe708;</text>
-						</view>
-					</list-item>
-					<list-item :title="`使用积分 共${userCenter.integral}`">
-						<view slot="content" class="flex-5 flex justify-end font-sm">
-							<input v-model="integral" class="font-sm" placeholder="输入使用积分" type="number">
-						</view>
-					</list-item>
-					<view class="flex flex-column px-2">
-						<view class="mb-2">
-							<text class="font-sm">订单备注</text>
-						</view>
-						<view>
-							<textarea style="height: 150rpx; width: 700rpx;" class="font-sm" v-model="remark" placeholder="选填,给我留言吧～～" />
-							</view>
-					</view>
-				</view>
-				<halving-line bgColor="#eee"></halving-line>
-				<view class="flex flex-column">
-					<list-item v-for="item in money" :title="item.title" :key="item.id">
-						<view slot="content" class="flex-5 flex justify-end font-sm">
-							<text :class="{'text-danger': item.id > 0, 'text-body': item.id == 0}" class="font-weight-bold">{{item.id > 0 ? `-` : ''}} ¥{{item.content}}</text>
-						</view>
-					</list-item>
 				</view>
 
 
-				<halving-line bgColor="#eee"></halving-line>
-				<halving-line bgColor="#eee"></halving-line>
 			</view>
-			<view class="px-2 py-1">
-				<list-item title="地址" >
+      <halving-line bgColor="#eee"></halving-line>
 
-				</list-item>
-				<address-item showImg @handleTap="setAddress" v-if="addressList.length > 0" :address="defAddress">
-				</address-item>
-				<view v-else class="border rounded flex align-center justify-between py-5">
-					<view class="flex-2 flex justify-center align-center">
-						<text class="iconfont text-grey" style="font-size: 50rpx;">&#xe60e;</text>
-					</view>
-					<text class=" flex-6 flex align-center justify-between text-grey" style="text-decoration: underline; font-style: oblique;">前往设置收货地址>></text>
-				</view>
-			</view>
+      <view class="px-2 py-1">
+        <view class="flex flex-column px-2">
+          <view class="mb-2">
+            <text class="font-sm">订单备注</text>
+          </view>
+          <view>
+            <textarea style="height: 150rpx; width: 700rpx;" class="font-sm" v-model="remark" placeholder="选填,给我留言吧～～"/>
+          </view>
+        </view>
+        <list-item title="预约时间" :content="time | format">
+          <view slot="right" class="flex-1 flex justify-center">
+            <picker-plus @confirm="checkTime" :startRule="nowTime" mode="YMDhm">
+              <text class="iconfont text-grey">&#xe708;</text>
+            </picker-plus>
+          </view>
+        </list-item>
+        <list-item title="预约地址">
+        </list-item>
+        <address-item showImg @handleTap="setAddress" v-if="addressList.length > 0" :address="defAddress">
+        </address-item>
+        <view v-else class="border rounded flex align-center justify-between py-5">
+          <view class="flex-2 flex justify-center align-center">
+            <text class="iconfont text-grey" style="font-size: 50rpx;">&#xe60e;</text>
+          </view>
+          <text class=" flex-6 flex align-center justify-between text-grey"
+                style="text-decoration: underline; font-style: oblique;">前往设置收货地址>>
+          </text>
+        </view>
+      </view>
 		</scroll-view>
 
 		<!-- 底部 -->
-		<view class="border-top flex w-100 align-center position-fixed bottom-0 bg-white font" style="height: 120rpx;">
-
-			<view class=" flex ">
-				<my-btn @handleTap="addOrder" bgColor="#f40" color="#fff" content="立即预约"></my-btn>
-			</view>
-			<view class=" flex ">
-				<my-btn @handleTap="addOrder" bgColor="#f40" color="#fff" content="公益赠送"></my-btn>
-			</view>
+		<view class=" w-100  position-fixed bottom-0 bg-white font">
+      <view class="add-order-exceptions">
+        <text>确认下单将自动默认同意《小胖纸上门回收免责条款》</text>
+      </view>
+      <view class="add-order-row">
+        <view class="add-order-button">
+          <my-btn @handleTap="addOrder" content="立即预约"></my-btn>
+        </view>
+        <view class="  add-order-button">
+          <my-btn @handleTap="addOrder"  content="公益赠送"></my-btn>
+        </view>
+      </view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import tag from '@/components/tag.vue'
-	import listItem from '@/components/list_item.vue'
-	import pickerPlus from '@/components/e-picker-plus/e-picker-plus.vue'
-	import {vuexData} from '@/common/commonMixin.js'
-	import moment from '@/common/moment.js'
-	import addressItem from '@/components/address_item.vue'
-	export default {
+import tag from '@/components/tag.vue'
+import listItem from '@/components/list_item.vue'
+import pickerPlus from '@/components/e-picker-plus/e-picker-plus.vue'
+import {vuexData} from '@/common/commonMixin.js'
+import moment from '@/common/moment.js'
+import addressItem from '@/components/address_item.vue'
+
+export default {
 		components: {
 			tag,
 			listItem,
@@ -155,45 +178,92 @@
 				totalamount: '',	// 商品总金额
 				orderDetail: null,	// 从购物车跳转过来时的商品
 				orderInfo: {},
-				payType: [
-					{
-						id: 0,
-						title: '\ue620',
-						color: 'color: #00C800;',
-						name: '微信支付',
-						type: 'weixin'
-					},
-					{
-						id: 1,
-						title: '\ue608',
-						color: 'color: #288CF8;',
-						name: '支付宝',
-						type: 'alipay'
-					},
-					{
-						id: 2,
-						title: '\ue70e',
-						color: 'color: #FF8A4E;',
-						name: '货到付款',
-						type: 'offline'
-					}
-				]
+
+
+        recycleCateList: [
+          {
+            id: 0,
+            src: '/static/index/menu/menu_4.png',
+            name: '废纸',
+            subtitle: '杂纸，纯黄纸',
+            url: '',
+            remainder:0,
+            backgroundColor:"#ffc728"
+          },
+          {
+            id: 1,
+            src: '/static/index/menu/menu_2.png',
+            name: '塑料',
+            subtitle: '塑料瓶，塑料杯',
+            url: '',
+            remainder:1,
+            backgroundColor:"#289bff"
+          },
+          {
+            id: 2,
+            src: '/static/index/menu/menu_1.png',
+            name: '金属',
+            subtitle: '废旧不锈钢',
+            url: '/pages/index/Special_Offer',
+            remainder:0,
+            backgroundColor:"#a9a9fa"
+          },
+          {
+            id: 3,
+            src: '/static/index/menu/menu_1.png',
+            name: '其他废品',
+            subtitle: '家电，家具，衣物，玻璃',
+            url: '/pages/index/Special_Offer',
+            remainder:1,
+            backgroundColor:"#84ff58"
+          }
+        ],
+
+
+        requireList: [
+          {
+            id: 0,
+            src: '/static/index/menu/menu_4.png',
+            name: '拒绝掺水',
+            url: ''
+          },
+          {
+            id: 1,
+            src: '/static/index/menu/menu_2.png',
+            name: '拒绝掺杂',
+            url: ''
+          },
+          {
+            id: 2,
+            src: '/static/index/menu/menu_1.png',
+            name: '单次10KG以上',
+            url: '/pages/index/Special_Offer'
+          }
+        ],
+
+        guidePriceList:[
+          {
+            desc: '纯色纸箱，如家点包装箱',
+            name: '黄纸',
+            num: 1.3,
+            unit:'公斤'
+          },
+          {
+            desc: '纯色纸箱，如家点包装箱',
+            name: '花纸',
+            num: 1.8,
+            unit:'公斤'
+          },{
+            desc: '纯色纸箱，如家点包装箱',
+            name: '统纸',
+            num: 0.3,
+            unit:'公斤'
+          },
+        ]
 			}
 		},
 		methods: {
-			// 选择发票类型
-			checkBill(e) {
-				this.billIndex = e.target.value
-			},
-			// 初始化订单数据
-			async initOrderIfo() {
-				let result = await this.$api.createOrder({cartId: this.cartIds})
-				console.log(result)
-				let res = this.checkRes(result)
-				if (res) {
-					this.orderInfo = result.data
-				}
-			},
+
 			// 确认订单 方法
 			async addOrder() {
 				// this.nowAddressKey  // 地址id
@@ -320,7 +390,7 @@
 			}
 		},
 		async onReady() {
-			this.$nextTick(() => {
+			/*this.$nextTick(() => {
 				let {windowHeight} = uni.getSystemInfoSync()
 				this.windowHeight = windowHeight
 			})
@@ -333,10 +403,10 @@
 			this.time = time
 			let defaultAddress = await this.$api.getAddressDef()
 			this.getDefAddress(defaultAddress)
-			this.getAddressList(addressList)
+			this.getAddressList(addressList)*/
 		},
 		onLoad(option) {
-			let {cartIds} = option
+			/*let {cartIds} = option
 			this.cartIds = cartIds
 			this.initOrderIfo()
 			
@@ -354,7 +424,7 @@
 						}
 					})
 				}
-			})
+			})*/
 			
 			 // uni.getProvider({ 
 				//  service: 'payment',
@@ -380,4 +450,49 @@
 	.page {
 		height: 100vh;
 	}
+  .recycle-cate-block{
+    padding: 22rpx;
+  }
+
+  .recycle-cate-row{
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+  }
+  .recycle-cate-item{
+    border: 1px solid #d2d2d2;
+    border-radius: 5rpx;
+    width: 20%;
+    padding: 20rpx;
+  }
+  .recycle-cate-item img{
+    width: 80%;
+  }
+
+  .recycle-require-row{
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+  }
+  .recycle-require-item{
+    border: 1px solid #d2d2d2;
+    border-radius: 5rpx;
+    width: 30%;
+    padding: 20rpx;
+  }
+  .recycle-require-item img{
+    width: 60%;
+  }
+
+
+
+  .add-order-exceptions{
+    width: 100%;
+    display: block;
+  }
+  .add-order-row{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
 </style>

@@ -1,123 +1,121 @@
 <template>
-    <view id="content" class="content">
+  <view id="content" class="content">
 
-        <view v-if="loading" class="pt-4">
-            <skeleton banner :row="2" animate :loading="loading" style="margin-top:24rpx;">
-                <view>
-                </view>
-            </skeleton>
-            <skeleton banner :row="0" animate :loading="loading" style="margin-top:24rpx;">
-                <view>
-                </view>
-            </skeleton>
-            <skeleton banner :row="10" animate :loading="loading" style="margin-top:24rpx;">
-                <view>
-                </view>
-            </skeleton>
+    <view v-if="loading" class="pt-4">
+      <skeleton banner :row="2" animate :loading="loading" style="margin-top:24rpx;">
+        <view>
         </view>
-
-        <view class="list" v-if="!loading">
-            <view class="text_1" v-show="tabCurrentIndex===0">
-				<view class="header-bg" style="height: 400rpx;background-color: #55ea55;overflow: hidden">
-					<img src="../../static/img/header-bg.jpg" alt="">
-				</view>
-
-                <view class="stat-panel" >
-                    <view class="stat-panel-item" v-for="item in statList">
-                        <text class="stat-item-title">累积积分</text>
-                        <view class="stat-item-content">
-                            <text class="stat-item-counter">{{item.count}}</text>
-                            <br>
-                            <text class="stat-item-unit">{{item.unit}}</text>
-                        </view>
-                    </view>
-                </view>
-
-                <view class="current-city" >
-                    <text class="left">当前城市</text>
-                    <text class="right">{{currentCity}}<u-icon name="map" color="#2979ff" size="28"></u-icon></text>
-                </view>
-                <u-notice-bar mode="vertical" type="success" :is-circular="false" :list="noticeList"></u-notice-bar>
-
-                <!-- banner轮播 -->
-                <view class="scroll_top">
-                    <swiper class="swiper" indicator-dots="true" autoplay="true" circular="true">
-                        <swiper-item class="swiper_item" v-for="(item,index) in indexBanner" :key="index">
-                            <image class="swip-img" mode="widthFix"
-                                   :src="item.pic.indexOf('http') != -1 ? item.pic : 'http://111.229.128.239:1003' + item.pic"></image>
-                        </swiper-item>
-                    </swiper>
-                </view>
-
-                <view class="prefecture-block" >
-                    <view class=" prefecture-item" v-for="(item,index) in prefectureList" :key="item.id"
-                          @click="toPrefecture(item.url)"
-                          v-bind:style="{  background: item.backgroundColor}">
-                        <view class="left" >
-                            <view class="grid-text">{{item.name}}</view>
-                            <view class="grid-text">{{item.subtitle}}</view>
-                        </view>
-                        <view class="right">
-                            <u-icon name="photo" :size="46"></u-icon>
-                        </view>
-                    </view>
-                </view>
-
-
-                <view class="contact-block">
-                    <view  v-for="(item,index) in contactList">
-                        <view class=" contact-item">
-                            <view class="left">{{item.title}}</view>
-                            <view class="right">{{item.tel}}
-                                <u-icon name="map" color="#2979ff" size="28"></u-icon>
-                            </view>
-                        </view>
-                    </view>
-                </view>
-
-                <view class="more-option">
-                    <view class="more-option-title">
-                       <text>{{moreOption.title}}</text>
-                    </view>
-                    <view  v-for="(item,index) in moreOption.optionList">
-                        <view class="more-option-item">
-                            <view class="left">{{item.name}}</view>
-                            <view class="right">{{item.src}}
-                                <u-icon name="map" color="#2979ff" size="28"></u-icon>
-                            </view>
-                        </view>
-                    </view>
-                </view>
-
-
-                <view class="create-order-circle">
-                    <view class="create-order-inner" @click="toAddOrder()" >
-
-                    </view>
-                </view>
-                <br>
-                <br>
-                <br>
-            </view>
-
-            <footer-tabbar></footer-tabbar>
+      </skeleton>
+      <skeleton banner :row="0" animate :loading="loading" style="margin-top:24rpx;">
+        <view>
         </view>
+      </skeleton>
+      <skeleton banner :row="10" animate :loading="loading" style="margin-top:24rpx;">
+        <view>
+        </view>
+      </skeleton>
     </view>
+
+    <view class="main" v-if="!loading">
+      <view class="header-bg" style="">
+        <img src="../../static/img/header-bg.jpg" alt="">
+      </view>
+
+      <view class="stat-panel">
+        <view class="stat-panel-item" v-for="item in statList">
+          <text class="stat-item-title">累积积分</text>
+          <view class="stat-item-content">
+            <text class="stat-item-counter">{{ item.count }}</text>
+            <br>
+            <text class="stat-item-unit">{{ item.unit }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="current-city">
+        <text class="left">当前城市</text>
+        <text class="right">{{ currentCity }}
+          <u-icon name="map" color="#2979ff" size="28"></u-icon>
+        </text>
+      </view>
+
+
+      <!-- banner轮播 -->
+      <view class="scroll_top">
+        <swiper class="swiper" indicator-dots="true" autoplay="true" circular="true">
+          <swiper-item class="swiper_item" v-for="(item,index) in indexBanner" :key="index">
+            <image class="swip-img" mode="widthFix"
+                   :src="item.pic.indexOf('http') != -1 ? item.pic : 'http://111.229.128.239:1003' + item.pic"></image>
+          </swiper-item>
+        </swiper>
+      </view>
+
+      <u-notice-bar mode="vertical" type="success" :is-circular="false" :list="noticeList"></u-notice-bar>
+
+      <view class="prefecture-block">
+        <view class=" prefecture-item" v-for="(item,index) in prefectureList" :key="item.id"
+              @click="toPrefecture(item.url)"
+              v-bind:style="{  background: item.backgroundColor}">
+          <view class="left">
+            <view class="grid-text">{{ item.name }}</view>
+            <view class="grid-text">{{ item.subtitle }}</view>
+          </view>
+          <view class="right">
+            <u-icon name="photo" :size="46"></u-icon>
+          </view>
+        </view>
+      </view>
+
+
+      <view class="contact-block">
+        <view v-for="(item,index) in contactList">
+          <view class=" contact-item">
+            <view class="left">{{ item.title }}</view>
+
+            <view class="right">
+              <u-icon name="phone" color="green" size="28"></u-icon>{{ item.tel }}
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="more-option-title">
+        <text>{{ moreOption.title }}</text>
+      </view>
+      <view class="more-option">
+
+        <view class="more-option-item" v-for="(item,index) in moreOption.optionList">
+          <image class="more-option-item-icon" :src="item.src"></image>
+          <view class="more-option-item-text">{{ item.name }}</view>
+        </view>
+      </view>
+      <view class="create-order-block">
+        <view class="create-order-slogan">{{ slogan }}</view>
+        <view class="create-order-circle">
+          <view class="create-order-inner" @click="toAddOrder()"></view>
+        </view>
+      </view>
+      <br>
+      <br>
+      <br>
+    </view>
+
+    <footer-tabbar></footer-tabbar>
+  </view>
 </template>
 
 <script>
-    import {vuexData} from '@/common/commonMixin.js'
-    import drawer from '@/components/drawer.vue'
-    import tag from '@/components/tag.vue'
-    import skeleton from '../../components/xinyi-skeleton/skeleton.vue'
-    import {mapActions, mapGetters, mapMutations} from 'vuex'
-    import goodsItem from '@/components/goods_item.vue'
-    import broadcast from '@/components/broadcast.vue'
-    import NavBar from '@/components/navBar.vue'
-    import specialList from '@/components/special_card.vue'
-    import navTab from '@/components/nav_tab.vue'
+import {vuexData} from '@/common/commonMixin.js'
+import drawer from '@/components/drawer.vue'
+import tag from '@/components/tag.vue'
+import skeleton from '../../components/xinyi-skeleton/skeleton.vue'
+import {mapActions, mapGetters, mapMutations} from 'vuex'
+import goodsItem from '@/components/goods_item.vue'
+import broadcast from '@/components/broadcast.vue'
+import NavBar from '@/components/navBar.vue'
+import specialList from '@/components/special_card.vue'
+import navTab from '@/components/nav_tab.vue'
 
-    export default {
+export default {
         components: {
             NavBar,
             navTab,
@@ -215,7 +213,7 @@
 
                 contactList: [
                     {title: '全国服务热线', tel: '400-0055-888'},
-                    {title: '区域服务热线', tel: '0775-0055-888'}
+                    {title: '区域服务热线', tel: '0775-055-888'}
                 ],
 
                 noticeList:[
@@ -283,6 +281,8 @@
                         }
                     ]
                 },
+
+              slogan:"小胖纸资源回收"
             }
         },
         onLoad(options) {
@@ -299,32 +299,11 @@
         methods: {
             ...mapActions(['getIndex']),
             ...mapMutations(['getFirstInfo']),
-            //顶部tab点击
-            tabClick(index) {
-                this.tabCurrentIndex = index;
-            },
-            toCard() {
-                uni.navigateTo({
-                    url: '/pages/index/get_coupon'
-                })
-            },
-            checkPro(id) {
-                if (id == this.proId) {
-                    this.proId = ''
-                } else {
-                    this.proId = id
-                }
-            },
 
             imgErr(e) {
                 this.getFirstInfo({
                     msg: 'imgErr',
                     index: e
-                })
-            },
-            goDetail(id) {
-                uni.navigateTo({
-                    url: `/pages/index/goods_info?id=${id}`
                 })
             },
 
@@ -340,26 +319,6 @@
                     })
                 }
             },
-
-            // 有规格 加入购物车
-            async proAddCart() {
-                if (this.proId == '') {
-                    uni.showToast({
-                        icon: '',
-                        title: '请选择商品规格～～'
-                    })
-                } else {
-                    let result = await this.$api.addCart({
-                        productId: this.selectedPro.product_id,
-                        uniqueId: this.selectedPro.unique,
-                        cartNum: 1,
-                        new: 0
-                    })
-                    this.checkRes(result, '宝贝在购物车里等着您了～～')
-                    this.$refs.drawer.hide()
-                }
-            },
-
 
             getElSize(id) {
                 return new Promise((res, rej) => {
@@ -378,29 +337,7 @@
 
         computed: {
             ...mapGetters(['indexBanner', 'indexTopMenus', 'indexRoll', 'indexBastInfo', 'indexFirstInfo']),
-            firstList() {
-                let arr
-                if (this.indexFirstInfo.firstList) {
-                    arr = this.indexFirstInfo.firstList.filter((item, index) => {
-                        return index <= 2
-                    })
-                }
-                return arr
-            },
-            // 后期可优化  规格
-            tempPro() {
-                if (this.tempDetail.productValue) {
-                    console.log(Object.values(this.tempDetail.productValue))
-                    return Object.values(this.tempDetail.productValue)
-                }
-                return []
-            },
-            selectedPro() {
-                if (this.tempPro.length > 0 && this.proId != '') {
-                    return this.tempPro.filter(item => item.unique == this.proId)[0]
-                }
-                return ''
-            }
+
         },
         async onPageScroll(e) {
             if (this.isLoading == 2 || this.isLoading == 0) {
@@ -459,14 +396,28 @@
         background-color: $u-bg-color;
     }
 
+
     .content {
         /* #ifdef APP-PLUS */
-        padding-bottom: 40 rpx;
+        padding-bottom: 40rpx;
         /* #endif */
         /* #ifdef MP-WEIXIN */
-        padding-bottom: 140 rpx;
+        padding-bottom: 140rpx;
         /* #endif */
-        padding-top: 20 rpx;
+        padding-top: 0rpx;
+
+
+    }
+
+    .main{
+      overflow: hidden;
+      margin: 0 10rpx;
+    }
+
+    .header-bg{
+      height: 400rpx;
+      background-color: #55ea55;
+      overflow: hidden
     }
 
 
@@ -501,10 +452,10 @@
         right: -50rpx;
     }
 
-    .current-city{
-        width: 90%;
-        margin:0 auto;
-        overflow: hidden;
+    .current-city {
+      width: 100%;
+      overflow: hidden;
+      margin: -20rpx 0 5rpx 0;
     }
     .left{
         float: left;
@@ -514,19 +465,19 @@
     }
 
     .scroll_top {
-        border-radius: 20 rpx;
+        border-radius: 20rpx;
         margin: 0 15 rpx;
         overflow: hidden;
-        margin-top: -120 rpx;
+        margin-top: -120rpx;
     }
 
     .swiper {
-        height: 240 rpx;
+        height: 240rpx;
     }
 
     .swip-img {
         width: 100%;
-        height: 240 rpx;
+        height: 240rpx;
     }
 
 
@@ -534,7 +485,7 @@
 
     .prefecture-block{
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         flex-wrap: wrap;
         flex-direction: row;
         align-items:center;
@@ -553,50 +504,65 @@
 
     .contact-block{
         overflow: hidden;
-        margin:50rpx auto
-
+        margin:50rpx auto;
+      border-radius: 10rpx;
     }
     .contact-item{
         overflow: hidden;
         height: auto;
-        background-color: darkgray;
+        background-color: #d8d8d8;
+       padding: 5rpx;
     }
+
+
 
     .more-option{
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         flex-wrap: wrap;
         flex-direction: row;
         align-items:center;
     }
 
     .more-option-item{
-        margin-top: 10rpx;
-        height: 25vw;
-        width: 24%  ;
-        border-radius: 10rpx;
-        background-color: darkgray;
-        padding:20rpx ;
+      text-align: center;
+      margin-top: 10rpx;
+      width: 20%  ;
+      border-radius: 10rpx;
+      padding:10rpx ;
+    }
+    .more-option-item .more-option-item-icon{
+      width: 100rpx;
+      height: 100rpx;
+    }
+    .more-option-item .more-option-item-text{
+     font-size: 10px;
     }
 
+    .create-order-slogan {
+      margin-top: 30rpx;
+      text-align: center;
+      font-size: 40rpx;
+      font-weight: bold;
+    }
     .create-order-circle {
-        height: 200rpx;
-        position: relative;
-        bottom: -200 rpx;
-
-        width: 300 rpx;
-        border-radius: 150 rpx;
-        margin: 0 auto;
+      width: 160rpx;
+      height: 160rpx;
+      position: relative;
+      background-color: #70f870;
+      border-radius: 80rpx;
+      margin: 20rpx auto;
+      overflow: hidden;
     }
 
     .create-order-inner {
         background-color: #09b609;
-        width: 180 rpx;
-        height: 180 rpx;
-        border-radius: 90 rpx;
+        width: 128rpx;
+        height: 128rpx;
+        border-radius: 64rpx;
         text-align: center;
-        line-height: 180 rpx;
-        font-size: 50 rpx;
+        line-height: 180rpx;
+        font-size: 50rpx;
         color: white;
 
         position: absolute;
