@@ -1,18 +1,21 @@
 package service
 
 import (
+	"fmt"
 	model "goApi/app/models"
 	"goApi/util/helper"
 	"net/http"
 )
 
-//用户登录
+//获取移动端 首页数据
 func GetHomeMobileData(gid int64) *helper.Response {
 	var resp = new(helper.Response)
 	var sysGroup model.SystemGroup
 	//轮播图
+	fmt.Println("--------------------")
+	fmt.Println(gid)
 	bannerList, _ := sysGroup.GetField(gid)
-
+	fmt.Println(bannerList)
 	//用户统计数据
 
 	//回收种类
@@ -24,7 +27,7 @@ func GetHomeMobileData(gid int64) *helper.Response {
 	dataMap["BannerList"] = bannerList
 
 	resp.Code = http.StatusBadRequest
-
+	resp.Data = dataMap
 	return resp
 
 }

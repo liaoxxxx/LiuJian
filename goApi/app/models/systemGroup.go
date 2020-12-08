@@ -21,8 +21,6 @@ func (SystemGroup) TableName() string {
 var systemGroup []SystemGroup
 
 func (systemGroup *SystemGroup) GetField(gid int64) (sysGroup SystemGroup, err error) {
-	if err = orm.Eloquent.Find(&systemGroup).Error; err != nil {
-		return
-	}
+	err = orm.Eloquent.Where(&SystemGroup{ID: gid}).Find(&sysGroup).Error
 	return
 }
