@@ -15,7 +15,7 @@ func Index(c *gin.Context) {
 
 //
 func Skeleton(c *gin.Context) {
-	var groupId = 88
-	resp := homeService.GetHomeMobileData(int64(groupId))
+
+	resp := homeService.GetHomeMobileData()
 	c.JSON(http.StatusOK, resp)
 }

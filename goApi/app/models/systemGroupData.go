@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	orm "goApi/app/models/database"
+	"gorm.io/gorm"
 )
 
 type SystemGroupData struct {
@@ -11,7 +12,7 @@ type SystemGroupData struct {
 	Value  string `json:"value"`
 	Sort   int32  `json:"sort"`
 	Status int8   `json:"status"`
-	//gorm.Model
+	gorm.Model
 }
 
 func (SystemGroupData) TableName() string {

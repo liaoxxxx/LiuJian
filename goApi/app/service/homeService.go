@@ -8,13 +8,14 @@ import (
 )
 
 //获取移动端 首页数据
-func GetHomeMobileData(gid int64) *helper.Response {
+func GetHomeMobileData() *helper.Response {
 	var resp = new(helper.Response)
 	var sysGroupData model.SystemGroupData
+	var bannerGroupId = 48
 	//轮播图
 	fmt.Println("--------------------")
-	fmt.Println(gid)
-	bannerList, _ := sysGroupData.GetList(gid)
+	fmt.Println(bannerGroupId)
+	bannerList, _ := sysGroupData.GetList(int64(bannerGroupId))
 	fmt.Println(bannerList)
 	//用户统计数据
 
