@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var Eloquent *gorm.DB
@@ -18,7 +19,9 @@ func init() {
 		DontSupportRenameIndex:    true,                                                                                                         // 重命名索引时采用删除并新建的方式，MySQL 5.7 之前的数据库和 MariaDB 不支持重命名索引
 		DontSupportRenameColumn:   true,                                                                                                         // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
 		SkipInitializeWithVersion: false,                                                                                                        // 根据当前 MySQL 版本自动配置
-	}), &gorm.Config{})
+	}), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info), //将会打印sql
+	})
 
 	if err != nil {
 		fmt.Printf("mysql connect error %v", err)

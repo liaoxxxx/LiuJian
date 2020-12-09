@@ -10,11 +10,11 @@ import (
 //获取移动端 首页数据
 func GetHomeMobileData(gid int64) *helper.Response {
 	var resp = new(helper.Response)
-	var sysGroup model.SystemGroup
+	var sysGroupData model.SystemGroupData
 	//轮播图
 	fmt.Println("--------------------")
 	fmt.Println(gid)
-	bannerList, _ := sysGroup.GetField(gid)
+	bannerList, _ := sysGroupData.GetList(gid)
 	fmt.Println(bannerList)
 	//用户统计数据
 
