@@ -15,7 +15,7 @@ func GetHomeMobileData() *helper.Response {
 	//轮播图
 	fmt.Println("--------------------")
 	fmt.Println(bannerGroupId)
-	bannerList, _ := sysGroupData.GetList(int64(bannerGroupId))
+	bannerList, _ := sysGroupData.GetValueList(int64(bannerGroupId))
 	fmt.Println(bannerList)
 	//用户统计数据
 

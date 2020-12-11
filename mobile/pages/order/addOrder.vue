@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<scroll-view class="position-absolute w-100 top-0" scroll-y="true" :style="scrollStyle">
+		<scroll-view class="position-absolute w-100 top-0 main" scroll-y="true" :style="scrollStyle">
 			<view>
         <view class="recycle-cate-block">
           <text>回收品类</text>
@@ -102,6 +102,12 @@
         </view>
       </view>
 		</scroll-view>
+
+
+
+    <br>
+    <br>
+    <br>
 
 		<!-- 底部 -->
 		<view class=" w-100  position-fixed bottom-0 bg-white font">
@@ -450,6 +456,11 @@ export default {
 	.page {
 		height: 100vh;
 	}
+
+  .main{
+    overflow: hidden;
+    margin-bottom: 300rpx;
+  }
   .recycle-cate-block{
     padding: 22rpx;
   }

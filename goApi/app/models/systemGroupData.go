@@ -29,15 +29,14 @@ func (SystemGroupData) TableName() string {
 }
 
 //列表
-func (systemGroupData *SystemGroupData) GetList(gid int64) (data map[string]interface{}, err error) {
-	sysGroupDataList := make([]SystemGroupData, 3)
+func (systemGroupData *SystemGroupData) GetValueList(gid int64) (sysGroupDataValueList []map[string]interface{}, err error) {
+	sysGroupDataList := make([]SystemGroupData, 10)
 	err = orm.Eloquent.Where(&SystemGroupData{Gid: gid}).Find(&sysGroupDataList).Error
-
-	for i := 0; i < len(sysGroupDataList); i++ {
-		var byt = []byte(sysGroupDataList[i].Value)
-		_ = json.Unmarshal(byt, &data)
-
-		fmt.Println(data)
+	dataValue := make(map[string]interface{})
+	for i := 0; i <= len(sysGroupDataList)-1; i++ {
+		fmt.Println(sysGroupDataList[i].ID)
+		_ = json.Unmarshal([]byte(sysGroupDataList[i].Value), &dataValue)
+		sysGroupDataValueList = append(sysGroupDataValueList, dataValue)
 	}
 	return
 

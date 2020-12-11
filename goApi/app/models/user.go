@@ -15,6 +15,13 @@ type User struct {
 	gorm.Model
 }
 
+type UserStatInfo struct {
+	Uid           int64
+	Income        float64
+	Integral      float64
+	RecycleWeight float64
+}
+
 func (User) TableName() string {
 	return "eb_user"
 }
@@ -90,5 +97,19 @@ func (uesr *User) Destroy(id int64) (Result User, err error) {
 		return
 	}
 	Result = *uesr
+	return
+}
+
+//删除数据
+func (uesr *User) GetStateInfo(uid int64) (Result UserStatInfo, err error) {
+
+	if err = orm.Eloquent.Select([]string{"id"}).First(&uesr, uid).Error; err != nil {
+		return
+	}
+
+	if err = orm.Eloquent.Delete(&uesr).Error; err != nil {
+		return
+	}
+
 	return
 }
