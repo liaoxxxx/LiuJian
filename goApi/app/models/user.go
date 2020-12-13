@@ -16,10 +16,10 @@ type User struct {
 }
 
 type UserStatInfo struct {
-	Uid           int64
-	Income        float64
-	Integral      float64
-	RecycleWeight float64
+	Uid             int64
+	RecycleIncome   float64
+	RecycleIntegral float64
+	RecycleWeight   float64
 }
 
 func (User) TableName() string {
@@ -101,15 +101,8 @@ func (uesr *User) Destroy(id int64) (Result User, err error) {
 }
 
 //删除数据
-func (uesr *User) GetStateInfo(uid int64) (Result UserStatInfo, err error) {
+func (uesr *User) GetStateInfo(uid int64) (UserStatInfo UserStatInfo, err error) {
 
-	if err = orm.Eloquent.Select([]string{"id"}).First(&uesr, uid).Error; err != nil {
-		return
-	}
-
-	if err = orm.Eloquent.Delete(&uesr).Error; err != nil {
-		return
-	}
-
+	//UserStatInfo=
 	return
 }

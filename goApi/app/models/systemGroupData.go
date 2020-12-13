@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"fmt"
 	orm "goApi/app/models/database"
 	"gorm.io/gorm"
 )
@@ -34,7 +33,6 @@ func (systemGroupData *SystemGroupData) GetValueList(gid int64) (sysGroupDataVal
 	err = orm.Eloquent.Where(&SystemGroupData{Gid: gid}).Find(&sysGroupDataList).Error
 	dataValue := make(map[string]interface{})
 	for i := 0; i <= len(sysGroupDataList)-1; i++ {
-		fmt.Println(sysGroupDataList[i].ID)
 		_ = json.Unmarshal([]byte(sysGroupDataList[i].Value), &dataValue)
 		sysGroupDataValueList = append(sysGroupDataValueList, dataValue)
 	}
