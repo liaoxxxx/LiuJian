@@ -90,7 +90,6 @@ func Destroy(c *gin.Context) {
 func Login(c *gin.Context) {
 	phone := c.PostForm("phone")
 	password := c.PostForm("password")
-
 	resp := USerService.Login(phone, password)
 	c.JSON(http.StatusOK, resp)
 
@@ -100,5 +99,14 @@ func UserInfo(c *gin.Context) {
 	token := c.GetHeader("token")
 
 	resp := USerService.UserInfo(token)
+	c.JSON(http.StatusOK, resp)
+}
+
+//删除数据
+func GetStateInfo(c *gin.Context) {
+	//用户统计数据
+	uid, _ := c.Get("uid")
+	userId := uid.(int64)
+	resp := USerService.GetStateInfo(userId)
 	c.JSON(http.StatusOK, resp)
 }

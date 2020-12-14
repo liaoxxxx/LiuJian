@@ -12,9 +12,11 @@ import (
 func Login(phone string, password string) *helper.Response {
 	var resp = new(helper.Response)
 	var user model.User
-	userOne, res := user.FindByPhone(phone)
-
-	if res.RowsAffected < 1 {
+	userOne, err := user.FindByPhone(phone)
+	fmt.Println("fmt.Println(userOne)-------------------")
+	fmt.Println(userOne.ID)
+	fmt.Println(err)
+	if userOne.ID < 1 {
 
 		resp.Code = http.StatusBadRequest
 		resp.Msg = "未注册的用户"
@@ -23,6 +25,8 @@ func Login(phone string, password string) *helper.Response {
 	}
 	//md5 加密后的密码
 	pwdMd5 := GetMd5Pwd(password, userOne.Salt)
+	fmt.Println(pwdMd5)
+	fmt.Println(userOne.Password)
 	if strings.Compare(pwdMd5, userOne.Password) == 0 {
 		jwtTool := helper.NewJWT()
 		userClaims := helper.CustomClaims{ID: userOne.ID, Phone: userOne.Phone, Name: userOne.Username}
@@ -55,9 +59,9 @@ func UserInfo(token string) *helper.Response {
 	fmt.Println(userClaims.ID)
 	fmt.Println("++++++++++++++++++++++++++++++")
 
-	userOne, res := user.Find(userClaims.ID)
+	userOne, err := user.Find(userClaims.ID)
 
-	if res.RowsAffected < 1 {
+	if err != nil {
 		resp.Code = http.StatusBadRequest
 		resp.Msg = "未注册的用户"
 
@@ -79,6 +83,17 @@ func UserInfo(token string) *helper.Response {
 获取md5加密后的密码
 */
 func GetMd5Pwd(password string, salt string) (md5Pwd string) {
-	fmt.Println(password + salt)
 	return helper.MD5(password + salt)
+}
+func GetStateInfo(uid int64) *helper.Response {
+
+	var userModel model.User
+	var resp = new(helper.Response)
+
+	userStatInfo, _ := userModel.GetStateInfo(uid)
+	dataMap := make(map[string]interface{}, 2)
+	dataMap["UserStatInfo"] = userStatInfo
+	resp.Data = dataMap
+	return resp
+
 }

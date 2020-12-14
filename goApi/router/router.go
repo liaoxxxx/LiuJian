@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	. "goApi/app/controller"
-	"goApi/app/midleware"
+	"goApi/app/middleware"
 )
 
 var router *gin.Engine
@@ -19,8 +19,9 @@ func InitRouter() *gin.Engine {
 		userGroup.POST("/login", Login)
 	}
 	// 中间件
-	userGroup.Use(midleware.UserAuth())
+	userGroup.Use(middleware.UserAuth())
 	{
+		userGroup.POST("/statInfo", GetStateInfo)
 		userGroup.POST("/userInfo", UserInfo)
 	}
 

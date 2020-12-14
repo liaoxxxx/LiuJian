@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	homeService "goApi/app/service"
 	"net/http"
@@ -15,7 +16,8 @@ func Index(c *gin.Context) {
 
 //
 func Skeleton(c *gin.Context) {
-
-	resp := homeService.GetHomeMobileData()
+	uid, _ := c.Get("uid")
+	fmt.Println(uid)
+	resp := homeService.GetHomeMobileData(2)
 	c.JSON(http.StatusOK, resp)
 }

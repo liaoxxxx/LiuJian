@@ -7,18 +7,21 @@ import (
 )
 
 type User struct {
-	ID       int64  `gorm:"primaryKey;autoIncrement:true"`
-	Username string `json:"username"` // 列名为 `username`
-	Password string `json:"password"` // 列名为 `password`
-	Phone    string `json:"phone"`
-	Salt     string `json:"salt"`
+	ID              int64   `gorm:"primaryKey;autoIncrement:true"`
+	Username        string  `json:"username"` // 列名为 `username`
+	Password        string  `json:"password"` // 列名为 `password`
+	Phone           string  `json:"phone"`
+	Salt            string  `json:"salt"`
+	RecycleIncome   float64 `json:"recycle_income"`
+	RecycleIntegral int64   `json:"recycle_integral"`
+	RecycleWeight   float64 `json:"recycle_weight"`
 	gorm.Model
 }
 
 type UserStatInfo struct {
 	Uid             int64
 	RecycleIncome   float64
-	RecycleIntegral float64
+	RecycleIntegral int64
 	RecycleWeight   float64
 }
 
@@ -65,10 +68,10 @@ func (uesr *User) Update(id int64) (updateUser User, err error) {
 }
 
 //单条数据
-func (uesr *User) Find(id int64) (user User, res *gorm.DB) {
+func (uesr *User) Find(id int64) (user User, err error) {
 
 	var users User
-	err := orm.Eloquent.Where(&User{ID: id}).Select("*").Unscoped().Find(&users)
+	err = orm.Eloquent.Where(&User{ID: id}).Select("*").Unscoped().Find(&users).Error
 	if err != nil {
 		fmt.Println(err.Error)
 	}
@@ -76,13 +79,10 @@ func (uesr *User) Find(id int64) (user User, res *gorm.DB) {
 }
 
 //单条数据
-func (uesr *User) FindByPhone(phone string) (user User, res *gorm.DB) {
+func (uesr *User) FindByPhone(phone string) (user User, err error) {
 
 	var users User
-	err := orm.Eloquent.Where(&User{Phone: phone}).Select("*").Unscoped().Find(&users)
-	if err != nil {
-		fmt.Println(err.Error)
-	}
+	err = orm.Eloquent.Where(&User{Phone: phone}).Select("*").Unscoped().Find(&users).Error
 	return users, err
 }
 
@@ -102,7 +102,9 @@ func (uesr *User) Destroy(id int64) (Result User, err error) {
 
 //删除数据
 func (uesr *User) GetStateInfo(uid int64) (UserStatInfo UserStatInfo, err error) {
-
-	//UserStatInfo=
+	userOne, _ := uesr.Find(uid)
+	UserStatInfo.RecycleIncome = userOne.RecycleIncome
+	UserStatInfo.RecycleIntegral = userOne.RecycleIntegral
+	UserStatInfo.RecycleWeight = userOne.RecycleWeight
 	return
 }
