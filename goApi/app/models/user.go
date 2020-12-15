@@ -29,14 +29,12 @@ func (User) TableName() string {
 	return "eb_user"
 }
 
-var user []User
-
 //添加
-func (uesr User) Insert() (id int64, err error) {
+func (user User) Insert() (id int64, err error) {
 
 	//添加数据
-	result := orm.Eloquent.Create(&uesr)
-	id = uesr.ID
+	result := orm.Eloquent.Create(&user)
+	id = user.ID
 	if result.Error != nil {
 		err = result.Error
 		return
@@ -45,15 +43,15 @@ func (uesr User) Insert() (id int64, err error) {
 }
 
 //列表
-func (uesr *User) Users() (users []User, err error) {
-	if err = orm.Eloquent.Find(&uesr).Error; err != nil {
+func (user *User) Users() (users []User, err error) {
+	if err = orm.Eloquent.Find(&user).Error; err != nil {
 		return
 	}
 	return
 }
 
 //修改
-func (uesr *User) Update(id int64) (updateUser User, err error) {
+func (user *User) Update(id int64) (updateUser User, err error) {
 
 	if err = orm.Eloquent.Select([]string{"id", "username"}).First(&updateUser, id).Error; err != nil {
 		return
@@ -61,48 +59,46 @@ func (uesr *User) Update(id int64) (updateUser User, err error) {
 
 	//参数1:是要修改的数据
 	//参数2:是修改的数据
-	if err = orm.Eloquent.Model(&updateUser).Updates(&uesr).Error; err != nil {
+	if err = orm.Eloquent.Model(&updateUser).Updates(&user).Error; err != nil {
 		return
 	}
 	return
 }
 
 //单条数据
-func (uesr *User) Find(id int64) (user User, err error) {
+func (user *User) Find(id int64) (userOne User, err error) {
 
-	var users User
-	err = orm.Eloquent.Where(&User{ID: id}).Select("*").Unscoped().Find(&users).Error
+	err = orm.Eloquent.Where(&User{ID: id}).Select("*").Unscoped().Find(&userOne).Error
 	if err != nil {
-		fmt.Println(err.Error)
+		fmt.Println(err.Error())
 	}
-	return users, err
+	return
 }
 
 //单条数据
-func (uesr *User) FindByPhone(phone string) (user User, err error) {
+func (user *User) FindByPhone(phone string) (userOne User, err error) {
 
-	var users User
-	err = orm.Eloquent.Where(&User{Phone: phone}).Select("*").Unscoped().Find(&users).Error
-	return users, err
-}
-
-//删除数据
-func (uesr *User) Destroy(id int64) (Result User, err error) {
-
-	if err = orm.Eloquent.Select([]string{"id"}).First(&uesr, id).Error; err != nil {
-		return
-	}
-
-	if err = orm.Eloquent.Delete(&uesr).Error; err != nil {
-		return
-	}
-	Result = *uesr
+	err = orm.Eloquent.Where(&User{Phone: phone}).Select("*").Unscoped().Find(&userOne).Error
 	return
 }
 
 //删除数据
-func (uesr *User) GetStateInfo(uid int64) (UserStatInfo UserStatInfo, err error) {
-	userOne, _ := uesr.Find(uid)
+func (user *User) Destroy(id int64) (Result User, err error) {
+
+	if err = orm.Eloquent.Select([]string{"id"}).First(&user, id).Error; err != nil {
+		return
+	}
+
+	if err = orm.Eloquent.Delete(&user).Error; err != nil {
+		return
+	}
+	Result = *user
+	return
+}
+
+//删除数据
+func (user *User) GetStateInfo(uid int64) (UserStatInfo UserStatInfo, err error) {
+	userOne, _ := user.Find(uid)
 	UserStatInfo.RecycleIncome = userOne.RecycleIncome
 	UserStatInfo.RecycleIntegral = userOne.RecycleIntegral
 	UserStatInfo.RecycleWeight = userOne.RecycleWeight
