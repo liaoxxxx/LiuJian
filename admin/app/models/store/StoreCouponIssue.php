@@ -1,0 +1,159 @@
+<?php
+/**
+ *
+ * @author: xaboy<365615158@qq.com>
+ * @day: 2018/01/18
+ */
+
+namespace app\models\store;
+
+
+use common\basic\BaseModel;
+use common\traits\ModelTrait;
+
+/**
+ * TODO 发布优惠券Model
+ * Class StoreCouponIssue
+ * @package app\models\store
+ */
+class StoreCouponIssue extends BaseModel
+{
+    /**
+     * 数据表主键
+     * @var string
+     */
+    protected $pk = 'id';
+
+    /**
+     * 模型名称
+     * @var string
+     */
+    protected $name = 'store_coupon_issue';
+
+    use ModelTrait;
+
+    public function used()
+    {
+        return $this->hasOne(StoreCouponIssueUser::class, 'issue_coupon_id', 'id')->field('issue_coupon_id');
+    }
+
+    public static function getIssueCouponList($uid, $limit, $page = 0)
+    {
+        $model = self::validWhere('A')->alias('A')->join('store_coupon_group B', 'A.gid = B.id')
+            ->field('A.id,B.title,B.coupon_price,B.expiry_time,B.start_time,B.type,B.limit_amount,B.product_range_type,B.notes')->order('B.sort DESC,A.id DESC');
+        if ($page) $list = $model->page((int)$page, (int)$limit);
+        else $list = $model->limit($limit);
+
+        if ($uid)
+            $model->with(['used' => function ($query) use ($uid) {
+                $query->where('uid', $uid);
+            }]);
+
+        $list = $list->select()->toArray();
+        foreach ($list as $k=>$v) {
+            $v['is_use'] = $uid ? isset($v->used) : false;
+            if(!$v['expiry_time']){
+                $v['start_time']= '';
+                $v['expiry_time'] = '不限时';
+            }else{
+                $v['start_time']=date('Y/m/d',$v['start_time']);
+                $v['expiry_time']=$v['expiry_time'] ? date('Y/m/d',$v['expiry_time']) : date('Y/m/d',time()+86400);
+            }
+            $v['coupon_price']=(int)$v['coupon_price'];
+            $list[$k] = $v;
+            $list[$k]['is_receive'] = $v['is_use']? 1:0;
+        }
+
+        if($list)
+            return $list;
+        else
+            return [];
+    }
+
+//    public static function getIssueCouponList($uid, $limit, $page = 0)
+//    {
+//        $model = self::validWhere('A')->alias('A')->join('store_coupon B', 'A.gid = B.id')
+//            ->field('A.*,B.title,B.coupon_price,B.coupon_time,B.type as product_range_type,B.use_min_price as limit_amount,B.product_id,B.category_id')->order('B.sort DESC,A.id DESC');
+//        if ($page) $list = $model->page((int)$page, (int)$limit);
+//        else $list = $model->limit($limit);
+//
+//        if ($uid)
+//            $model->with(['used' => function ($query) use ($uid) {
+//                $query->where('uid', $uid);
+//            }]);
+//
+//        $list = $list->select()->hidden(['is_del', 'status', 'used']);
+//        foreach ($list as $k=>$v) {
+//            $v['is_use'] = $uid ? isset($v->used) : false;
+//            if(!$v['end_time']){
+//                $v['start_time']= '';
+//                $list[$k]['expiry_time'] = '不限时';
+//            }else{
+//                $v['start_time']=date('Y/m/d',$v['start_time']);
+//                $list[$k]['expiry_time']=$v['end_time'] ? date('Y/m/d',$v['end_time']) : date('Y/m/d',time()+86400);
+//            }
+//            $v['coupon_price']=(int)$v['coupon_price'];
+//            $list[$k] = $v;
+//        }
+//
+//        if($list)
+//            return $list->toArray();
+//        else
+//            return [];
+//    }
+
+    /**
+     * @param string $prefix
+     * @return $this
+     */
+    public static function validWhere($prefix = '')
+    {
+        $model = new self;
+        if ($prefix) {
+            $model->alias($prefix);
+            $prefix .= '.';
+        }
+        $newTime = time();
+        return $model->where("{$prefix}status", 1)
+            ->where(function ($query) use ($newTime, $prefix) {
+                $query->where(function ($query) use ($newTime, $prefix) {
+                    $query->where("{$prefix}start_time", '<', $newTime)->where("{$prefix}end_time", '>', $newTime);
+                })->whereOr(function ($query) use ($prefix) {
+                    $query->where("{$prefix}start_time", 0)->where("{$prefix}end_time", 0);
+                });
+            })->where("{$prefix}is_del", 0)->where("{$prefix}remain_count > 0");
+    }
+
+
+    public static function issueUserCoupon($id, $uid)
+    {
+        $issueCouponInfo = self::validWhere()->where('id', $id)->find();
+        if (!$issueCouponInfo) return self::setErrorInfo('领取的优惠劵已领完或已过期!');
+        if (StoreCouponIssueUser::be(['uid' => $uid, 'issue_coupon_id' => $id]))
+            return self::setErrorInfo('已领取过该优惠劵!');
+        if ($issueCouponInfo['remain_count'] <= 0) return self::setErrorInfo('抱歉优惠卷已经领取完了！');
+        self::beginTrans();
+        $res1 = false != StoreCouponUser::addUserCoupon($uid, $issueCouponInfo['gid']);
+        $res2 = false != StoreCouponIssueUser::addUserIssue($uid, $id);
+        $res3 = true;
+        if ($issueCouponInfo['total_count'] > 0) {
+            $issueCouponInfo['remain_count'] -= 1;
+            $res3 = false !== $issueCouponInfo->save();
+        }
+        $res = $res1 && $res2 && $res3;
+        self::checkTrans($res);
+        return $res;
+    }
+
+    /**
+     * 优惠券名称
+     * @param $id
+     * @return mixed
+     */
+    public static function getIssueCouponTitle($id)
+    {
+        $cid = self::where('id', $id)->value('cid');
+        return StoreCoupon::where('id',$cid)->value('title');
+    }
+
+}
