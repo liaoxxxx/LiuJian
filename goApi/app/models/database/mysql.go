@@ -5,6 +5,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"time"
 )
 
 var Eloquent *gorm.DB
@@ -31,5 +32,19 @@ func init() {
 		fmt.Printf("database error %v", db.Error)
 	}
 
-	Eloquent = db
+	sqlDB, err := db.DB()
+	if sqlDB != nil {
+		//############### 设置连接池 ###############
+		// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
+		sqlDB.SetMaxIdleConns(10)
+
+		// SetMaxOpenConns sets the maximum number of open connections to the database.
+		sqlDB.SetMaxOpenConns(100)
+
+		// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
+		sqlDB.SetConnMaxLifetime(time.Hour)
+		Eloquent = db
+
+	}
+
 }
