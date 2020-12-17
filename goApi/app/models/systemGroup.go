@@ -1,9 +1,9 @@
 package models
 
 import (
-	"fmt"
+	"encoding/json"
 	orm "goApi/app/models/database"
-	"goApi/util/helper"
+	h "goApi/util/helper"
 	"gorm.io/gorm"
 )
 
@@ -28,6 +28,7 @@ type SystemGroupData4Value struct {
 	ConfigName string
 	Fields     string
 	Value      string
+	DataValue  interface{}
 }
 
 func (systemGroup *SystemGroup) GetField(gid int64) (sysGroup SystemGroup, err error) {
@@ -35,22 +36,27 @@ func (systemGroup *SystemGroup) GetField(gid int64) (sysGroup SystemGroup, err e
 	return
 }
 
-func (systemGroup *SystemGroup) GetDataByConfigName(configName string) (sysGroup []SystemGroupData4Value, err error) {
+/**
+ * @Description: 通过configName 获取对应的 数据
+ * @receiver systemGroup
+ * @param configName
+ * @return sysGroups
+ * @return err
+ */
+func (systemGroup *SystemGroup) GetDataByConfigName(configName string) (sysGroups []SystemGroupData4Value, err error) {
 
-	//var sysGroupDataList []SystemGroupData
-	//err = orm.Eloquent.Model(&sysGroup).Where(&SystemGroup{ConfigName: configName}).Find(&sysGroup).Error
-	//errStr:= orm.Eloquent.Model(&sysGroup).Association("SystemGroupDataList").Error
-	//sysGroupDataErr:=orm.Eloquent.Model(&sysGroup).Where(&sysGroup).Association("SystemGroupDataList").Find(&sysGroupDataList)
-	//fmt.Println("==============================")
-	//fmt.Println(sysGroupDataList)
-	//fmt.Println("========= err   =====================")
-	////fmt.Println(err)
-	//fmt.Println(sysGroupDataErr)
-	//fmt.Println("========= error   =====================")
-	joinStr := helper.JoinTable(systemGroup.TableName(), SystemGroupData{}.TableName(), "id", "gid", helper.InnerJoin)
+	selectFields := h.SelectFieldsBuild(
+		h.SelectFields{TableName: SystemGroup{}.TableName(), FieldList: []string{"id", "name", "info", "config_name"}},
+		h.SelectFields{TableName: SystemGroupData{}.TableName(), FieldList: []string{"value"}},
+	)
+	joinStr := h.JoinTable(SystemGroup{}.TableName(), SystemGroupData{}.TableName(), "id", "gid", h.InnerJoin)
 
-	err = orm.Eloquent.Model(&SystemGroup{}).Select("*").Joins(joinStr).Where(&SystemGroup{ConfigName: configName}).Scan(&sysGroup).Error
-	fmt.Println("-------------------------")
-	fmt.Println(joinStr)
+	err = orm.Eloquent.Model(&SystemGroup{}).Select(selectFields).Joins(joinStr).Where(&SystemGroup{ConfigName: configName}).Scan(&sysGroups).Error
+	if err == nil && len(sysGroups) > 0 {
+		for i := 0; i < len(sysGroups); i++ {
+			_ = json.Unmarshal([]byte(sysGroups[i].Value), &sysGroups[i].DataValue)
+			sysGroups[i].Value = ""
+		}
+	}
 	return
 }

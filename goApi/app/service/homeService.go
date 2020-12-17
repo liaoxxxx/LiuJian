@@ -10,18 +10,16 @@ import (
 func GetHomeMobileData(uid int64) *helper.Response {
 	var resp = new(helper.Response)
 	var sysGroup model.SystemGroup
-	var sysGroupData model.SystemGroupData
-	//var userModel model.User
-	var bannerGroupId = 48
+
 	dataMap := make(map[string]interface{}, 5)
 	//轮播图
-	bannerList, _ := sysGroupData.GetValueList(int64(bannerGroupId))
+	bannerList, _ := sysGroup.GetDataByConfigName("routine_home_banner")
 	dataMap["BannerList"] = bannerList
 	//回收种类
 
 	//滚动通知
 	rollNotice, _ := sysGroup.GetDataByConfigName("routine_home_roll_news")
-	dataMap["RollNotice"] = rollNotice
+	dataMap["RollNoticeList"] = rollNotice
 	//当前城市
 
 	resp.Code = http.StatusBadRequest
