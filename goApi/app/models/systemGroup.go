@@ -35,7 +35,7 @@ func (systemGroup *SystemGroup) GetField(gid int64) (sysGroup SystemGroup, err e
 	return
 }
 
-func (systemGroup *SystemGroup) GetDataByConfigName(configName string) (sysGroup SystemGroupData4Value, err error) {
+func (systemGroup *SystemGroup) GetDataByConfigName(configName string) (sysGroup []SystemGroupData4Value, err error) {
 
 	//var sysGroupDataList []SystemGroupData
 	//err = orm.Eloquent.Model(&sysGroup).Where(&SystemGroup{ConfigName: configName}).Find(&sysGroup).Error
@@ -47,9 +47,9 @@ func (systemGroup *SystemGroup) GetDataByConfigName(configName string) (sysGroup
 	////fmt.Println(err)
 	//fmt.Println(sysGroupDataErr)
 	//fmt.Println("========= error   =====================")
-	joinStr := helper.JoinTable(systemGroup.TableName(), SystemGroupData{}.TableName(), "id", "gid", helper.FullJoin)
+	joinStr := helper.JoinTable(systemGroup.TableName(), SystemGroupData{}.TableName(), "id", "gid", helper.InnerJoin)
 
-	err = orm.Eloquent.Model(&SystemGroup{}).Select(systemGroup.TableName() + ".config_name").Joins(joinStr).Where(&SystemGroup{ConfigName: configName}).Scan(&sysGroup).Error
+	err = orm.Eloquent.Model(&SystemGroup{}).Select("*").Joins(joinStr).Where(&SystemGroup{ConfigName: configName}).Scan(&sysGroup).Error
 	fmt.Println("-------------------------")
 	fmt.Println(joinStr)
 	return
