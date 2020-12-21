@@ -299,12 +299,20 @@ export default {
         methods: {
             ...mapActions(['getIndex']),
             ...mapMutations(['getFirstInfo']),
+            initSkeleton() {
+              let data =  this.$api.getSkeleton()
+              console.log('---------------------------------------------------')
+              console.log(res)
+              data.then(function (res){
+                console.log(res)
+              })
+            },
 
             imgErr(e) {
-                this.getFirstInfo({
-                    msg: 'imgErr',
-                    index: e
-                })
+              this.getFirstInfo({
+                msg: 'imgErr',
+                index: e
+              })
             },
 
             toPrefecture(url) {
@@ -377,10 +385,9 @@ export default {
                 windowHeight
             } = uni.getSystemInfoSync()
             this.windowHeight = windowHeight
-            let data = await this.$api.getIndex()
-            let goods = await this.$api.getProductList(`?page=${this.page}&limit=${10}&type=0`)
-
-            this.getGoodsList(goods)
+            let data = await this.$api.getSkeleton()
+            //let goods = await this.$api.getProductList(`?page=${this.page}&limit=${10}&type=0`)
+            //this.getGoodsList(goods)
             this.getIndex(data)
             this.loading = false
             setTimeout(() => {

@@ -69,8 +69,10 @@ let common = {
 	 * 首页
 	 * getIndex		获取首页数据
 	 */
-	getIndex() {
-		return request('/api/index', 'get');
+	getSkeleton(data) {
+
+		 // return  request.post('/home/skeleton', data)
+		return request('/home/skeleton', 'post');
 	},
 	/**
 	 *@author			前端小能手

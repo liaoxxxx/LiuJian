@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	orm "goApi/app/models/database"
 	h "goApi/util/helper"
-	"gorm.io/gorm"
 )
 
 type SystemGroup struct {
@@ -14,7 +13,7 @@ type SystemGroup struct {
 	ConfigName string `json:"config_name"`
 	Fields     string `json:"fields"`
 	//SystemGroupDataList []SystemGroupData `gorm:"ForeignKey:ID;AssociationForeignKey:Gid"`
-	gorm.Model
+	//gorm.Model
 }
 
 func (SystemGroup) TableName() string {

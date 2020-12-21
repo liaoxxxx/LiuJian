@@ -46,7 +46,7 @@ export default {
 		getIndex({
 			commit
 		}, res) {
-			if (res.status == 200) {
+			if (res.Status === 200) {
 				let {
 					data
 				} = res

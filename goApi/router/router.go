@@ -10,7 +10,7 @@ var router *gin.Engine
 
 func InitRouter() *gin.Engine {
 	router = gin.Default()
-
+	router.Use(middleware.Cors())
 	router.GET("/", Index)
 
 	// 简单的路由组:  user 模块
@@ -19,7 +19,7 @@ func InitRouter() *gin.Engine {
 		userGroup.POST("/login", Login)
 	}
 	// 中间件
-	userGroup.Use(middleware.UserAuth())
+	userGroup.Use(middleware.UserAuth(),middleware.Cors())
 	{
 		userGroup.POST("/statInfo", GetStateInfo)
 		userGroup.POST("/userInfo", UserInfo)
@@ -27,7 +27,7 @@ func InitRouter() *gin.Engine {
 
 	//################################################
 	// 简单的路由组:  user 模块
-	homeGroup := router.Group("/home")
+	homeGroup := router.Group("/home",middleware.Cors())
 	{
 		homeGroup.POST("/skeleton", Skeleton)
 	}

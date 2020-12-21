@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "dependencies": {
+    "axios": "^0.21.0",
     "uview-ui": "^1.8.2"
   },
   "devDependencies": {},

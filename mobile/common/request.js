@@ -11,10 +11,9 @@ function request(url, type, data, header) {
 			token: uni.getStorageSync('token') ? uni.getStorageSync('token') : ''
 		}
 	}).then(res => {
-		console.log(res)
-		if (res[1].statusCode == 200) {
-			if(res[1].data.status == 410000 || res[1].data.status == 410001) {
-				
+		if (res[1].data.Code === 200) {
+			if(res[1].data.Status === 410000 || res[1].data.Status === 410001) {
+
 				// uni.login({
 				// 	provider: 'weixin',
 				// 	success: async (res) => {
@@ -43,7 +42,7 @@ function request(url, type, data, header) {
 				// 				}
 				// 			}
 				// 		})
-						
+
 				// 	},
 				// 	fail(err) {
 				// 		uni.showModal({
@@ -54,11 +53,9 @@ function request(url, type, data, header) {
 				// 	}
 				// })
 				// uni.getUserInfo({
-					
+
 				// })
-			
-				
-				
+
 				uni.showToast({
 					title:'请先登陆',
 					icon: 'none'
@@ -71,7 +68,6 @@ function request(url, type, data, header) {
 						}
 					})
 				}, 200)
-			
 			}
 			let {data} = res[1]
 			return data
@@ -84,3 +80,48 @@ function request(url, type, data, header) {
 }
 
 export default request
+
+
+// service.js文件
+/*
+
+import Vue from 'vue'
+import axios from 'axios'
+import url_config from "./config";
+const axiosInstance = axios.create({
+	withCredentials: true,
+	crossDomain: true,
+	baseURL:url_config,
+	timeout: 6000
+})
+
+// request拦截器,在请求之前做一些处理
+axiosInstance.interceptors.request.use(
+	config => {
+		// if (store.state.token) {
+		//     // 给请求头添加user-token
+		//     config.headers["user-token"] = store.state.token;
+		// }
+		console.log('请求拦截成功')
+		return config;
+	},
+	error => {
+		console.log(error); // for debug
+		return Promise.reject(error);
+	}
+);
+
+//配置  成功后的拦截器
+axiosInstance.interceptors.response.use(res => {
+	if (res.data.status=== 200) {
+		return res.data
+	} else {
+		return Promise.reject(res.data.msg);
+	}
+}, error => {
+	return Promise.reject(error)
+})
+
+function request (){
+
+}*/
