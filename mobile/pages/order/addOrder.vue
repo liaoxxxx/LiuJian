@@ -2,8 +2,8 @@
 	<view class="page">
 		<scroll-view class="position-absolute w-100 top-0 main" scroll-y="true" :style="scrollStyle">
 			<view>
-        <view class="recycle-cate-block">
-          <text>回收品类</text>
+        <view class="recycle-cate-block first-layer-block">
+          <text class="first-layer-title">回收品类</text>
           <view class="recycle-cate-row">
             <view v-for="item in recycleCateList" class="recycle-cate-item">
               <view>
@@ -15,8 +15,8 @@
         </view>
 
         <halving-line bgColor="#eee"></halving-line>
-        <view>
-          <text>今日指导价</text>
+        <view class="first-layer-block">
+          <text class="first-layer-title">今日指导价</text>
           <u-cell-group v-for="gItem in guidePriceList" >
             <!-- <u-cell-item  title="夕阳无限好" arrow-direction="down">
                <u-icon slot="icon" size="32" name="search"></u-icon>
@@ -33,8 +33,8 @@
 
 
         <halving-line bgColor="#eee"></halving-line>
-        <view class="recycle-require-block">
-          <text>回收品类</text>
+        <view class="recycle-require-block first-layer-block">
+          <text class="first-layer-title">回收要求</text>
           <view class="recycle-require-row">
             <view v-for="item in requireList" class="recycle-require-item">
               <view>
@@ -45,9 +45,22 @@
           </view>
         </view>
 
+        <halving-line bgColor="#eee"></halving-line>
+        <view class="recycle-weight-block first-layer-block">
+          <text class="first-layer-title">预估重量</text>
+          <view class="recycle-weight-row">
+            <view v-for="item in weightList" class="recycle-weight-item">
+              <view>
+                {{item.text}}
+              </view>
+              <text>{{item.name}}</text>
+            </view>
+          </view>
+        </view>
+
 
         <halving-line bgColor="#eee"></halving-line>
-				<view class="flex flex-column">
+				<view class="flex flex-column first-layer-block">
 					<list-item v-if="orderInfo.productInfo" class="mb-3" :content="`共`+ orderInfo.productTotalNum +'件' " :wraStyle="{padding: '20rpx 20rpx 20rpx 40rpx '}"
 					 :contentFont="{fontSize: '26rpx', color: '#123', fontWeight: 400 }">
 						<view slot="left" class="flex flex-nowrap overflow-hidden">
@@ -72,10 +85,10 @@
 			</view>
       <halving-line bgColor="#eee"></halving-line>
 
-      <view class="px-2 py-1">
+      <view class="px-2 py-1 first-layer-block">
         <view class="flex flex-column px-2">
           <view class="mb-2">
-            <text class="font-sm">订单备注</text>
+            <text class="font-sm first-layer-title">订单备注</text>
           </view>
           <view>
             <textarea style="height: 150rpx; width: 700rpx;" class="font-sm" v-model="remark" placeholder="选填,给我留言吧～～"/>
@@ -110,16 +123,16 @@
     <br>
 
 		<!-- 底部 -->
-		<view class=" w-100  position-fixed bottom-0 bg-white font">
+		<view class="bottom-block w-100  position-fixed bottom-0 bg-white font">
       <view class="add-order-exceptions">
         <text>确认下单将自动默认同意《小胖纸上门回收免责条款》</text>
       </view>
       <view class="add-order-row">
         <view class="add-order-button">
-          <my-btn @handleTap="addOrder" content="立即预约"></my-btn>
+          <view @handleTap="addOrder" content="立即预约"></view>
         </view>
-        <view class="  add-order-button">
-          <my-btn @handleTap="addOrder"  content="公益赠送"></my-btn>
+        <view class="add-order-button">
+          <view @handleTap="addOrder"  content="公益赠送"></view>
         </view>
       </view>
 		</view>
@@ -242,10 +255,35 @@ export default {
           {
             id: 2,
             src: '/static/index/menu/menu_1.png',
-            name: '单次10KG以上',
+            name: '单次10KG起',
             url: '/pages/index/Special_Offer'
           }
         ],
+
+        weightList:[
+          {
+            id:1,
+            text: '10-50公斤',
+            type: 'between',
+            min: 10,
+            max: 50,
+          },
+          {
+            id:2,
+            text: '50-100公斤',
+            type: 'between',
+            min: 10,
+            max: 50,
+          },
+          {
+            id:3,
+            text: '100公斤以上',
+            type: 'more-than',
+            min: 10,
+            max: 50,
+          },
+        ],
+
 
         guidePriceList:[
           {
@@ -461,6 +499,16 @@ export default {
     overflow: hidden;
     margin-bottom: 300rpx;
   }
+
+
+  .first-layer-block{
+    padding: 10rpx;
+  }
+
+  .first-layer-block .first-layer-title{
+    font-size: 28rpx;
+    font-weight: bold;
+  }
   .recycle-cate-block{
     padding: 22rpx;
   }
@@ -486,9 +534,9 @@ export default {
     justify-content: space-around;
   }
   .recycle-require-item{
-    border: 1px solid #d2d2d2;
+    font-size: 20rpx;
     border-radius: 5rpx;
-    width: 30%;
+    width: 25%;
     padding: 20rpx;
   }
   .recycle-require-item img{
@@ -497,13 +545,57 @@ export default {
 
 
 
+  .recycle-weight-block{
+
+  }
+  .recycle-weight-row{
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+  }
+  .recycle-weight-item{
+    color: #1AAD19;
+    width: 28%;
+    background-color: #d8d8d8;
+    border-radius: 5rpx;
+    border:2rpx solid #1AAD19;
+    height: 64rpx;
+    line-height:56rpx;
+    padding: 5rpx;
+  }
+
+
+
+  .bottom-block{
+    padding: 20rpx;
+    position: fixed;
+    bottom: 0;
+  }
+
   .add-order-exceptions{
     width: 100%;
     display: block;
+    font-size: 24rpx;
+    text-align: center;
   }
   .add-order-row{
     width: 100%;
     display: flex;
     justify-content: space-between;
   }
+  .add-order-button{
+    color: #f2f2f2;
+    width: 42.5%;
+    height: 64rpx;
+    border-radius: 20rpx;
+  }
+  .add-order-button:nth-child(1){
+
+    background-color: #1AAD19;
+  }
+
+  .add-order-button:nth-child(2){
+    background-color: #1AAD19;
+  }
+
 </style>

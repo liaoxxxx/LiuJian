@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func Cors() gin.HandlerFunc {
@@ -29,9 +30,7 @@ func Cors() gin.HandlerFunc {
 
 		//放行所有OPTIONS方法
 		if method == "OPTIONS" {
-			c.JSON(200, gin.H{
-				"html": "<b>Hello, world!</b>",
-			})
+			c.AbortWithStatus(http.StatusNoContent)
 		}
 
 		//处理请求
