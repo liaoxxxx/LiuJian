@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	. "goApi/app/controller"
+	orderModule "goApi/app/controller/order"
 	"goApi/app/middleware"
 )
 
@@ -13,12 +14,12 @@ func InitRouter() *gin.Engine {
 	router.Use(middleware.Cors())
 	router.GET("/", Index)
 
-	// 简单的路由组:  user 模块
+	// 路由组:  user 模块
 	userGroup := router.Group("/user")
 	{
 		userGroup.POST("/login", Login)
 	}
-	// 中间件
+	//  之后使用中间件
 	userGroup.Use(middleware.UserAuth(),middleware.Cors())
 	{
 		userGroup.POST("/statInfo", GetStateInfo)
@@ -26,10 +27,19 @@ func InitRouter() *gin.Engine {
 	}
 
 	//################################################
-	// 简单的路由组:  user 模块
+	//  homeGroup 模块
 	homeGroup := router.Group("/home",middleware.Cors())
 	{
 		homeGroup.POST("/skeleton", Skeleton)
+	}
+
+	//################################################
+	//  homeGroup 模块
+	orderGroup := router.Group("/order",middleware.Cors())
+	{
+		orderGroup.POST("/create", orderModule.Create)
+		orderGroup.POST("/confirm", orderModule.Confirm)
+		orderGroup.POST("/addPageSkeleton", orderModule.AddSkeleton)
 	}
 
 	return router

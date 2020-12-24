@@ -51,8 +51,8 @@ let cart = {
 	getProduct(data) {
 		return request('/api/order/product', 'post', data)
 	},
-	createOrder(data) {
-		return request('/api/order/confirm', 'post', data)
+	create(data) {
+		return  request('/order/create', 'post', data)
 	},
 	cancelOrder(data) {
 		return request('/api/order/cancel', 'post', data)
@@ -60,9 +60,7 @@ let cart = {
 	delOrder(data) {
 		return request('/api/order/del', 'post', data)
 	},
-	getOrderDetail(data='') {
-		return request('/api/order/detail/' + data, 'get')
-	},
+
 	getRefund() {
 		return request('/api/order/refund/reason', 'get')
 	},

@@ -41,16 +41,16 @@
 
 
       <!-- banner轮播 -->
-      <view class="scroll_top">
+      <view class="scroll-top">
         <swiper class="swiper" indicator-dots="true" autoplay="true" circular="true">
-          <swiper-item class="swiper_item" v-for="(item,index) in indexBanner" :key="index">
+          <swiper-item class="swiper_item" v-for="(item,index) in indexBannerList" :key="index">
             <image class="swip-img" mode="widthFix"
-                   :src="item.pic.indexOf('http') != -1 ? item.pic : 'http://111.229.128.239:1003' + item.pic"></image>
+                   :src="item.pic"></image>
           </swiper-item>
         </swiper>
       </view>
 
-      <u-notice-bar mode="vertical" type="success" :is-circular="false" :list="noticeList"></u-notice-bar>
+      <u-notice-bar class="notice-bar" mode="vertical" type="success" :is-circular="false" :list="noticeList"></u-notice-bar>
 
       <view class="prefecture-block">
         <view class=" prefecture-item" v-for="(item,index) in prefectureList" :key="item.id"
@@ -146,51 +146,70 @@ export default {
 
                 currentCity:"南宁",
 
-                prefectureList: [
-                    {
-                        id: 0,
-                        src: '/static/index/menu/menu_4.png',
-                        name: '废纸',
-                        subtitle: '杂纸，纯黄纸',
-                        url: '',
-                        remainder:0,
-                        backgroundColor:"#ffc728"
-                    },
-                    {
-                        id: 1,
-                        src: '/static/index/menu/menu_2.png',
-                        name: '塑料',
-                        subtitle: '塑料瓶，塑料杯',
-                        url: '',
-                        remainder:1,
-                        backgroundColor:"#289bff"
-                    },
-                    {
-                        id: 2,
-                        src: '/static/index/menu/menu_1.png',
-                        name: '金属',
-                        subtitle: '废旧不锈钢',
-                        url: '/pages/index/Special_Offer',
-                        remainder:0,
-                        backgroundColor:"#a9a9fa"
-                    },
-                    {
-                        id: 3,
-                        src: '/static/index/menu/menu_1.png',
-                        name: '其他废品',
-                        subtitle: '家电，家具，衣物，玻璃',
-                        url: '/pages/index/Special_Offer',
-                        remainder:1,
-                        backgroundColor:"#84ff58"
-                    }
-                ],
-
-                statList: [
-                    {
-                        id: 0,
-                        name: '累计积分',
-                        url: '',
-                        count:10,
+              prefectureList: [
+                {
+                  id: 0,
+                  src: '/static/index/menu/menu_4.png',
+                  name: '废纸',
+                  subtitle: '杂纸，纯黄纸',
+                  url: '',
+                  remainder: 0,
+                  backgroundColor: "#ffc728"
+                },
+                {
+                  id: 1,
+                  src: '/static/index/menu/menu_2.png',
+                  name: '塑料',
+                  subtitle: '塑料瓶，塑料杯',
+                  url: '',
+                  remainder: 1,
+                  backgroundColor: "#289bff"
+                },
+                {
+                  id: 2,
+                  src: '/static/index/menu/menu_1.png',
+                  name: '金属',
+                  subtitle: '废旧不锈钢',
+                  url: '/pages/index/Special_Offer',
+                  remainder: 0,
+                  backgroundColor: "#a9a9fa"
+                },
+                {
+                  id: 3,
+                  src: '/static/index/menu/menu_1.png',
+                  name: '其他废品',
+                  subtitle: '家电，家具，衣物，玻璃',
+                  url: '/pages/index/Special_Offer',
+                  remainder: 1,
+                  backgroundColor: "#84ff58"
+                }
+              ],
+              indexBannerList: [
+                {
+                  id: 3,
+                  pic: '/static/banner/banner1.png',
+                  name: '其他废品',
+                  url: '/pages/index/Special_Offer',
+                  wap_url: '/pages/index/Special_Offer',
+                  remainder: 1,
+                  backgroundColor: "#84ff58"
+                },
+                {
+                  id: 4,
+                  pic: '/static/banner/banner2.jpg',
+                  name: '其他废品',
+                  url: '/pages/index/Special_Offer',
+                  wap_url: '/pages/index/Special_Offer',
+                  remainder: 1,
+                  backgroundColor: "#84ff58"
+                },
+              ],
+              statList: [
+                {
+                  id: 0,
+                  name: '累计积分',
+                  url: '',
+                  count: 10,
                         unit:'分'
                     },
                     {
@@ -348,7 +367,7 @@ export default {
 
         },
         async onPageScroll(e) {
-            if (this.isLoading == 2 || this.isLoading == 0) {
+            /*if (this.isLoading == 2 || this.isLoading == 0) {
                 return
             }
             if (this.scrollH == 0) {
@@ -377,7 +396,7 @@ export default {
                     })
                 }
 
-            }
+            }*/
         },
         async mounted() {
 
@@ -460,6 +479,8 @@ export default {
     }
 
     .current-city {
+      position: relative;
+      top: -5rpx;
       width: 100%;
       overflow: hidden;
       margin: -20rpx 0 5rpx 0;
@@ -471,11 +492,9 @@ export default {
         float: right;
     }
 
-    .scroll_top {
-        border-radius: 20rpx;
-        margin: 0 15 rpx;
-        overflow: hidden;
-        margin-top: -120rpx;
+    .scroll-top {
+      border-radius: 20rpx;
+      overflow: hidden;
     }
 
     .swiper {
@@ -488,7 +507,10 @@ export default {
     }
 
 
-
+    .notice-bar{
+      margin-top: 10rpx;
+      border-radius:5rpx ;
+    }
 
     .prefecture-block{
         display: flex;
@@ -510,14 +532,16 @@ export default {
 
 
     .contact-block{
+      padding: 10rpx;
         overflow: hidden;
         margin:50rpx auto;
       border-radius: 10rpx;
+      background-color: #d8d8d8;
     }
     .contact-item{
         overflow: hidden;
         height: auto;
-        background-color: #d8d8d8;
+
        padding: 5rpx;
     }
 
@@ -529,6 +553,10 @@ export default {
         flex-wrap: wrap;
         flex-direction: row;
         align-items:center;
+    }
+    .more-option  more-option-title{
+      font-size: 24rpx;
+      font-weight: bold;
     }
 
     .more-option-item{

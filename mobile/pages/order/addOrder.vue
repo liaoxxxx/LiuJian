@@ -18,11 +18,6 @@
         <view class="first-layer-block">
           <text class="first-layer-title">今日指导价</text>
           <u-cell-group v-for="gItem in guidePriceList" >
-            <!-- <u-cell-item  title="夕阳无限好" arrow-direction="down">
-               <u-icon slot="icon" size="32" name="search"></u-icon>
-               &lt;!&ndash; <u-badge count="99" :absolute="false" slot="right-icon"></u-badge> &ndash;&gt;
-               <u-switch slot="right-icon" v-model="false"></u-switch>
-             </u-cell-item>-->
             <u-cell-item   :title="gItem.name" :label="gItem.desc" :arrow="false">
               <view slot="right-icon" >
                 <text>{{gItem.num}}元/{{gItem.unit}}</text>
@@ -71,19 +66,8 @@
 							<text class="iconfont text-grey">&#xe708;</text>
 						</view>
 					</list-item>
-					<list-item v-else class="mb-3" content="共计1件" :wraStyle="{padding: '20rpx 20rpx 20rpx 40rpx '}" :contentFont="{fontSize: '26rpx', color: '#123', fontWeight: 400 }">
-						<view slot="left" class="flex">
-							<image v-if="goodsInfo" style="height: 150rpx; width: 150rpx" :src="goodsInfo.image" mode=""></image>
-						</view>
-						<view slot="right" class="flex-1 flex justify-center">
-							<text class="iconfont text-grey">&#xe708;</text>
-						</view>
-					</list-item>
 				</view>
-
-
 			</view>
-      <halving-line bgColor="#eee"></halving-line>
 
       <view class="px-2 py-1 first-layer-block">
         <view class="flex flex-column px-2">
@@ -114,28 +98,21 @@
           </text>
         </view>
       </view>
+      <halving-line bgColor="#eee"></halving-line>
+      <!-- 底部 -->
+      <view class="bottom-block     bg-white font">
+        <view class="add-order-exceptions-row">
+          <view>确认下单将自动默认同意
+            <text class="add-order-exceptions">《小胖纸上门回收免责条款》</text>
+          </view>
+        </view>
+        <view class="add-order-row">
+          <button @click="addOrder('giving')" class="add-order-button">公益赠送</button>
+          <button @click="addOrder('appointment')" class="add-order-button">立即预约</button>
+        </view>
+      </view>
 		</scroll-view>
 
-
-
-    <br>
-    <br>
-    <br>
-
-		<!-- 底部 -->
-		<view class="bottom-block w-100  position-fixed bottom-0 bg-white font">
-      <view class="add-order-exceptions">
-        <text>确认下单将自动默认同意《小胖纸上门回收免责条款》</text>
-      </view>
-      <view class="add-order-row">
-        <view class="add-order-button">
-          <view @handleTap="addOrder" content="立即预约"></view>
-        </view>
-        <view class="add-order-button">
-          <view @handleTap="addOrder"  content="公益赠送"></view>
-        </view>
-      </view>
-		</view>
 	</view>
 </template>
 
@@ -195,7 +172,6 @@ export default {
 				time: '',		// 配送时间	
 				cntitems: '',	// 商品数量
 				totalamount: '',	// 商品总金额
-				orderDetail: null,	// 从购物车跳转过来时的商品
 				orderInfo: {},
 
 
@@ -309,7 +285,7 @@ export default {
 		methods: {
 
 			// 确认订单 方法
-			async addOrder() {
+			async addOrder(type) {
 				// this.nowAddressKey  // 地址id
 				// this.integral  // 使用积分的值
 				// this.remark  //备注信息
@@ -318,7 +294,6 @@ export default {
 					orderKey: this.orderInfo.orderKey,
 					addressId: this.defAddress.id,
 					couponId: 0,
-					payType: this.payType[this.radioAddress].type,
 					useIntegral: this.integral ? this.integral : 0.0,
 					mark: this.remark,
 					shipping_type: 3,
@@ -326,22 +301,8 @@ export default {
 					real_name: '二驴',
 					phone: 13333333333
 				}
-				console.log(data)
-				let result = await this.$api.orderPay(data)
-				console.log(result)
+				let result =  this.$api.create(data)
 				let res = this.checkRes(result, '订单已创建～～')
-				
-				// this.userCenter.nickname		用户姓名
-				// this.userCenter.phone		用户手机号
-				
-				// couponId  优惠卷id
-				// payType 支付类型 暂不考虑  货到付款会有不同
-				// combinationId  拼团暂不涉及 or 普通商品
-				// pinkId 是否拼团 暂不涉及
-				// seckill_id 秒杀暂不涉及
-				// formId 表单id？？？
-				// bargainId 砍价id暂不涉及
-				// shipping_type 暂不涉及 取货方式
 			},
 			// 选择收货时间
 			checkTime(e) {
@@ -434,58 +395,10 @@ export default {
 			}
 		},
 		async onReady() {
-			/*this.$nextTick(() => {
-				let {windowHeight} = uni.getSystemInfoSync()
-				this.windowHeight = windowHeight
-			})
-			if (this.userCenter.uid == undefined) {
-				let userCenter = await this.$api.getUserCenter()
-				this.getUserCenter(userCenter)
-			}
-			let addressList = await this.$api.getAddressList('?page=0&limit=10')
-			let time = moment(Date.now() + 1800000).format('YYYY-MM-DD HH:mm')
-			this.time = time
-			let defaultAddress = await this.$api.getAddressDef()
-			this.getDefAddress(defaultAddress)
-			this.getAddressList(addressList)*/
+
 		},
 		onLoad(option) {
-			/*let {cartIds} = option
-			this.cartIds = cartIds
-			this.initOrderIfo()
-			
-			this.$nextTick(() => {
-				if(!this.defAddress) {
-					uni.showModal({
-						title: '提示',
-						content: '请完善地址信息',
-						success(res) {
-							 if (res.confirm) {
-							        uni.navigateTo({
-							        	url: '/pages/user/add_address'
-							        })
-							    }
-						}
-					})
-				}
-			})*/
-			
-			 // uni.getProvider({ 
-				//  service: 'payment',
-				//  success(data) {
-				//  	console.log(data)
-				//  }
-			 // })
-			 // uni.requestPayment({
-			 //     provider: 'alipay',
-			 //     orderInfo: 'orderInfo', //微信、支付宝订单数据
-			 //     success: function (res) {
-			 //         console.log('success:' + JSON.stringify(res));
-			 //     },
-			 //     fail: function (err) {
-			 //         console.log('fail:' + JSON.stringify(err));
-			 //     }
-			 // });
+
 		}
 	}
 </script>
@@ -508,6 +421,7 @@ export default {
   .first-layer-block .first-layer-title{
     font-size: 28rpx;
     font-weight: bold;
+    margin:20rpx 10rpx ;
   }
   .recycle-cate-block{
     padding: 22rpx;
@@ -519,7 +433,7 @@ export default {
     justify-content: space-around;
   }
   .recycle-cate-item{
-    border: 1px solid #d2d2d2;
+    font-size: 28rpx;
     border-radius: 5rpx;
     width: 20%;
     padding: 20rpx;
@@ -567,31 +481,39 @@ export default {
 
 
   .bottom-block{
-    padding: 20rpx;
-    position: fixed;
-    bottom: 0;
+    height: 160rpx;
+    padding: 16rpx auto;
   }
 
-  .add-order-exceptions{
+  .add-order-exceptions-row{
     width: 100%;
     display: block;
     font-size: 24rpx;
     text-align: center;
+    margin: 20rpx auto;
+  }
+  .add-order-exceptions{
+    color: #1aad19;
   }
   .add-order-row{
     width: 100%;
     display: flex;
+    margin: 10rpx 0 0 0;
     justify-content: space-between;
   }
   .add-order-button{
     color: #f2f2f2;
     width: 42.5%;
     height: 64rpx;
-    border-radius: 20rpx;
+    line-height: 64rpx;
+    border-radius: 8rpx;
+  }
+  .add-order-button uni-view{
+    color: #f2f2f2;
   }
   .add-order-button:nth-child(1){
 
-    background-color: #1AAD19;
+    background-color: #0d7cfc;
   }
 
   .add-order-button:nth-child(2){

@@ -64,24 +64,29 @@ export const vuexData = {
 				callback()
 			}, deep)
 		},
-		checkRes(res, msg) {
-			if (res.status == 200) {
-				if (msg) {
-					uni.showToast({
-						title: msg
-					})
+		checkRes(promise, msg) {
+			promise.then(function (res){
+				console.log('-----------------------')
+				console.log(res)
+				if (res.Status && res.Status === 200) {
+					if (msg) {
+						uni.showToast({
+							title: msg
+						})
+					} else {
+
+					}
+					return 200
 				} else {
-					
+					uni.showModal({
+						showCancel: false,
+						title: '提示',
+						content: res.msg
+					})
+					return false
 				}
-				return 200
-			} else {
-				uni.showModal({
-					showCancel: false,
-					title: '提示',
-					content: res.msg
-				})
-				return false
-			}
+			})
+
 		}
 	},
 	async created() {

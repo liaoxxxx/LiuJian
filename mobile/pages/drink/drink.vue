@@ -379,7 +379,7 @@
 				this.loading = false
 			},
 			checkRes(res, msg) {
-				if (res.status == 200) {
+				if (res.Status == 200) {
 					uni.showToast({
 						title: msg
 					})
