@@ -379,6 +379,9 @@
 				this.loading = false
 			},
 			checkRes(res, msg) {
+				console.log("--------------------------")
+				console.log(typeof res)
+				console.log(res)
 				if (res.Status == 200) {
 					uni.showToast({
 						title: msg

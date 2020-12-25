@@ -24,6 +24,8 @@ func JoinTable(mainTableName, joinTaleName, mainTableCondField, joinTableCondFie
 	return joinType + " JOIN `" + joinTaleName + "` ON `" + mainTableName + "`.`" + mainTableCondField + "` = `" + joinTaleName + "`.`" + joinTableCondField + "`  "
 }
 
+// @Description 拼接gorm   选取字段的sql Select()
+// @return string
 func SelectFieldsBuild(selectFields ...SelectFields) string {
 	var fieldStr string
 	for _, sfObj := range selectFields {
