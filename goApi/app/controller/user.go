@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	model "goApi/app/models"
-	USerService "goApi/app/service"
+	"goApi/app/service/user"
 	"net/http"
 	"strconv"
 )
@@ -90,7 +90,7 @@ func Destroy(c *gin.Context) {
 func Login(c *gin.Context) {
 	phone := c.PostForm("phone")
 	password := c.PostForm("password")
-	resp := USerService.Login(phone, password)
+	resp := user.Login(phone, password)
 	c.JSON(http.StatusOK, resp)
 
 }
@@ -98,7 +98,7 @@ func Login(c *gin.Context) {
 func UserInfo(c *gin.Context) {
 	token := c.GetHeader("token")
 
-	resp := USerService.UserInfo(token)
+	resp := user.UserInfo(token)
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -107,6 +107,6 @@ func GetStateInfo(c *gin.Context) {
 	//用户统计数据
 	uid, _ := c.Get("uid")
 	userId := uid.(int64)
-	resp := USerService.GetStateInfo(userId)
+	resp := user.GetStateInfo(userId)
 	c.JSON(http.StatusOK, resp)
 }

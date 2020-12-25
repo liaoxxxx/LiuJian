@@ -2,7 +2,7 @@ package order
 
 import (
 	"github.com/gin-gonic/gin"
-	service "goApi/app/service"
+	orderService "goApi/app/service/order"
 	"net/http"
 )
 
@@ -16,12 +16,10 @@ func Confirm(c *gin.Context) {
 //列表数据
 func Create(c *gin.Context) {
 
-	c.JSON(http.StatusOK, service.Create())
+	c.JSON(http.StatusOK, orderService.Create())
 }
 
 //列表数据
 func AddSkeleton(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"html": "<b>Hello, world!</b>",
-	})
+	c.JSON(http.StatusOK, orderService.AddSkeleton())
 }
