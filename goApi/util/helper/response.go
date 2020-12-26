@@ -1,9 +1,9 @@
 package helper
 
 type Response struct {
-	Code   int16
-	ErrMsg string
-	Status string
-	Msg    string
-	Data   interface{}
+	Code    int16
+	ErrCode int32
+	Status  string
+	Msg     string
+	Data    interface{}
 }

@@ -18,7 +18,7 @@ func Create() *helper.Response {
 	var resp = new(helper.Response)
 
 	///
-	resp.ErrMsg = "null"
+	resp.ErrCode = 0
 	resp.Msg = "success"
 	resp.Code = http.StatusOK
 	resp.Status = "ok"
@@ -35,7 +35,7 @@ func AddSkeleton() *helper.Response {
 	recycleCate, _ := sysGroup.GetDataByConfigName("user_client_home_recycle_category")
 	dataMap["RecycleCate"] = recycleCate
 
-	resp.ErrMsg = "null"
+	resp.ErrCode = 0
 	resp.Msg = "success"
 	resp.Code = http.StatusOK
 	resp.Status = "ok"

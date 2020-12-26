@@ -11,6 +11,15 @@ import (
 //用户登录
 func Login(phone string, password string) *helper.Response {
 	var resp = new(helper.Response)
+	if phone == "" || password == "" {
+
+		resp.Code = http.StatusOK
+		resp.Status = "error"
+		resp.Msg = "请输入手机号和密码"
+
+		return resp
+	}
+
 	var user model.User
 	userOne, err := user.FindByPhone(phone)
 	fmt.Println("fmt.Println(userOne)-------------------")

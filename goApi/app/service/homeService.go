@@ -25,17 +25,15 @@ func GetHomeMobileData(uid int64) *helper.Response {
 
 	//未登录的用户统计数据
 	//rollNotice, _ := sysGroup.GetDataByConfigName("routine_home_roll_news")
-	dataMap["UserStatInfo"] =model.UserStatInfo{}
-
+	dataMap["UserStatInfo"] = model.UserStatInfo{}
 
 	//其他功能
 	anotherOption, _ := sysGroup.GetDataByConfigName("user_client_home_another_option")
 	dataMap["AnotherOption"] = anotherOption
 
-
 	///
-	resp.ErrMsg="null"
-	resp.Msg="success"
+	resp.ErrCode = 0
+	resp.Msg = "success"
 	resp.Code = http.StatusOK
 	resp.Data = dataMap
 	resp.Status = "ok"
