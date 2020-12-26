@@ -5,7 +5,7 @@
         <view class="recycle-cate-block first-layer-block">
           <text class="first-layer-title">回收品类</text>
           <view class="recycle-cate-row">
-            <view v-for="item in recycleCateList" class="recycle-cate-item">
+            <view @click="selectRecycleCate(item,index)" v-for="(item ,index) in recycleCateList" :class="{'recycle-cate-item':true,'recycle-cate-selected':index===recycleCateSelectedIndex}" >
               <view>
                 <img :src="item.src" alt="">
               </view>
@@ -44,7 +44,7 @@
         <view class="recycle-weight-block first-layer-block">
           <text class="first-layer-title">预估重量</text>
           <view class="recycle-weight-row">
-            <view v-for="item in weightList" class="recycle-weight-item">
+            <view @click="selectRecycleWeight(item,index)" v-for="(item,index) in weightList" :class="{'recycle-weight-item':true,'recycle-weight-selected':index===recycleWeightSelectedIndex}"  >
               <view>
                 {{item.text}}
               </view>
@@ -93,7 +93,7 @@
           <view class="flex-2 flex justify-center align-center">
             <text class="iconfont text-grey" style="font-size: 50rpx;">&#xe60e;</text>
           </view>
-          <text class=" flex-6 flex align-center justify-between text-grey"
+          <text @click="setAddress" class=" flex-6 flex align-center justify-between text-grey"
                 style="text-decoration: underline; font-style: oblique;">前往设置收货地址>>
           </text>
         </view>
@@ -139,7 +139,7 @@ export default {
 					let arr = str.split(' ')
 					let date = arr[0]
 					let dateArr = date.split('-').slice(1)
-					if (nowDay[0] == dateArr[0] && nowDay[1] == dateArr[1]) {
+					if (nowDay[0] === dateArr[0] && nowDay[1] === dateArr[1]) {
 						let timeStr = dateArr[0] + '月' + dateArr[1] + '日 [今天] ' + arr[1] + '前送达'
 						return timeStr
 					} else {
@@ -164,12 +164,17 @@ export default {
 		data() {
 			return {
 				windowHeight: 0, // 滚动view高度
-				integral: '',	// 使用积分
-				billIndex: 0,	// 发票索引
-				billTypes: ['电子', '纸质'], // 发票类型
+
+
+        recycleCateSelectedIndex:0,
+        recycleCateSelectedItem:null,
+
+        recycleWeightSelectedIndex:0,
+        recycleWeightSelectedItem:null,
+
 				remark: '',		// 备注
-				radioAddress: 0,	// 支付方式索引
-				time: '',		// 配送时间	
+				time: '',		// 配送时间
+        recycleProductList:[],
 				cntitems: '',	// 商品数量
 				totalamount: '',	// 商品总金额
 				orderInfo: {},
@@ -323,8 +328,19 @@ export default {
 				uni.navigateTo({
 					url: '/pages/user/address_list'
 				})
-			}
-		},
+			},
+			//
+      selectRecycleCate(cateItem,index) {
+			  this.recycleCateSelectedItem=cateItem
+        this.recycleCateSelectedIndex=index
+        //console.log(index)
+      },
+      selectRecycleWeight(weightItem,index) {
+        this.recycleWeightSelectedItem=weightItem
+        this.recycleWeightSelectedIndex=index
+        //console.log(index)
+      },
+    },
 		computed: {
 			// 滚动
 			scrollStyle() {
@@ -339,60 +355,15 @@ export default {
 			// 收货地址
 			defAddress() {
 				let def = {}
-				if (this.orderInfo.addressInfo && this.nowAddressKey == '') {
-					def = this.orderInfo.addressInfo.filter(item => item.is_default == 1)[0]
+				if (this.orderInfo.addressInfo && this.nowAddressKey === '') {
+					def = this.orderInfo.addressInfo.filter(item => item.is_default === 1)[0]
 				} else if(this.orderInfo.addressInfo && this.orderInfo.addressInfo.length > 0) {
-					def = this.orderInfo.addressInfo.filter(item =>  item.id == this.nowAddressKey)[0]
+					def = this.orderInfo.addressInfo.filter(item =>  item.id === this.nowAddressKey)[0]
 				}
 				console.log(def)
 				return def
 			},
-			// 商品详情
-			goodsInfo() {
-				let orderDetail = uni.getStorageSync('orderDetail') // 购物车跳转时 会把详情添加到缓存
-				
-				if(orderDetail) { 	// 从购物车跳转过来
-					this.orderDetail = orderDetail
-					return orderDetail
-				}
-				if (typeof this.id == 'string' && this.id != '') { 	// 直接下单
-					let obj = this.goodsDetail
-					let proArr
-					if (obj.productAttr.length > 0) {
-						proArr = Object.values(obj.productValue)
-						this.detail.proArr = proArr
-					}
-					return this.detail
-				}
-			},
-			// 商品金额计算
-			money() {
-				let coupon = 0
-				let integral = 0
-				let arr = [
-					{
-						id: 0,
-						title: '商品金额',
-						content: this.orderInfo.totalPrice
-					},
-					{
-						id: 1,
-						title: '优惠',
-						content: this.orderInfo.discount
-					},
-					{
-						id: 2,
-						title: '优惠卷',
-						content: coupon
-					},
-					{
-						id: 3,
-						title: '积分',
-						content: integral
-					}
-				]
-				return arr
-			}
+
 		},
 		async onReady() {
 
@@ -433,6 +404,7 @@ export default {
     justify-content: space-around;
   }
   .recycle-cate-item{
+    box-sizing: border-box;
     font-size: 28rpx;
     border-radius: 5rpx;
     width: 20%;
@@ -441,6 +413,13 @@ export default {
   .recycle-cate-item img{
     width: 80%;
   }
+  .recycle-cate-selected{
+    border: 1rpx solid #1AAD19;
+  }
+
+
+
+
 
   .recycle-require-row{
     text-align: center;
@@ -472,12 +451,13 @@ export default {
     width: 28%;
     background-color: #d8d8d8;
     border-radius: 5rpx;
-    border:2rpx solid #1AAD19;
     height: 64rpx;
     line-height:56rpx;
     padding: 5rpx;
   }
-
+  .recycle-weight-selected{
+    border: 1rpx solid #1AAD19;
+  }
 
 
   .bottom-block{
