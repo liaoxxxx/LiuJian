@@ -1,6 +1,7 @@
 package order
 
 import (
+	"github.com/gin-gonic/gin"
 	model "goApi/app/models"
 	"goApi/util/helper"
 	"net/http"
@@ -14,9 +15,23 @@ func genOrderKey(uid int64) string {
 }
 
 //获取移动端 首页数据
-func Create() *helper.Response {
+func Create(c *gin.Context) *helper.Response {
 	var resp = new(helper.Response)
 
+	addressId := c.DefaultPostForm("addressId", "0")
+	isPreengage := c.DefaultPostForm("addressId", "0")
+	mark := c.DefaultPostForm("addressId", "0")
+	orderKey := c.DefaultPostForm("addressId", "0")
+	phone := c.DefaultPostForm("addressId", "0")
+	preengageTime := c.DefaultPostForm("preengageTime", "0")
+
+	if addressId == "0" || isPreengage == "0" || mark == "0" || orderKey == "0" || phone == "0" || preengageTime == "0" {
+		resp.ErrMsg = "参数不完整"
+		resp.Msg = "error"
+		resp.Code = http.StatusOK
+		resp.Status = "ok"
+		return resp
+	}
 	///
 	resp.ErrMsg = "null"
 	resp.Msg = "success"
