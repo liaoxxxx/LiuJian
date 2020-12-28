@@ -51,6 +51,25 @@
               <text>{{item.name}}</text>
             </view>
           </view>
+          <view class="recycle-weight-add-row">
+            <view>
+              <text>未满100公斤，不需要添加图片</text>
+            </view>
+            <view>
+              <button class="recycle-weight-add-btn">+ 添加品类</button>
+            </view>
+          </view>
+
+          <view class="recycle-weight-notice">
+            <view class="recycle-weight-notice-title">注意事项</view>
+            <view class="recycle-weight-notice-content">
+              <text>1. 因为回收成本原因，社区，写字楼，单元楼价格面谈</text>
+              <br>
+              <text>2. 小于10公斤暂不保证上门回收</text>
+              <br>
+              <text>3. 重量超过100公斤序提交照片供回收员参考</text>
+            </view>
+          </view>
         </view>
 
 
@@ -172,11 +191,22 @@ export default {
         recycleWeightSelectedIndex:0,
         recycleWeightSelectedItem:null,
 
-				remark: '',		// 备注
-				time: '',		// 配送时间
-        recycleProductList:[],
+        addressId:0,
+        orderKey:'a5244f9w8fr74bhj4b3b1e89d2v3hj2',
+
+				remark: '我是你爸爸',		// 备注
+				preengageTime: "2020-12-29 12:00",		// 配送时间
+        recycleProductList:[
+          {
+            weightCateId:1,
+            weightCateStr:'10 -50公斤',
+            photos:[
+                "aa.jpg",
+                "bb.jpg"
+            ]
+          }
+        ],
 				cntitems: '',	// 商品数量
-				totalamount: '',	// 商品总金额
 				orderInfo: {},
 
 
@@ -296,15 +326,14 @@ export default {
 				// this.remark  //备注信息
 				// this.radioAddress  //不确定后断要的值  支付渠道
 				let data = {
-					orderKey: this.orderInfo.orderKey,
-					addressId: this.defAddress.id,
-					couponId: 0,
-					useIntegral: this.integral ? this.integral : 0.0,
+					orderKey: this.orderKey,
+					addressId: this.addressId,
 					mark: this.remark,
-					shipping_type: 3,
-					take_time: this.time,
+					isPreengage: 1,
+          preengageTime:this.preengageTime,
 					real_name: '二驴',
-					phone: 13333333333
+					phone: 13333333333,
+          recycleProductList:this.recycleProductList
 				}
 				let result =  this.$api.create(data)
 				let res = this.checkRes(result, '订单已创建～～')
@@ -316,7 +345,7 @@ export default {
 				let defaultMstr = defaultM[defaultM.length - 1]
 				let resultM = result.split(':')
 				let resultMstr = resultM[resultM.length - 1]
-				if (resultMstr == 'undefined') {
+				if (resultMstr === 'undefined') {
 					resultM[resultM.length - 1] = defaultMstr
 					this.time = resultM.join(':')
 				} else {
@@ -354,14 +383,7 @@ export default {
 			},
 			// 收货地址
 			defAddress() {
-				let def = {}
-				if (this.orderInfo.addressInfo && this.nowAddressKey === '') {
-					def = this.orderInfo.addressInfo.filter(item => item.is_default === 1)[0]
-				} else if(this.orderInfo.addressInfo && this.orderInfo.addressInfo.length > 0) {
-					def = this.orderInfo.addressInfo.filter(item =>  item.id === this.nowAddressKey)[0]
-				}
-				console.log(def)
-				return def
+
 			},
 
 		},
@@ -457,6 +479,36 @@ export default {
   }
   .recycle-weight-selected{
     border: 1rpx solid #1AAD19;
+  }
+
+
+  .recycle-weight-add-row{
+    margin-top: 20rpx;
+    border-bottom: 1rpx solid #d8d8d8;
+    padding: 10rpx 10rpx 10rpx 10rpx;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .recycle-weight-add-btn{
+    width: 200rpx;
+    height: 64rpx;
+    line-height: 64rpx;
+    font-size: 28rpx;
+    box-sizing: border-box;
+  }
+  .recycle-weight-notice{
+    width: 100%;
+  }
+
+
+  .recycle-weight-notice-title {
+    color: #1aad19;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+  }
+  .recycle-weight-notice-content{
+    font-size:  24rpx
   }
 
 

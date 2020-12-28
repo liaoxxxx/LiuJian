@@ -68,7 +68,7 @@ export const vuexData = {
 			promise.then(function (res){
 				console.log('-----------------------')
 				console.log(res)
-				if (res.Status && res.Status === 200) {
+				if (res.Code && res.Code === 200) {
 					if (msg) {
 						uni.showToast({
 							title: msg
