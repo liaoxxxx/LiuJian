@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	. "goApi/app/controller"
 	orderModule "goApi/app/controller/order"
-	userAddrModule "goApi/app/controller/u"
+	userAddrModule "goApi/app/controller/user"
 	"goApi/app/middleware"
 )
 
@@ -18,23 +18,19 @@ func InitRouter() *gin.Engine {
 	// 路由组:  user 模块
 	userGroup := router.Group("/user")
 	{
-		userGroup.POST("/login", Login)
+		userGroup.POST("/login", userAddrModule.Login)
 	}
 	//  之后使用中间件
 	userGroup.Use(middleware.UserAuth(), middleware.Cors())
 	{
-		userGroup.POST("/statInfo", GetStateInfo)
-		userGroup.POST("/userInfo", UserInfo)
+		userGroup.POST("/statInfo", userAddrModule.GetStateInfo)
+		userGroup.POST("/userInfo", userAddrModule.UserInfo)
 	}
-
+	//
 	userAddrGroup := router.Group("/userAddr")
 	userAddrGroup.Use(middleware.UserAuth())
 	{
-		userAddrGroup.POST("/list", GetStateInfo)
-		userAddrGroup.POST("/create", UserInfo)
-		userAddrGroup.POST("/update", UserInfo)
-		userAddrGroup.POST("/del", UserInfo)
-		userAddrGroup.POST("/default", UserInfo)
+		userAddrGroup.POST("/list", userAddrModule.AddrList)
 	}
 
 	//################################################
