@@ -16,7 +16,7 @@ func Confirm(c *gin.Context) {
 //列表数据
 func Create(c *gin.Context) {
 
-	c.JSON(http.StatusOK, orderService.Create())
+	c.JSON(http.StatusOK, orderService.Create(c))
 }
 
 //列表数据
