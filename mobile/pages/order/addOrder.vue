@@ -190,7 +190,7 @@ export default {
 
         recycleWeightSelectedIndex:0,
         recycleWeightSelectedItem:null,
-
+        phone:"13077703579",
         addressId:0,
         orderKey:'a5244f9w8fr74bhj4b3b1e89d2v3hj2',
 
@@ -332,7 +332,7 @@ export default {
 					isPreengage: 1,
           preengageTime:this.preengageTime,
 					real_name: '二驴',
-					phone: 13333333333,
+					phone: this.phone,
           recycleProductList:this.recycleProductList
 				}
 				let result =  this.$api.create(data)

@@ -1,8 +1,11 @@
 package order
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	model "goApi/app/models"
+	errCode "goApi/app/enum"
+	orderPld "goApi/app/payload/order"
 	"goApi/util/helper"
 	"net/http"
 )
@@ -17,21 +20,13 @@ func genOrderKey(uid int64) string {
 //获取移动端 首页数据
 func Create(c *gin.Context) *helper.Response {
 	var resp = new(helper.Response)
+	var orderCreator orderPld.Creator
+	if err := helper.BindQuery(c, &orderCreator); err != nil {
 
-	addressId := c.DefaultPostForm("addressId", "0")
-	isPreengage := c.DefaultPostForm("addressId", "0")
-	mark := c.DefaultPostForm("addressId", "0")
-	orderKey := c.DefaultPostForm("addressId", "0")
-	phone := c.DefaultPostForm("addressId", "0")
-	preengageTime := c.DefaultPostForm("preengageTime", "0")
-
-	if addressId == "0" || isPreengage == "0" || mark == "0" || orderKey == "0" || phone == "0" || preengageTime == "0" {
-		resp.ErrMsg = "参数不完整"
-		resp.Msg = "error"
-		resp.Code = http.StatusOK
-		resp.Status = "ok"
-		return resp
+		return nil
 	}
+	fmt.Println(orderCreator.Mark)
+	fmt.Println(orderCreator.Phone)
 	///
 	resp.ErrCode = 0
 	resp.Msg = "success"
@@ -50,7 +45,7 @@ func AddSkeleton() *helper.Response {
 	recycleCate, _ := sysGroup.GetDataByConfigName("user_client_home_recycle_category")
 	dataMap["RecycleCate"] = recycleCate
 
-	resp.ErrCode = 0
+	resp.ErrCode = errCode.ParamUndefinedCode
 	resp.Msg = "success"
 	resp.Code = http.StatusOK
 	resp.Status = "ok"
