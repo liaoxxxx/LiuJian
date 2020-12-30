@@ -1,10 +1,9 @@
 package order
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	model "goApi/app/models"
 	errCode "goApi/app/enum"
+	models "goApi/app/models"
 	orderPld "goApi/app/payload/order"
 	"goApi/util/helper"
 	"net/http"
@@ -20,13 +19,13 @@ func genOrderKey(uid int64) string {
 //获取移动端 首页数据
 func Create(c *gin.Context) *helper.Response {
 	var resp = new(helper.Response)
-	var orderCreator orderPld.Creator
-	if err := helper.BindQuery(c, &orderCreator); err != nil {
-
+	var orderPld orderPld.Creator
+	if err := helper.BindQuery(c, &orderPld); err != nil {
 		return nil
 	}
-	fmt.Println(orderCreator.Mark)
-	fmt.Println(orderCreator.Phone)
+	var orderModel models.Order
+	buildByOrderCreatePld(&orderModel, orderPld)
+	_, _ = orderModel.Create(orderModel)
 	///
 	resp.ErrCode = 0
 	resp.Msg = "success"
@@ -38,7 +37,7 @@ func Create(c *gin.Context) *helper.Response {
 //获取移动端 首页数据
 func AddSkeleton() *helper.Response {
 	var resp = new(helper.Response)
-	var sysGroup model.SystemGroup
+	var sysGroup models.SystemGroup
 	var dataMap = make(map[string]interface{}, 3)
 	///
 	//回收种类
@@ -51,4 +50,19 @@ func AddSkeleton() *helper.Response {
 	resp.Status = "ok"
 	resp.Data = dataMap
 	return resp
+}
+
+/**
+ * @Description:
+ * @param orderModel
+ * @param orderPld
+ */
+func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator) {
+	orderModel.Mark = orderPld.Mark
+	orderModel.UserAddressId = orderPld.AddressId
+	orderModel.IsPreengage = orderPld.IsPreengage
+
+	//orderModel.TakeTime = orderPld.PreengageTime
+	orderModel.UserPhone = orderPld.Phone
+	orderModel.RealName = orderPld.RealName
 }
