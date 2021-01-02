@@ -1,20 +1,18 @@
 package order
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	errCode "goApi/app/enum"
+	orderEnum "goApi/app/enum"
 	models "goApi/app/models"
 	orderPld "goApi/app/payload/order"
 	"goApi/util/helper"
+	"math/rand"
 	"net/http"
+	"strconv"
+	"time"
 )
-
-//获取移动端 首页数据
-func genOrderKey(uid int64) string {
-	var key string
-	key = ""
-	return key
-}
 
 //获取移动端 首页数据
 func Create(c *gin.Context) *helper.Response {
@@ -58,6 +56,7 @@ func AddSkeleton() *helper.Response {
  * @param orderPld
  */
 func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator) {
+	orderModel.OrderId = GenOrderId(orderEnum.OrderTypeRecycleShort)
 	orderModel.Mark = orderPld.Mark
 	orderModel.UserAddressId = orderPld.AddressId
 	orderModel.IsPreengage = orderPld.IsPreengage
@@ -65,4 +64,20 @@ func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator) 
 	//orderModel.TakeTime = orderPld.PreengageTime
 	orderModel.UserPhone = orderPld.Phone
 	orderModel.RealName = orderPld.RealName
+}
+
+func GenOrderId(orderType string) string {
+	timeStr := time.Now().Unix()
+	fmt.Println(timeStr)
+
+	randStr := rand.Int63n(timeStr)
+	fmt.Println(randStr)
+	return orderType + strconv.FormatInt(timeStr, 10) + strconv.FormatInt(randStr, 10)
+}
+
+//获取移动端 首页数据
+func genOrderKey(uid int64) string {
+	var key string
+	key = ""
+	return key
 }
