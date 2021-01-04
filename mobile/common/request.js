@@ -11,8 +11,8 @@ function request(url, type, data, header) {
 			token: uni.getStorageSync('token') ? uni.getStorageSync('token') : ''
 		}
 	}).then(res => {
-		if (res[1].data.Code === 200) {
-			if(res[1].data.Status === 410000 || res[1].data.Status === 410001) {
+		if (res[1].data.code === 200) {
+			if(res[1].data.status === 410000 || res[1].data.status === 410001) {
 
 				// uni.login({
 				// 	provider: 'weixin',

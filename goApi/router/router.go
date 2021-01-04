@@ -46,7 +46,7 @@ func InitRouter() *gin.Engine {
 	{
 		orderGroup.POST("/create", orderModule.Create)
 		orderGroup.POST("/confirm", orderModule.Confirm)
-		orderGroup.POST("/addPageSkeleton", orderModule.AddSkeleton)
+		orderGroup.POST("/addSkeleton", orderModule.AddSkeleton)
 	}
 
 	return router

@@ -97,13 +97,13 @@
             <textarea style="height: 150rpx; width: 700rpx;" class="font-sm" v-model="remark" placeholder="选填,给我留言吧～～"/>
           </view>
         </view>
-        <list-item title="预约时间" :content="time | format">
+      <!--  <list-item title="预约时间" :content="time | format">
           <view slot="right" class="flex-1 flex justify-center">
             <picker-plus @confirm="checkTime" :startRule="nowTime" mode="YMDhm">
               <text class="iconfont text-grey">&#xe708;</text>
             </picker-plus>
           </view>
-        </list-item>
+        </list-item>-->
         <list-item title="预约地址">
         </list-item>
         <address-item showImg @handleTap="setAddress" v-if="addressList.length > 0" :address="defAddress">
@@ -136,78 +136,78 @@
 </template>
 
 <script>
-import tag from '@/components/tag.vue'
-import listItem from '@/components/list_item.vue'
-import pickerPlus from '@/components/e-picker-plus/e-picker-plus.vue'
-import {vuexData} from '@/common/commonMixin.js'
-import moment from '@/common/moment.js'
-import addressItem from '@/components/address_item.vue'
+  import tag from '@/components/tag.vue'
+  import listItem from '@/components/list_item.vue'
+  import pickerPlus from '@/components/e-picker-plus/e-picker-plus.vue'
+  import {vuexData} from '@/common/commonMixin.js'
+  import moment from '@/common/moment.js'
+  import addressItem from '@/components/address_item.vue'
 
-export default {
-		components: {
-			tag,
-			listItem,
-			pickerPlus,
-			addressItem
-		},
-		mixins: [vuexData],
-		filters: {
-			format(str) {
-				let nowDay = moment().format('YYYY-MM-DD').split(' ')[0].split('-').slice(1)
-				if (str) {
-					let arr = str.split(' ')
-					let date = arr[0]
-					let dateArr = date.split('-').slice(1)
-					if (nowDay[0] === dateArr[0] && nowDay[1] === dateArr[1]) {
-						let timeStr = dateArr[0] + '月' + dateArr[1] + '日 [今天] ' + arr[1] + '前送达'
-						return timeStr
-					} else {
-						let timeStr = dateArr[0] + '月' + dateArr[1] + '日 ' + arr[1] + '前送达'
-						return timeStr
-					}
-				} else {
-					return '-------'
-				}
-			},
-			checkImg(str) {
-				if (str) {
-					let check = str.startsWith('http')
-					if (check) {
-						return str
-					} else {
-						return 'http://111.229.128.239:1003' + str
-					}
-				}
-			}
-		},
-		data() {
-			return {
-				windowHeight: 0, // 滚动view高度
+  export default {
+    components: {
+      tag,
+      listItem,
+      pickerPlus,
+      addressItem
+    },
+    mixins: [vuexData],
+    filters: {
+      format(str) {
+        let nowDay = moment().format('YYYY-MM-DD').split(' ')[0].split('-').slice(1)
+        if (str) {
+          let arr = str.split(' ')
+          let date = arr[0]
+          let dateArr = date.split('-').slice(1)
+          if (nowDay[0] === dateArr[0] && nowDay[1] === dateArr[1]) {
+            let timeStr = dateArr[0] + '月' + dateArr[1] + '日 [今天] ' + arr[1] + '前送达'
+            return timeStr
+          } else {
+            let timeStr = dateArr[0] + '月' + dateArr[1] + '日 ' + arr[1] + '前送达'
+            return timeStr
+          }
+        } else {
+          return '-------'
+        }
+      },
+      checkImg(str) {
+        if (str) {
+          let check = str.startsWith('http')
+          if (check) {
+            return str
+          } else {
+            return 'http://111.229.128.239:1003' + str
+          }
+        }
+      }
+    },
+    data() {
+      return {
+        windowHeight: 0, // 滚动view高度
 
 
-        recycleCateSelectedIndex:0,
-        recycleCateSelectedItem:null,
+        recycleCateSelectedIndex: 0,
+        recycleCateSelectedItem: null,
 
-        recycleWeightSelectedIndex:0,
-        recycleWeightSelectedItem:null,
-        phone:"13077703579",
-        addressId:0,
-        orderKey:'a5244f9w8fr74bhj4b3b1e89d2v3hj2',
+        recycleWeightSelectedIndex: 0,
+        recycleWeightSelectedItem: null,
+        phone: "13077703579",
+        addressId: 0,
+        orderKey: 'a5244f9w8fr74bhj4b3b1e89d2v3hj2',
 
-				remark: '我是你爸爸',		// 备注
-				preengageTime: "2020-12-29 12:00",		// 配送时间
-        recycleProductList:[
+        remark: '我是你爸爸',		// 备注
+        preengageTime: "2020-12-29 12:00",		// 配送时间
+        recycleProductList: [
           {
-            weightCateId:1,
-            weightCateStr:'10 -50公斤',
-            photos:[
-                "aa.jpg",
-                "bb.jpg"
+            weightCateId: 1,
+            weightCateStr: '10 -50公斤',
+            photos: [
+              "aa.jpg",
+              "bb.jpg"
             ]
           }
         ],
-				cntitems: '',	// 商品数量
-				orderInfo: {},
+        cntitems: '',	// 商品数量
+        orderInfo: {},
 
 
         recycleCateList: [
@@ -217,8 +217,8 @@ export default {
             name: '废纸',
             subtitle: '杂纸，纯黄纸',
             url: '',
-            remainder:0,
-            backgroundColor:"#ffc728"
+            remainder: 0,
+            backgroundColor: "#ffc728"
           },
           {
             id: 1,
@@ -226,8 +226,8 @@ export default {
             name: '塑料',
             subtitle: '塑料瓶，塑料杯',
             url: '',
-            remainder:1,
-            backgroundColor:"#289bff"
+            remainder: 1,
+            backgroundColor: "#289bff"
           },
           {
             id: 2,
@@ -235,8 +235,8 @@ export default {
             name: '金属',
             subtitle: '废旧不锈钢',
             url: '/pages/index/Special_Offer',
-            remainder:0,
-            backgroundColor:"#a9a9fa"
+            remainder: 0,
+            backgroundColor: "#a9a9fa"
           },
           {
             id: 3,
@@ -244,8 +244,8 @@ export default {
             name: '其他废品',
             subtitle: '家电，家具，衣物，玻璃',
             url: '/pages/index/Special_Offer',
-            remainder:1,
-            backgroundColor:"#84ff58"
+            remainder: 1,
+            backgroundColor: "#84ff58"
           }
         ],
 
@@ -271,23 +271,23 @@ export default {
           }
         ],
 
-        weightList:[
+        weightList: [
           {
-            id:1,
+            id: 1,
             text: '10-50公斤',
             type: 'between',
             min: 10,
             max: 50,
           },
           {
-            id:2,
+            id: 2,
             text: '50-100公斤',
             type: 'between',
             min: 10,
             max: 50,
           },
           {
-            id:3,
+            id: 3,
             text: '100公斤以上',
             type: 'more-than',
             min: 10,
@@ -296,104 +296,110 @@ export default {
         ],
 
 
-        guidePriceList:[
+        guidePriceList: [
           {
             desc: '纯色纸箱，如家点包装箱',
             name: '黄纸',
             num: 1.3,
-            unit:'公斤'
+            unit: '公斤'
           },
           {
             desc: '纯色纸箱，如家点包装箱',
             name: '花纸',
             num: 1.8,
-            unit:'公斤'
-          },{
+            unit: '公斤'
+          }, {
             desc: '纯色纸箱，如家点包装箱',
             name: '统纸',
             num: 0.3,
-            unit:'公斤'
+            unit: '公斤'
           },
         ]
-			}
-		},
-		methods: {
+      }
+    },
+    methods: {
+      initSkeleton(data) {
 
-			// 确认订单 方法
-			async addOrder(type) {
-				// this.nowAddressKey  // 地址id
-				// this.integral  // 使用积分的值
-				// this.remark  //备注信息
-				// this.radioAddress  //不确定后断要的值  支付渠道
-				let data = {
-					orderKey: this.orderKey,
-					addressId: this.addressId,
-					mark: this.remark,
-					isPreengage: 1,
-          preengageTime:this.preengageTime,
-					real_name: '二驴',
-					phone: this.phone,
-          recycleProductList:this.recycleProductList
-				}
-				let result =  this.$api.create(data)
-				let res = this.checkRes(result, '订单已创建～～')
-			},
-			// 选择收货时间
-			checkTime(e) {
-				let {result} = e
-				let defaultM = this.time.split(':')
-				let defaultMstr = defaultM[defaultM.length - 1]
-				let resultM = result.split(':')
-				let resultMstr = resultM[resultM.length - 1]
-				if (resultMstr === 'undefined') {
-					resultM[resultM.length - 1] = defaultMstr
-					this.time = resultM.join(':')
-				} else {
-					this.time = result
-				}
-			},
-			// 设置收货地址
-			setAddress() {
-				uni.navigateTo({
-					url: '/pages/user/address_list'
-				})
-			},
-			//
-      selectRecycleCate(cateItem,index) {
-			  this.recycleCateSelectedItem=cateItem
-        this.recycleCateSelectedIndex=index
+       this
+
+      },
+
+      // 确认订单 方法
+      async addOrder(type) {
+        // this.nowAddressKey  // 地址id
+        // this.integral  // 使用积分的值
+        // this.remark  //备注信息
+        // this.radioAddress  //不确定后断要的值  支付渠道
+        let data = {
+          orderKey: this.orderKey,
+          addressId: this.addressId,
+          mark: this.remark,
+          isPreengage: 1,
+          preengageTime: this.preengageTime,
+          real_name: '二驴',
+          phone: this.phone,
+          recycleProductList: this.recycleProductList
+        }
+        let result = this.$api.create(data)
+        let res = this.checkRes(result, '订单已创建～～')
+      },
+      // 选择收货时间
+      checkTime(e) {
+        let {result} = e
+        let defaultM = this.time.split(':')
+        let defaultMstr = defaultM[defaultM.length - 1]
+        let resultM = result.split(':')
+        let resultMstr = resultM[resultM.length - 1]
+        if (resultMstr === 'undefined') {
+          resultM[resultM.length - 1] = defaultMstr
+          this.time = resultM.join(':')
+        } else {
+          this.time = result
+        }
+      },
+      // 设置收货地址
+      setAddress() {
+        uni.navigateTo({
+          url: '/pages/user/address_list'
+        })
+      },
+      //
+      selectRecycleCate(cateItem, index) {
+        this.recycleCateSelectedItem = cateItem
+        this.recycleCateSelectedIndex = index
         //console.log(index)
       },
-      selectRecycleWeight(weightItem,index) {
-        this.recycleWeightSelectedItem=weightItem
-        this.recycleWeightSelectedIndex=index
+      selectRecycleWeight(weightItem, index) {
+        this.recycleWeightSelectedItem = weightItem
+        this.recycleWeightSelectedIndex = index
         //console.log(index)
       },
     },
-		computed: {
-			// 滚动
-			scrollStyle() {
-				let height = this.windowHeight - uni.upx2px(120)
-				return `height: ${height}px`
-			},
-			// 现在的时间
-			nowTime() {
-				let time = moment(Date.now() + 1800000).format('YYYY-MM-DD HH:mm')
-				return time
-			},
-			// 收货地址
-			defAddress() {
+    computed: {
+      // 滚动
+      scrollStyle() {
+        let height = this.windowHeight - uni.upx2px(120)
+        return `height: ${height}px`
+      },
+      // 现在的时间
+      nowTime() {
+        let time = moment(Date.now() + 1800000).format('YYYY-MM-DD HH:mm')
+        return time
+      },
+      // 收货地址
+      defAddress() {
 
-			},
+      },
 
-		},
-		async onReady() {
+    },
+    async mounted() {
+       let data = await this.$api.addOrderSkeleton({})
+      this.initSkeleton(data)
+    },
+    onLoad(option) {
 
-		},
-		onLoad(option) {
-
-		}
-	}
+    }
+  }
 </script>
 
 <style scoped>

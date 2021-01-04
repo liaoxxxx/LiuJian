@@ -75,5 +75,5 @@ func GenOrderId(orderType string) string {
 //获取  订单 uniqueId
 func genUniqueId(uid int64) string {
 	var timeTamp int64 = time.Now().Unix()
-	return strconv.FormatInt(timeTamp, 10)
+	return  helper.MD5( strconv.FormatInt(uid,10) +strconv.FormatInt(timeTamp, 10))
 }

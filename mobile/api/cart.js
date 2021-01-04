@@ -54,6 +54,9 @@ let cart = {
 	create(data) {
 		return  request('/order/create', 'post', data)
 	},
+	addOrderSkeleton(data) {
+		return  request('/order/addSkeleton', 'post', data)
+	},
 	cancelOrder(data) {
 		return request('/api/order/cancel', 'post', data)
 	},

@@ -10,11 +10,11 @@ const (
 )
 
 type Response struct {
-	Code    int16
-	ErrCode int64
-	Status  string
-	Msg     string
-	Data    interface{}
+	Code    int16 `json:"code"`
+	ErrCode int64 `json:"errCode"`
+	Status  string `json:"status"`
+	Msg     string `json:"msg"`
+	Data    interface{}   `json:"data"`
 }
 
 func RespSuccess(message string, data interface{}) Response {

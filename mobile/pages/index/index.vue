@@ -405,6 +405,7 @@ export default {
             } = uni.getSystemInfoSync()
             this.windowHeight = windowHeight
             let data = await this.$api.getSkeleton()
+          console.log(data)
             //let goods = await this.$api.getProductList(`?page=${this.page}&limit=${10}&type=0`)
             //this.getGoodsList(goods)
             this.getIndex(data)
