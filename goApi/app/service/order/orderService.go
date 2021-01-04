@@ -3,7 +3,6 @@ package order
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	errCode "goApi/app/enum"
 	orderEnum "goApi/app/enum"
 	models "goApi/app/models"
 	orderPld "goApi/app/payload/order"
@@ -32,9 +31,9 @@ func Create(c *gin.Context) *helper.Response {
 	return resp
 }
 
-//获取移动端 首页数据
-func AddSkeleton() *helper.Response {
-	var resp = new(helper.Response)
+//确认回收订单的页面数据
+func AddSkeleton() helper.Response {
+
 	var sysGroup models.SystemGroup
 	var dataMap = make(map[string]interface{}, 3)
 	///
@@ -42,11 +41,9 @@ func AddSkeleton() *helper.Response {
 	recycleCate, _ := sysGroup.GetDataByConfigName("user_client_home_recycle_category")
 	dataMap["RecycleCate"] = recycleCate
 
-	resp.ErrCode = errCode.ParamUndefinedCode
-	resp.Msg = "success"
-	resp.Code = http.StatusOK
-	resp.Status = "ok"
-	resp.Data = dataMap
+	uniqueId := genUniqueId(2)
+	dataMap["UniqueId"] = uniqueId
+	resp := helper.RespSuccess("", dataMap)
 	return resp
 }
 
@@ -75,9 +72,8 @@ func GenOrderId(orderType string) string {
 	return orderType + strconv.FormatInt(timeStr, 10) + strconv.FormatInt(randStr, 10)
 }
 
-//获取移动端 首页数据
-func genOrderKey(uid int64) string {
-	var key string
-	key = ""
-	return key
+//获取  订单 uniqueId
+func genUniqueId(uid int64) string {
+	var timeTamp int64 = time.Now().Unix()
+	return strconv.FormatInt(timeTamp, 10)
 }
