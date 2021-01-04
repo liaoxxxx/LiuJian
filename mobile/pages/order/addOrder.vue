@@ -192,7 +192,7 @@
         recycleWeightSelectedItem: null,
         phone: "13077703579",
         addressId: 0,
-        orderKey: 'a5244f9w8fr74bhj4b3b1e89d2v3hj2',
+        unique: 'a5244f9w8fr74bhj4b3b1e89d2v3hj2',
 
         remark: '我是你爸爸',		// 备注
         preengageTime: "2020-12-29 12:00",		// 配送时间
@@ -318,9 +318,9 @@
       }
     },
     methods: {
-      initSkeleton(data) {
+      initSkeleton(dataBody) {
 
-       this
+        console.log(dataBody)
 
       },
 
@@ -331,7 +331,7 @@
         // this.remark  //备注信息
         // this.radioAddress  //不确定后断要的值  支付渠道
         let data = {
-          orderKey: this.orderKey,
+          unique: this.unique,
           addressId: this.addressId,
           mark: this.remark,
           isPreengage: 1,
@@ -393,8 +393,9 @@
 
     },
     async mounted() {
-       let data = await this.$api.addOrderSkeleton({})
-      this.initSkeleton(data)
+       let resp = await this.$api.addOrderSkeleton({})
+       let data= resp.data
+      this.unique=data.Unique
     },
     onLoad(option) {
 

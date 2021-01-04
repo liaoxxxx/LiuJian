@@ -6,29 +6,38 @@ import (
 	orderEnum "goApi/app/enum"
 	models "goApi/app/models"
 	orderPld "goApi/app/payload/order"
+	"goApi/app/repository"
 	"goApi/util/helper"
 	"math/rand"
-	"net/http"
 	"strconv"
 	"time"
 )
 
 //获取移动端 首页数据
-func Create(c *gin.Context) *helper.Response {
-	var resp = new(helper.Response)
+func Create(c *gin.Context) helper.Response {
 	var orderPld orderPld.Creator
+	var err error
 	if err := helper.BindQuery(c, &orderPld); err != nil {
-		return nil
+		resp := helper.RespError(orderEnum.ParamUndefinedMsg, orderEnum.ParamUndefinedCode, orderPld)
+		return resp
 	}
 	var orderModel models.Order
+	var orderRepo repository.OrderRepo
+	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
+	if orderModel.ID > 0 {
+		resp := helper.RespError(orderEnum.OrderExistedMsg, orderEnum.OrderExistedCode, orderModel)
+		return resp
+	}
+	if err != nil {
+		fmt.Println(err.Error())
+		resp := helper.RespError(err.Error(), orderEnum.OrderExistedCode, orderModel)
+		return resp
+	}
 	buildByOrderCreatePld(&orderModel, orderPld)
-	_, _ = orderModel.Create(orderModel)
+	_, _ = orderRepo.Create(orderModel)
 	///
-	resp.ErrCode = 0
-	resp.Msg = "success"
-	resp.Code = http.StatusOK
-	resp.Status = "ok"
-	return resp
+
+	return helper.Response{}
 }
 
 //确认回收订单的页面数据
@@ -42,7 +51,7 @@ func AddSkeleton() helper.Response {
 	dataMap["RecycleCate"] = recycleCate
 
 	uniqueId := genUniqueId(2)
-	dataMap["UniqueId"] = uniqueId
+	dataMap["Unique"] = uniqueId
 	resp := helper.RespSuccess("", dataMap)
 	return resp
 }
@@ -58,22 +67,20 @@ func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator) 
 	orderModel.UserAddressId = orderPld.AddressId
 	orderModel.IsPreengage = orderPld.IsPreengage
 
-	//orderModel.TakeTime = orderPld.PreengageTime
+	orderModel.PreengageTime = orderPld.PreengageTime
 	orderModel.UserPhone = orderPld.Phone
 	orderModel.RealName = orderPld.RealName
+	orderModel.Unique = orderPld.Unique
 }
 
 func GenOrderId(orderType string) string {
 	timeStr := time.Now().Unix()
-	fmt.Println(timeStr)
-
 	randStr := rand.Int63n(timeStr)
-	fmt.Println(randStr)
 	return orderType + strconv.FormatInt(timeStr, 10) + strconv.FormatInt(randStr, 10)
 }
 
 //获取  订单 uniqueId
 func genUniqueId(uid int64) string {
 	var timeTamp int64 = time.Now().Unix()
-	return  helper.MD5( strconv.FormatInt(uid,10) +strconv.FormatInt(timeTamp, 10))
+	return helper.MD5(strconv.FormatInt(uid, 10) + strconv.FormatInt(timeTamp, 10))
 }

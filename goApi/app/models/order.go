@@ -1,9 +1,5 @@
 package models
 
-import (
-	orm "goApi/app/models/database"
-)
-
 type Order struct {
 	ID            int64   `gorm:"primaryKey;autoIncrement:true"`
 	OrderId       string  `json:"order_id"`
@@ -25,9 +21,9 @@ type Order struct {
 	MerId   int64   `json:"mer_id"`
 	SiteId  int64   `json:"site_id"`
 
-	TakeTime int64 `json:"take_time"`
-	PayTime  int64 `json:"pay_time"`
-	AddTime  int64 `json:"add_time"`
+	PreengageTime string `json:"preengage_time"`
+	PayTime       int64  `json:"pay_time"`
+	AddTime       int64  `json:"add_time"`
 
 	IsChannel   int8    `json:"is_channel"`
 	IsDel       float64 `json:"is_del"`
@@ -38,17 +34,4 @@ type Order struct {
 
 func (Order) TableName() string {
 	return "eb_store_order"
-}
-
-//添加
-func (order Order) Create(orderItem Order) (id int64, err error) {
-
-	//添加数据
-	result := orm.Eloquent.Create(&order)
-	id = order.ID
-	if result.Error != nil {
-		err = result.Error
-		return
-	}
-	return
 }

@@ -2,13 +2,13 @@ package order
 
 // Demo demo对象
 type Creator struct {
-	AddressId int64
-	IsPreengage int8
-	Mark string
-	OrderKey string
-	Phone string `json:"phone" swaggo:"false,手机号"`
-	PreengageTime string
-	RealName string
+	AddressId          int64
+	IsPreengage        int8
+	Mark               string
+	Unique             string
+	Phone              string `json:"phone" swaggo:"false,手机号"`
+	PreengageTime      string
+	RealName           string
 	RecycleProductList []recycleProductList
 	/*RecordID  string    `json:"record_id" swaggo:"false,记录ID"`
 	Code      string    `json:"code" binding:"required" swaggo:"true,编号"`
@@ -20,7 +20,7 @@ type Creator struct {
 }
 
 type recycleProductList struct {
-	Photos  []string
-	weightCateId int64
+	Photos        []string
+	weightCateId  int64
 	weightCateStr string
 }
