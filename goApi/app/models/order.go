@@ -21,7 +21,7 @@ type Order struct {
 	MerId   int64   `json:"mer_id"`
 	SiteId  int64   `json:"site_id"`
 
-	PreengageTime string `json:"preengage_time"`
+	PreengageTime int64 `json:"preengage_time"`
 	PayTime       int64  `json:"pay_time"`
 	AddTime       int64  `json:"add_time"`
 

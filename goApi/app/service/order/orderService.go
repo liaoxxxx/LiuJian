@@ -24,7 +24,7 @@ func Create(c *gin.Context) helper.Response {
 	var orderModel models.Order
 	var orderRepo repository.OrderRepo
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
-	if orderModel.ID > 0 {
+	if orderModel.ID > 0 ||  len(orderModel.OrderId)>0 {
 		resp := helper.RespError(orderEnum.OrderExistedMsg, orderEnum.OrderExistedCode, orderModel)
 		return resp
 	}
@@ -37,7 +37,8 @@ func Create(c *gin.Context) helper.Response {
 	_, _ = orderRepo.Create(orderModel)
 	///
 
-	return helper.Response{}
+	resp := helper.RespSuccess("创建订单成功", orderModel)
+	return resp
 }
 
 //确认回收订单的页面数据
@@ -67,7 +68,9 @@ func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator) 
 	orderModel.UserAddressId = orderPld.AddressId
 	orderModel.IsPreengage = orderPld.IsPreengage
 
-	orderModel.PreengageTime = orderPld.PreengageTime
+	timeTmp ,_:= time.Parse("2006-01-02 15:04", orderPld.PreengageTime)
+
+	orderModel.PreengageTime=timeTmp.Unix()
 	orderModel.UserPhone = orderPld.Phone
 	orderModel.RealName = orderPld.RealName
 	orderModel.Unique = orderPld.Unique

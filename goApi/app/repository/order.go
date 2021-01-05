@@ -10,8 +10,8 @@ type OrderRepo struct {
 
 func (orderRepo OrderRepo) FindOrderByUnique(Unique string) (order models.Order, err error) {
 	err = orm.Eloquent.Model(models.Order{}).Where("unique", Unique).Find(&order).Error
-	if err != nil {
-		return models.Order{}, err
+	if err == nil {
+		return order, err
 	}
 	return models.Order{}, err
 }
