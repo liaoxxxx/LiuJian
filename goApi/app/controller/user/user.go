@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	model "goApi/app/models"
 	"goApi/app/service/user"
@@ -90,7 +91,7 @@ func Destroy(c *gin.Context) {
 func Login(c *gin.Context) {
 	phone := c.PostForm("phone")
 	password := c.PostForm("password")
-
+	fmt.Println("-------------------======-0----------------------")
 	resp := user.Login(phone, password)
 	c.JSON(http.StatusOK, resp)
 

@@ -24,7 +24,7 @@ func Create(c *gin.Context) helper.Response {
 	var orderModel models.Order
 	var orderRepo repository.OrderRepo
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
-	if orderModel.ID > 0 ||  len(orderModel.OrderId)>0 {
+	if orderModel.ID > 0 || len(orderModel.OrderId) > 0 {
 		resp := helper.RespError(orderEnum.OrderExistedMsg, orderEnum.OrderExistedCode, orderModel)
 		return resp
 	}
@@ -42,17 +42,21 @@ func Create(c *gin.Context) helper.Response {
 }
 
 //确认回收订单的页面数据
-func AddSkeleton() helper.Response {
-
+func AddSkeleton(userId int64) helper.Response {
+	var uid int64
 	var sysGroup models.SystemGroup
+	var userAddrRepo repository.UserAddress
 	var dataMap = make(map[string]interface{}, 3)
 	///
 	//回收种类
 	recycleCate, _ := sysGroup.GetDataByConfigName("user_client_home_recycle_category")
 	dataMap["RecycleCate"] = recycleCate
-
-	uniqueId := genUniqueId(2)
+	//订单生成前的标记
+	uniqueId := genUniqueId(int64(uid))
 	dataMap["Unique"] = uniqueId
+	//
+	addressList, _ := userAddrRepo.AddressList(1)
+	dataMap["AddressList"] = addressList
 	resp := helper.RespSuccess("", dataMap)
 	return resp
 }
@@ -68,9 +72,9 @@ func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator) 
 	orderModel.UserAddressId = orderPld.AddressId
 	orderModel.IsPreengage = orderPld.IsPreengage
 
-	timeTmp ,_:= time.Parse("2006-01-02 15:04", orderPld.PreengageTime)
+	timeTmp, _ := time.Parse("2006-01-02 15:04", orderPld.PreengageTime)
 
-	orderModel.PreengageTime=timeTmp.Unix()
+	orderModel.PreengageTime = timeTmp.Unix()
 	orderModel.UserPhone = orderPld.Phone
 	orderModel.RealName = orderPld.RealName
 	orderModel.Unique = orderPld.Unique

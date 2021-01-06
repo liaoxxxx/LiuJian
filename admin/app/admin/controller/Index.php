@@ -53,12 +53,9 @@ class Index extends AuthController
         //待发货数量
         $topData['orderDeliveryNum'] = StoreOrderModel::where('status', 0)
             ->where('paid', 1)
-            ->where('refund_status', 0)
             ->count();
         //退换货订单数
-        $topData['orderRefundNum'] = StoreOrderModel::where('paid', 1)
-            ->where('refund_status', 'IN', '1')
-            ->count();
+        $topData['orderRefundNum'] = StoreOrderModel::where('paid', 1)->count();
         //库存预警
         $replenishment_num = SystemConfig::getConfigValue('store_stock') > 0 ? SystemConfig::getConfigValue('store_stock') : 20;//库存预警界限
         $topData['stockProduct'] = StoreProduct::where('stock', '<=', $replenishment_num)->where('is_show', 1)->where('is_del', 0)->count();

@@ -21,5 +21,7 @@ func Create(c *gin.Context) {
 
 //列表数据
 func AddSkeleton(c *gin.Context) {
-	c.JSON(http.StatusOK, orderService.AddSkeleton())
+	uid, _ := c.Get("uid")
+	userId := uid.(int64)
+	c.JSON(http.StatusOK, orderService.AddSkeleton(userId))
 }
