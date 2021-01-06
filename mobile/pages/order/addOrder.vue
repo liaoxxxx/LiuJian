@@ -208,7 +208,7 @@
         ],
         cntitems: '',	// 商品数量
         orderInfo: {},
-
+        addressListTemp:[],
 
         recycleCateList: [
           {
@@ -319,9 +319,10 @@
     },
     methods: {
       initSkeleton(dataBody) {
-
-        console.log(dataBody)
-
+        this.unique=dataBody.Unique
+        if (dataBody.AddressList.length>0){
+          this.addressListTemp=dataBody.AddressList
+        }
       },
 
       // 确认订单 方法
@@ -395,7 +396,8 @@
     async mounted() {
        let resp = await this.$api.addOrderSkeleton({})
        let data= resp.data
-      this.unique=data.Unique
+      this.initSkeleton(data)
+
     },
     onLoad(option) {
 

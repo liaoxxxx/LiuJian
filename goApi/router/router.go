@@ -42,7 +42,7 @@ func InitRouter() *gin.Engine {
 
 	//################################################
 	//  order 模块
-	orderGroup := router.Group("/order")
+	orderGroup := router.Group("/order",middleware.UserAuth())
 	{
 		orderGroup.POST("/create", orderModule.Create)
 		orderGroup.POST("/confirm", orderModule.Confirm)

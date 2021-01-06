@@ -1,6 +1,7 @@
 package order
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	orderService "goApi/app/service/order"
 	"net/http"
@@ -21,7 +22,10 @@ func Create(c *gin.Context) {
 
 //列表数据
 func AddSkeleton(c *gin.Context) {
-	uid, _ := c.Get("uid")
+	uid, err := c.Get("uid")
+	if err == false {
+		fmt.Println(err)
+	}
 	userId := uid.(int64)
 	c.JSON(http.StatusOK, orderService.AddSkeleton(userId))
 }

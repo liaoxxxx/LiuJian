@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	model "goApi/app/models"
-	"goApi/app/service/user"
+	userPLd "goApi/app/payload/user"
+	userService "goApi/app/service/user"
+	"goApi/util/helper"
 	"net/http"
 	"strconv"
 )
@@ -89,18 +90,16 @@ func Destroy(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	phone := c.PostForm("phone")
-	password := c.PostForm("password")
-	fmt.Println("-------------------======-0----------------------")
-	resp := user.Login(phone, password)
+	var phoneLoginPld userPLd.PhoneLogin
+	helper.BindQuery(c ,&phoneLoginPld)
+	resp := userService.Login(phoneLoginPld)
 	c.JSON(http.StatusOK, resp)
-
 }
 
 func UserInfo(c *gin.Context) {
 	token := c.GetHeader("token")
 
-	resp := user.UserInfo(token)
+	resp := userService.UserInfo(token)
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -109,6 +108,6 @@ func GetStateInfo(c *gin.Context) {
 	//用户统计数据
 	uid, _ := c.Get("uid")
 	userId := uid.(int64)
-	resp := user.GetStateInfo(userId)
+	resp := userService.GetStateInfo(userId)
 	c.JSON(http.StatusOK, resp)
 }

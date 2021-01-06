@@ -19,7 +19,7 @@ let common = {
 	 * getRechargeMenu	获取会员套餐
 	 */
 	login(data) {
-		return request('/api/login', 'post', data);
+		return request('/user/login', 'post', data);
 	},
 	wxLogin(data) {
 		return request('/api/wechat/mp_auth', 'post', data);

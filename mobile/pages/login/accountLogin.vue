@@ -160,17 +160,18 @@
 				this.login()
 			},
 			async login() {
-				let res = await this.$api.login({account: this.phone, password: this.password})
-				if(res.msg == '账号或密码错误') {
+				let res = await this.$api.login({phone: this.phone, password: this.password})
+				if(res.msg === '账号或密码错误') {
 					uni.showModal({
 						title: '测试号',
 						content: '账号： 18275719628 ； 密码： jack1314'
 					})
 				} else {
 					let {token} = res.data
+          console.log(token)
 					uni.setStorageSync('token', token)
-					uni.uni.switchTab({
-						url: '/pages/index/index'
+          uni.navigateTo({
+						url: '/pages/index/index',
 					})
 				}
 			}

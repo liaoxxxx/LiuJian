@@ -75,12 +75,6 @@ func (user *User) Find(id int64) (userOne User, err error) {
 	return
 }
 
-//单条数据
-func (user *User) FindByPhone(phone string) (userOne User, err error) {
-
-	err = orm.Eloquent.Where(&User{Phone: phone}).Select("*").Unscoped().Find(&userOne).Error
-	return
-}
 
 //删除数据
 func (user *User) Destroy(id int64) (Result User, err error) {

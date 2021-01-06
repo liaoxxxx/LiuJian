@@ -2,38 +2,32 @@ package user
 
 import (
 	"fmt"
+	"goApi/app/enum"
 	model "goApi/app/models"
+	userPLd "goApi/app/payload/user"
+	"goApi/app/repository"
 	"goApi/util/helper"
 	"net/http"
 	"strings"
 )
 
 //用户登录
-func Login(phone string, password string) *helper.Response {
-	var resp = new(helper.Response)
-	if phone == "" || password == "" {
-
-		resp.Code = http.StatusOK
-		resp.Status = "error"
-		resp.Msg = "请输入手机号和密码"
-
+func Login(userLoginPld userPLd.PhoneLogin) helper.Response {
+	var resp  helper.Response
+	if userLoginPld.Phone == "" || userLoginPld.Password == "" {
+		resp=helper.RespError(enum.ParamUndefinedMsg+":请输入手机号和密码",enum.ParamUndefinedCode,userLoginPld)
 		return resp
 	}
 
-	var user model.User
-	userOne, err := user.FindByPhone(phone)
-	fmt.Println("fmt.Println(userOne)-------------------")
-	fmt.Println(userOne.ID)
-	fmt.Println(err)
+	var userRepo repository.UserRepo
+	userOne, _ := userRepo.FindByPhone(userLoginPld.Phone)
 	if userOne.ID < 1 {
-
 		resp.Code = http.StatusBadRequest
 		resp.Msg = "未注册的用户"
-
 		return resp
 	}
 	//md5 加密后的密码
-	pwdMd5 := GetMd5Pwd(password, userOne.Salt)
+	pwdMd5 := GetMd5Pwd(userLoginPld.Password, userOne.Salt)
 	fmt.Println(pwdMd5)
 	fmt.Println(userOne.Password)
 	if strings.Compare(pwdMd5, userOne.Password) == 0 {

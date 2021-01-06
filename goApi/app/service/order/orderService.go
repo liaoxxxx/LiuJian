@@ -43,19 +43,18 @@ func Create(c *gin.Context) helper.Response {
 
 //确认回收订单的页面数据
 func AddSkeleton(userId int64) helper.Response {
-	var uid int64
 	var sysGroup models.SystemGroup
-	var userAddrRepo repository.UserAddress
+	var userAddrRepo repository.UserAddressRepo
 	var dataMap = make(map[string]interface{}, 3)
 	///
 	//回收种类
 	recycleCate, _ := sysGroup.GetDataByConfigName("user_client_home_recycle_category")
 	dataMap["RecycleCate"] = recycleCate
 	//订单生成前的标记
-	uniqueId := genUniqueId(int64(uid))
+	uniqueId := genUniqueId(userId)
 	dataMap["Unique"] = uniqueId
 	//
-	addressList, _ := userAddrRepo.AddressList(1)
+	addressList, _ := userAddrRepo.AddressList(userId)
 	dataMap["AddressList"] = addressList
 	resp := helper.RespSuccess("", dataMap)
 	return resp
