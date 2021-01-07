@@ -402,23 +402,23 @@ HTML;
         else if ($status == 8)
             return $model;
         else if ($status == 0)//未支付
-            return $model->where($alert . 'paid', 0)->where($alert . 'status', 4)->where($alert . 'refund_status', 0)->where($alert . 'is_del', 0);
+            return $model->where($alert . 'paid', 0)->where($alert . 'status', 4)->where($alert . 'is_del', 0);
         else if ($status == 1)//已支付 未发货
-            return $model->where($alert . 'paid', 1)->where($alert . 'status', 0)->where($alert . 'refund_status', 0)->where($alert . 'is_del', 0)->where($alert . 'shipping_type', 3);
+            return $model->where($alert . 'paid', 1)->where($alert . 'status', 0)->where($alert . 'is_del', 0);
         else if ($status == 2)//已支付  待收货
-            return $model->where($alert . 'paid', 1)->where($alert . 'status', 1)->where($alert . 'refund_status', 0)->where($alert . 'is_del', 0)->where($alert . 'shipping_type', 3);
+            return $model->where($alert . 'paid', 1)->where($alert . 'status', 1)->where($alert . 'is_del', 0);
         else if ($status == 5)//已支付  待核销
-            return $model->where($alert . 'paid', 1)->where($alert . 'status', 0)->where($alert . 'shipping_type', 2)->where($alert . 'refund_status', 0)->where($alert . 'is_del', 0)->where($alert . 'shipping_type', 2);
+            return $model->where($alert . 'paid', 1)->where($alert . 'status', 0)->where($alert . 'is_del', 0)->where($alert . 'shipping_type', 2);
         else if ($status == 3)// 已支付  已收货  待评价
-            return $model->where($alert . 'paid', 1)->where($alert . 'status', 2)->where($alert . 'refund_status', 0)->where($alert . 'is_del', 0);
+            return $model->where($alert . 'paid', 1)->where($alert . 'status', 2)->where($alert . 'is_del', 0);
         else if ($status == 4)// 交易完成
-            return $model->where($alert . 'paid', 1)->where($alert . 'status', 3)->where($alert . 'refund_status', 0)->where($alert . 'is_del', 0);
+            return $model->where($alert . 'paid', 1)->where($alert . 'status', 3)->where($alert . 'is_del', 0);
         else if ($status == -1)//退款中
-            return $model->where($alert . 'paid', 1)->where($alert . 'refund_status', 1)->where($alert . 'is_del', 0);
+            return $model->where($alert . 'paid', 1)->where($alert . 'is_del', 0);
         else if ($status == -2)//已退款
-            return $model->where($alert . 'paid', 1)->where($alert . 'refund_status', 2)->where($alert . 'is_del', 0);
+            return $model->where($alert . 'paid', 1)->where($alert . 'is_del', 0);
         else if ($status == -3)//退款
-            return $model->where($alert . 'paid', 1)->where($alert . 'refund_status', 'in', '1,2')->where($alert . 'is_del', 0);
+            return $model->where($alert . 'paid', 1)->where($alert . 'is_del', 0);
         else if ($status == -4)//已删除
             return $model->where($alert . 'is_del', 1);
         else if ($status == -5)//已取消
