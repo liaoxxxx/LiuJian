@@ -106,7 +106,7 @@
         </list-item>-->
         <list-item title="预约地址">
         </list-item>
-        <address-item showImg @handleTap="setAddress" v-if="addressList.length > 0" :address="defAddress">
+        <address-item showImg @handleTap="setAddress" v-if="addressListTemp.length > 0" :address="defAddress">
         </address-item>
         <view v-else class="border rounded flex align-center justify-between py-5">
           <view class="flex-2 flex justify-center align-center">
@@ -206,10 +206,9 @@
             ]
           }
         ],
-        cntitems: '',	// 商品数量
         orderInfo: {},
-        addressListTemp:[],
-
+        addressListTemp:[], //用户的所有地址
+        defAddress:{},  //默认地址
         recycleCateList: [
           {
             id: 0,
@@ -322,6 +321,7 @@
         this.unique=dataBody.Unique
         if (dataBody.AddressList.length>0){
           this.addressListTemp=dataBody.AddressList
+          this.defAddress=this.addressListTemp[0]
         }
       },
 
@@ -387,10 +387,7 @@
         let time = moment(Date.now() + 1800000).format('YYYY-MM-DD HH:mm')
         return time
       },
-      // 收货地址
-      defAddress() {
 
-      },
 
     },
     async mounted() {
