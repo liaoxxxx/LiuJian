@@ -26,13 +26,13 @@ export default {
 	},
 	actions: {
 		getAddressList({commit}, res) {
-			if (res.status == 200) {
+			if (res.code === 200) {
 				let {data} = res
 				commit('getAddressList', data)
 			}
 		},
 		getDefAddress({commit}, res) {
-			if (res.status == 200) {
+			if (res.code === 200) {
 				let {data} = res
 				commit('getDefAddress', data)
 			}

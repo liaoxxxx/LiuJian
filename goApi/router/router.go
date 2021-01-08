@@ -30,7 +30,11 @@ func InitRouter() *gin.Engine {
 	userAddrGroup := router.Group("/userAddr")
 	userAddrGroup.Use(middleware.UserAuth())
 	{
-		userAddrGroup.POST("/list", userAddrModule.AddrList)
+		userAddrGroup.GET("/find", userAddrModule.AddrFind)
+		userAddrGroup.GET("/list", userAddrModule.AddrList)
+		userAddrGroup.GET("/update", userAddrModule.AddrUpdate)
+		userAddrGroup.GET("/add", userAddrModule.AddrAdd)
+		userAddrGroup.GET("/del", userAddrModule.AddrDel)
 	}
 
 	//################################################

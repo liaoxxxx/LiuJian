@@ -10,7 +10,7 @@ let address = {
 	 * setAddressDef		设置默认地址
 	 */
 	getAddressList(data) {
-		return request('/api/address/list' + data, 'get')
+		return request('/userAddr/list' + data, 'get')
 	},
 	getAddressDetail(data = '') {
 		return request('/api/address/detail/' + data, 'get')

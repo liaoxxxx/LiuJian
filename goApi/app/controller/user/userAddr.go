@@ -1,28 +1,36 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	model "goApi/app/models"
+	userService "goApi/app/service/user"
 	"net/http"
 )
 
 //列表数据
-func AddrList(c *gin.Context) {
-	var user model.User
-	user.Username = c.Request.FormValue("username")
-	user.Password = c.Request.FormValue("password")
-	result, err := user.Users()
-
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code":    -1,
-			"message": "抱歉未找到相关信息",
-		})
-		return
+func AddrList(ctx *gin.Context) {
+	uid, err := ctx.Get("uid")
+	if err == false {
+		fmt.Println(err)
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": 1,
-		"data": result,
-	})
+	userId := uid.(int64)
+	resp:= userService.AddrList(userId)
+	ctx.JSON(http.StatusOK, resp)
 }
+
+
+
+func AddrFind(ctx *gin.Context) {
+
+}
+
+func AddrUpdate(ctx *gin.Context) {
+
+}
+func AddrAdd(ctx *gin.Context) {
+
+}
+func AddrDel(ctx *gin.Context) {
+
+}
+
