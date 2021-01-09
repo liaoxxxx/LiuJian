@@ -16,7 +16,7 @@ let address = {
 		return request('/api/address/detail/' + data, 'get')
 	},
 	editAddress(data) {
-		return request('/api/address/edit', 'post', data)
+		return request('/userAddr/save', 'post', data)
 	},
 	delAddress(data) {
 		return request('/api/address/del', 'post', data)

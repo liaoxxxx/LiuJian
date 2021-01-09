@@ -74,8 +74,8 @@
 			}
 		},
 		async onReady() {
-			let list = await this.$api.getAddressList('?page=0&limit=10')
-			this.getAddressList(list)
+			let resp = await this.$api.getAddressList('?page=0&limit=10')
+      this.getAddressList(resp)
 		},
 		onLoad(option) {
 			let {

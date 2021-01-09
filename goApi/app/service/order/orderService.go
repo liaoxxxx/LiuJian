@@ -3,7 +3,7 @@ package order
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	 "goApi/app/enum"
+	"goApi/app/enum"
 	"goApi/app/models"
 	orderPld "goApi/app/payload/order"
 	"goApi/app/repository"
@@ -18,8 +18,8 @@ func Create(c *gin.Context) helper.Response {
 	var orderPld orderPld.Creator
 	var err error
 	if err := helper.BindQuery(c, &orderPld); err != nil {
-		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg,enum.ProcessServiceMsg,enum.BusinessOrderMsg,enum.SpecificErrorParamUndefinedMsg),
-			helper.GetErrCode(enum.AppRecycleManCode,enum.ProcessServiceCode,enum.BusinessOrderCode,enum.SpecificErrorParamUndefinedCode), orderPld)
+		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorParamUndefinedMsg),
+			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorParamUndefinedCode), orderPld)
 		return resp
 	}
 	var orderModel models.Order
@@ -27,22 +27,22 @@ func Create(c *gin.Context) helper.Response {
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
 	if err != nil {
 		fmt.Println(err.Error())
-		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg,enum.ProcessServiceMsg,enum.BusinessOrderMsg,enum.SpecificErrorFindMsg),
-			helper.GetErrCode(enum.AppRecycleManCode,enum.ProcessServiceCode,enum.BusinessOrderCode,enum.SpecificErrorFindCode), orderModel)
+		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorFindMsg),
+			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), orderModel)
 		return resp
 	}
 	if orderModel.ID > 0 || len(orderModel.OrderId) > 0 {
-		resp := helper.RespSuccess("新增订单成功",orderModel)
+		resp := helper.RespSuccess("新增订单成功", orderModel)
 		return resp
 	}
 	buildByOrderCreatePld(&orderModel, orderPld)
 	id, err := orderRepo.Create(orderModel)
-	if err!=nil || id <0 {
-		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg,enum.ProcessServiceMsg,enum.BusinessOrderMsg,enum.SpecificErrorInsertMsg),
-			helper.GetErrCode(enum.AppRecycleManCode,enum.ProcessServiceCode,enum.BusinessOrderCode,enum.SpecificErrorInsertCode), orderModel)
+	if err != nil || id < 0 {
+		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorInsertMsg),
+			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorInsertCode), orderModel)
 		return resp
-	}else {
-		resp := helper.RespSuccess("新增订单成功",orderModel)
+	} else {
+		resp := helper.RespSuccess("新增订单成功", orderModel)
 		return resp
 	}
 

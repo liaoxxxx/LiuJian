@@ -5,7 +5,7 @@ import (
 )
 
 type UserAddress struct {
-	ID        int64  `gorm:"primaryKey;autoIncrement:true";json:"id"`
+	ID        int64  `gorm:"primaryKey;autoIncrement:true" json:"id"`
 	Uid       int64  `json:"uid"`       // 列名为 `username`
 	RealName  string `json:"real_name"` // 列名为 `password`
 	Phone     string `json:"phone"`

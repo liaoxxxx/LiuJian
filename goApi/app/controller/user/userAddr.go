@@ -3,7 +3,10 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	userPld "goApi/app/payload/user"
+	"goApi/app/repository"
 	userService "goApi/app/service/user"
+	"goApi/util/helper"
 	"net/http"
 )
 
@@ -14,23 +17,22 @@ func AddrList(ctx *gin.Context) {
 		fmt.Println(err)
 	}
 	userId := uid.(int64)
-	resp:= userService.AddrList(userId)
+	resp := userService.AddrList(userId)
 	ctx.JSON(http.StatusOK, resp)
 }
-
-
 
 func AddrFind(ctx *gin.Context) {
 
 }
 
-func AddrUpdate(ctx *gin.Context) {
+func AddrSave(ctx *gin.Context) {
+	var userAddrAddPld userPld.UAddressAdd
+	helper.BindQuery(ctx, &userAddrAddPld)
+	var usrAddrRepo repository.UserAddressRepo
+	usrAddrRepo.Save()
 
 }
-func AddrAdd(ctx *gin.Context) {
 
-}
 func AddrDel(ctx *gin.Context) {
 
 }
-

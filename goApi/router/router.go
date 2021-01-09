@@ -32,8 +32,7 @@ func InitRouter() *gin.Engine {
 	{
 		userAddrGroup.GET("/find", userAddrModule.AddrFind)
 		userAddrGroup.GET("/list", userAddrModule.AddrList)
-		userAddrGroup.GET("/update", userAddrModule.AddrUpdate)
-		userAddrGroup.GET("/add", userAddrModule.AddrAdd)
+		userAddrGroup.POST("/save", userAddrModule.AddrSave)
 		userAddrGroup.GET("/del", userAddrModule.AddrDel)
 	}
 
@@ -46,7 +45,7 @@ func InitRouter() *gin.Engine {
 
 	//################################################
 	//  order 模块
-	orderGroup := router.Group("/order",middleware.UserAuth())
+	orderGroup := router.Group("/order", middleware.UserAuth())
 	{
 		orderGroup.POST("/create", orderModule.Create)
 		orderGroup.POST("/confirm", orderModule.Confirm)

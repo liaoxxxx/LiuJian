@@ -16,3 +16,8 @@ func (userAddrRepo UserAddressRepo) AddressList(userId int64) (userAddressList [
 	}
 	return []models.UserAddress{}, err
 }
+
+func (userAddrRepo UserAddressRepo) save(userAddress models.UserAddress) (models.UserAddress, int64) {
+	db := orm.Eloquent.Save(userAddress)
+	return userAddress, db.RowsAffected
+}
