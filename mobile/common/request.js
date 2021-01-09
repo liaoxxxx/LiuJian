@@ -6,7 +6,7 @@ function request(url, type, data, header) {
 		method: type,
 		data,
 		url: defaultUrl.default+url,
-		header: {
+		header: {	
 			...header,
 			token: uni.getStorageSync('token') ? uni.getStorageSync('token') : ''
 		}

@@ -3,8 +3,8 @@ package order
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	orderEnum "goApi/app/enum"
-	models "goApi/app/models"
+	 "goApi/app/enum"
+	"goApi/app/models"
 	orderPld "goApi/app/payload/order"
 	"goApi/app/repository"
 	"goApi/util/helper"
@@ -18,27 +18,34 @@ func Create(c *gin.Context) helper.Response {
 	var orderPld orderPld.Creator
 	var err error
 	if err := helper.BindQuery(c, &orderPld); err != nil {
-		resp := helper.RespError(orderEnum.ParamUndefinedMsg, orderEnum.ParamUndefinedCode, orderPld)
+		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg,enum.ProcessServiceMsg,enum.BusinessOrderMsg,enum.SpecificErrorParamUndefinedMsg),
+			helper.GetErrCode(enum.AppRecycleManCode,enum.ProcessServiceCode,enum.BusinessOrderCode,enum.SpecificErrorParamUndefinedCode), orderPld)
 		return resp
 	}
 	var orderModel models.Order
 	var orderRepo repository.OrderRepo
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
-	if orderModel.ID > 0 || len(orderModel.OrderId) > 0 {
-		resp := helper.RespError(orderEnum.OrderExistedMsg, orderEnum.OrderExistedCode, orderModel)
-		return resp
-	}
 	if err != nil {
 		fmt.Println(err.Error())
-		resp := helper.RespError(err.Error(), orderEnum.OrderExistedCode, orderModel)
+		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg,enum.ProcessServiceMsg,enum.BusinessOrderMsg,enum.SpecificErrorFindMsg),
+			helper.GetErrCode(enum.AppRecycleManCode,enum.ProcessServiceCode,enum.BusinessOrderCode,enum.SpecificErrorFindCode), orderModel)
+		return resp
+	}
+	if orderModel.ID > 0 || len(orderModel.OrderId) > 0 {
+		resp := helper.RespSuccess("新增订单成功",orderModel)
 		return resp
 	}
 	buildByOrderCreatePld(&orderModel, orderPld)
-	_, _ = orderRepo.Create(orderModel)
-	///
+	id, err := orderRepo.Create(orderModel)
+	if err!=nil || id <0 {
+		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg,enum.ProcessServiceMsg,enum.BusinessOrderMsg,enum.SpecificErrorInsertMsg),
+			helper.GetErrCode(enum.AppRecycleManCode,enum.ProcessServiceCode,enum.BusinessOrderCode,enum.SpecificErrorInsertCode), orderModel)
+		return resp
+	}else {
+		resp := helper.RespSuccess("新增订单成功",orderModel)
+		return resp
+	}
 
-	resp := helper.RespSuccess("创建订单成功", orderModel)
-	return resp
 }
 
 //确认回收订单的页面数据
@@ -66,7 +73,7 @@ func AddSkeleton(userId int64) helper.Response {
  * @param orderPld
  */
 func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator) {
-	orderModel.OrderId = GenOrderId(orderEnum.OrderTypeRecycleShort)
+	orderModel.OrderId = GenOrderId(enum.OrderTypeRecycleShort)
 	orderModel.Mark = orderPld.Mark
 	orderModel.UserAddressId = orderPld.AddressId
 	orderModel.IsPreengage = orderPld.IsPreengage

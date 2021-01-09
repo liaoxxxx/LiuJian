@@ -13,9 +13,10 @@ import (
 
 //用户登录
 func Login(userLoginPld userPLd.PhoneLogin) helper.Response {
-	var resp  helper.Response
+	var resp helper.Response
 	if userLoginPld.Phone == "" || userLoginPld.Password == "" {
-		resp=helper.RespError(enum.ParamUndefinedMsg+":请输入手机号和密码",enum.ParamUndefinedCode,userLoginPld)
+		resp = helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessUserMsg, enum.SpecificErrorParamUndefinedMsg),
+			helper.GetErrCode(enum.AppRecycleManCode, enum.ProcessServiceCode, enum.BusinessUserCode, enum.SpecificErrorParamUndefinedCode), userLoginPld)
 		return resp
 	}
 

@@ -6,6 +6,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -53,4 +54,12 @@ func IsEmpty(v interface{}) bool {
 		return value.IsNil()
 	}
 	return reflect.DeepEqual(value.Interface(), reflect.Zero(value.Type()).Interface())
+}
+
+func parseStr2Int(str string) int64{
+	parseInt,err:=  strconv.ParseInt(str, 10, 64)
+	if err!=nil {
+		return  0
+	}
+	return parseInt
 }
