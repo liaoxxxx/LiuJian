@@ -198,7 +198,7 @@
 					city: this.defSite[1],
 					district: this.defSite[2],
 					is_default: this.isDefault,
-					post_code: 202020,
+					post_code: 202020+"",
 					detail: this.addressDetail
 				}
 				if (this.id) {

@@ -3,6 +3,8 @@ package repository
 import (
 	"goApi/app/models"
 	orm "goApi/app/models/database"
+	"goApi/app/payload/user"
+	"time"
 )
 
 type UserAddressRepo struct {
@@ -17,7 +19,19 @@ func (userAddrRepo UserAddressRepo) AddressList(userId int64) (userAddressList [
 	return []models.UserAddress{}, err
 }
 
-func (userAddrRepo UserAddressRepo) save(userAddress models.UserAddress) (models.UserAddress, int64) {
-	db := orm.Eloquent.Save(userAddress)
+func (userAddrRepo UserAddressRepo) Save(userAddress models.UserAddress) (models.UserAddress, int64) {
+	db := orm.Eloquent.Save(&userAddress)
 	return userAddress, db.RowsAffected
+}
+
+func (userAddrRepo UserAddressRepo) BuildByPayload(uAddrPld user.UAddressAdd, userId int64) (uAddress models.UserAddress) {
+
+	uAddress.AddTime = time.Now().Unix()
+	uAddress.City = uAddrPld.City
+	uAddress.Phone = uAddrPld.Phone
+	uAddress.PostCode = uAddrPld.PostCode
+	uAddress.Province = uAddrPld.Province
+	uAddress.City = uAddrPld.City
+	uAddress.Uid = userId
+	return uAddress
 }

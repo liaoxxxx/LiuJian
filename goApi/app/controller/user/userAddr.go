@@ -3,10 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	userPld "goApi/app/payload/user"
-	"goApi/app/repository"
 	userService "goApi/app/service/user"
-	"goApi/util/helper"
 	"net/http"
 )
 
@@ -26,10 +23,7 @@ func AddrFind(ctx *gin.Context) {
 }
 
 func AddrSave(ctx *gin.Context) {
-	var userAddrAddPld userPld.UAddressAdd
-	helper.BindQuery(ctx, &userAddrAddPld)
-	var usrAddrRepo repository.UserAddressRepo
-	usrAddrRepo.Save()
+	userService.Save(ctx)
 
 }
 
