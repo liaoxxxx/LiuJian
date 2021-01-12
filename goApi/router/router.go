@@ -33,7 +33,7 @@ func InitRouter() *gin.Engine {
 		userAddrGroup.GET("/find", userAddrModule.AddrFind)
 		userAddrGroup.GET("/list", userAddrModule.AddrList)
 		userAddrGroup.POST("/save", userAddrModule.AddrSave)
-		userAddrGroup.GET("/del", userAddrModule.AddrDel)
+		userAddrGroup.POST("/del", userAddrModule.AddrDel)
 	}
 
 	//################################################

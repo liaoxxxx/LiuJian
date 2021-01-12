@@ -31,10 +31,6 @@ func Create(c *gin.Context) helper.Response {
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), orderModel)
 		return resp
 	}
-	if orderModel.ID > 0 || len(orderModel.OrderId) > 0 {
-		resp := helper.RespSuccess("新增订单成功", orderModel)
-		return resp
-	}
 	buildByOrderCreatePld(&orderModel, orderPld)
 	id, err := orderRepo.Create(orderModel)
 	if err != nil || id < 0 {

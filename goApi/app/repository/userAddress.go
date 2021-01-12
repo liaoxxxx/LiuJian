@@ -24,6 +24,13 @@ func (userAddrRepo UserAddressRepo) Save(userAddress models.UserAddress) (models
 	return userAddress, db.RowsAffected
 }
 
+func (userAddrRepo UserAddressRepo) Find(addressId, userId int64) (uAddress models.UserAddress, err error) {
+	uAddress.Uid = userId
+	uAddress.ID = addressId
+	err = orm.Eloquent.Where(&uAddress).Find(&uAddress).Error
+	return uAddress, err
+}
+
 func (userAddrRepo UserAddressRepo) BuildByPayload(uAddrPld user.UAddressAdd, userId int64) (uAddress models.UserAddress) {
 
 	uAddress.AddTime = time.Now().Unix()

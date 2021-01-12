@@ -13,7 +13,7 @@ let address = {
 		return request('/userAddr/list' + data, 'get')
 	},
 	getAddressDetail(data = '') {
-		return request('/api/address/detail/' + data, 'get')
+		return request('/userAddr/find?id=' + data, 'get')
 	},
 	editAddress(data) {
 		return request('/userAddr/save', 'post', data)

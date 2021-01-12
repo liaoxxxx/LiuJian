@@ -120,17 +120,15 @@
 		methods: {
 			async initAddress() {
 				let res = await this.$api.getAddressDetail(this.id)
-				let flag = this.checkRes(res)
-				if (flag) {
-					let {
-						data
-					} = res
-					this.name = data.real_name
-					this.phone = data.phone
-					this.addressDetail = data.detail
-					this.checked = data.is_default == 1
-					this.isDefault = data.is_default
-					let arr = [data.province, data.city, data.district]
+
+				if (res.errCode===0) {
+					let address  = res.data.address
+					this.name = address.real_name
+					this.phone = address.phone
+					this.addressDetail = address.detail
+					this.checked = address.is_default === 1
+					this.isDefault = address.is_default
+					let arr = [address.province, address.city, address.district]
 					this.updateCityPick = arr
 				}
 			},
