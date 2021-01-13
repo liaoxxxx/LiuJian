@@ -57,3 +57,27 @@ func AddrFind(addrId, userId int64) helper.Response {
 	resp := helper.RespSuccess("获取用户地址成功", dataMap)
 	return resp
 }
+
+func AddrDel(addrId, userId int64) helper.Response {
+	var dataMap = make(map[string]interface{}, 2)
+	userAddress, err := userAddrRepo.Find(addrId, userId)
+	if err != nil {
+		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessServiceMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorFindMsg),
+			helper.GetUsrAErrCode(enum.ProcessServiceCode, enum.BusinessUserAddressCode, enum.SpecificErrorFindCode), dataMap)
+		return resp
+	}
+	if userAddress.ID <= 0 {
+		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessRepositoryMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorDataNotFoundMsg),
+			helper.GetUsrAErrCode(enum.ProcessRepositoryCode, enum.BusinessUserAddressCode, enum.SpecificErrorDataNotFoundCode), dataMap)
+		return resp
+	}
+	rowsAffect, err := userAddrRepo.Del(addrId, userId)
+	if err != nil || rowsAffect <= 0 {
+		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessServiceMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorDeleteMsg),
+			helper.GetUsrAErrCode(enum.ProcessServiceCode, enum.BusinessUserAddressCode, enum.SpecificErrorDeleteCode), dataMap)
+		return resp
+	}
+	dataMap["address"] = userAddress
+	resp := helper.RespSuccess("删除用户地址成功", dataMap)
+	return resp
+}

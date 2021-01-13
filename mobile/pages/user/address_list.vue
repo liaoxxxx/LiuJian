@@ -55,9 +55,7 @@
 					content: '确定要删除该地址吗？',
 					success: async (res) => {
 						if (res.confirm) {
-							let result = await this.$api.delAddress({
-								id: id
-							})
+							let result = await this.$api.delAddress(id)
 							let res = this.checkRes(result, '地址删除成功～～')
 							if (res) {
 								this.addressList.forEach((item, index) => {

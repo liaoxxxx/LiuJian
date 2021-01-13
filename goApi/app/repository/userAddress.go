@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"goApi/app/models"
 	orm "goApi/app/models/database"
 	"goApi/app/payload/user"
@@ -31,6 +32,14 @@ func (userAddrRepo UserAddressRepo) Find(addressId, userId int64) (uAddress mode
 	return uAddress, err
 }
 
+func (userAddrRepo UserAddressRepo) Del(addressId, userId int64) (int64, error) {
+	var address = models.UserAddress{Uid: userId, ID: addressId}
+	fmt.Println(address.ID)
+	fmt.Println(address.Uid)
+	db := orm.Eloquent.Where(&address).Delete(&address)
+	return db.RowsAffected, db.Error
+}
+
 func (userAddrRepo UserAddressRepo) BuildByPayload(uAddrPld user.UAddressAdd, userId int64) (uAddress models.UserAddress) {
 
 	uAddress.AddTime = time.Now().Unix()
@@ -39,6 +48,9 @@ func (userAddrRepo UserAddressRepo) BuildByPayload(uAddrPld user.UAddressAdd, us
 	uAddress.PostCode = uAddrPld.PostCode
 	uAddress.Province = uAddrPld.Province
 	uAddress.City = uAddrPld.City
+	uAddress.District = uAddrPld.District
+	uAddress.Detail = uAddrPld.Detail
 	uAddress.Uid = userId
+	uAddress.RealName = uAddrPld.RealName
 	return uAddress
 }

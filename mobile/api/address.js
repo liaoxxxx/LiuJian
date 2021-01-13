@@ -18,8 +18,8 @@ let address = {
 	editAddress(data) {
 		return request('/userAddr/save', 'post', data)
 	},
-	delAddress(data) {
-		return request('/api/address/del', 'post', data)
+	delAddress(id) {
+		return request('/userAddr/del?id='+id, 'get')
 	},
 	getAddressDef(data='') {
 		return request('/api/address/default' + data, 'get')

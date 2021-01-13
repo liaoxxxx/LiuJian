@@ -54,14 +54,16 @@ const (
 	BusinessOrderMsg  = "业务-订单 "
 
 	/*具体的错误类型 */
-	SpecificErrorInsertCode = 01
-	SpecificErrorInsertMsg  = "错误： 新增数据失败"
-	SpecificErrorUpdateCode = 02
-	SpecificErrorUpdateMsg  = "错误： 更新数据失败"
-	SpecificErrorDeleteCode = 03
-	SpecificErrorDeleteMsg  = "错误： 删除数据失败"
-	SpecificErrorFindCode   = 04
-	SpecificErrorFindMsg    = "错误： 查找数据失败"
+	SpecificErrorInsertCode       = 01
+	SpecificErrorInsertMsg        = "错误： 新增数据失败"
+	SpecificErrorUpdateCode       = 02
+	SpecificErrorUpdateMsg        = "错误： 更新数据失败"
+	SpecificErrorDeleteCode       = 03
+	SpecificErrorDeleteMsg        = "错误： 删除数据失败"
+	SpecificErrorFindCode         = 04
+	SpecificErrorFindMsg          = "错误： 查找数据失败"
+	SpecificErrorDataNotFoundCode = 06
+	SpecificErrorDataNotFoundMsg  = "找不到数据"
 
 	SpecificErrorParamUndefinedCode = 05
 	SpecificErrorParamUndefinedMsg  = "错误： 参数丢失"

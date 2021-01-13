@@ -53,5 +53,15 @@ func AddrSave(ctx *gin.Context) {
 }
 
 func AddrDel(ctx *gin.Context) {
-
+	addrIdTemp := ctx.Query("id")
+	fmt.Println("addrIdTemp----------------------")
+	fmt.Println(addrIdTemp)
+	addrId, _ := strconv.ParseUint(addrIdTemp, 0, 64)
+	uid, err := ctx.Get("uid")
+	if err == false {
+		fmt.Println(err)
+	}
+	userId := uid.(int64)
+	resp := userService.AddrDel(int64(addrId), userId)
+	ctx.JSON(http.StatusOK, resp)
 }
