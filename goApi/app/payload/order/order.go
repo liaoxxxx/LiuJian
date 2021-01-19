@@ -1,6 +1,6 @@
 package order
 
-// Demo demo对象
+// 創建回收订单的RequestPayload demo对象
 type Creator struct {
 	AddressId          int64
 	IsPreengage        int8
@@ -12,8 +12,12 @@ type Creator struct {
 	RecycleProductList []recycleProductList
 }
 
+/**
+ */
 type recycleProductList struct {
 	Photos        []string
 	weightCateId  int64
 	weightCateStr string
 }
+
+

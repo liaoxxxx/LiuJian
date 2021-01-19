@@ -28,3 +28,10 @@ func (orderRepo OrderRepo) Create(order models.Order) (id int64, err error) {
 	}
 	return
 }
+
+//list
+func (orderRepo OrderRepo) OrderList(order models.Order ,pageInt, limitInt int64) (orderList []models.Order,err error) {
+	err = orm.Eloquent.Where(&order).Limit(int(limitInt)).Offset(int((pageInt - 1) * limitInt)).Find(&orderList).Error
+	return
+}
+

@@ -13,7 +13,7 @@
 				</view>
 			</scroll-view>
 		</view>
-		<!--<scroll-view @scrolltolower="handleTolower" scroll-y="true" :style="scrollStyle">
+		<scroll-view @scrolltolower="handleTolower" scroll-y="true" :style="scrollStyle">
 			<view class="text_1 mb-4">
 				<view v-if="loading">
 					<skeleton :row="36" animate :loading="loading" style="margin-top:24rpx;">
@@ -22,7 +22,6 @@
 				<view v-else-if="orderList.length > 0" class="order_list">
 					<view class="order_list_box" v-for="(item,index) in orderList" :key="item.id">
 						<view class="order_top">
-							&lt;!&ndash; 顶部栏 &ndash;&gt;
 							<view>{{item._add_time}}</view>
 							<view class="order_top_right">
 								<view class="delet_txt">{{type | checkStatus}}</view>
@@ -36,7 +35,7 @@
 								</view>
 								<view class="goods_name u-line-2">
 									{{it.productInfo.store_name}}
-								</view> 
+								</view>
 								<view class="goods_price">
 									<view class="goods_price_1">￥{{it.truePrice}}</view>
 									<view class="goods_price_2">×{{it.cart_num}}</view>
@@ -49,69 +48,24 @@
 								<view class="btn_1">取消订单</view>
 								<view class="btn_2">付款({{item.total_price}})</view>
 							</view>
-							<view class="btn_box" v-if="type==1">
-								<view class="btn_1">申请退款</view>
-								<view class="btn_2">提醒发货</view>
-							</view>
-							<view class="btn_box" v-if="type==2">
-								<view class="btn_2">确认收货</view>
-								<view class="btn_1">申请退款</view>
-								<view class="btn_1">查看物流</view>
-							</view>
-							<view class="btn_box" v-if="type==3">
-								<view class="btn_1">申请退款</view>
-								<view class="btn_2">立即评价</view>
-							</view>
-							<view class="btn_box" v-if="type==4">
-								<view class="btn_1">申请退款</view>
-							</view>
 							<view class="btn_box" v-if="type==-1">
 								<view class="btn_1">查看进度</view>
 							</view>
 							<view class="btn_box" v-if="type==-2">
 								<view class="btn_1">服务评价</view>
 							</view>
-						<view class="order_bottom">
-							<view class="order_count">共{{item.total_num}}件，应付总额：<text class="red_txt">￥{{item.total_price}}</text></view>
-							<view class="btn_box" v-if="item.status==0">
-								<view class="btn_1" @tap.stop="cancelOrder(item.order_id)">取消订单</view>
-								<view class="btn_2">付款({{item.total_price}})</view>
-							</view>
-							<view class="btn_box" v-if="item.status==1">
-								<view class="btn_1" @tap.stop="refund(item.order_id)">申请退款</view>
-								<view class="btn_2">提醒发货</view>
-							</view>
-							<view class="btn_box" v-if="item.status==2">
-								<view class="btn_2">确认收货</view>
-								<view class="btn_1" @tap.stop="refund(item.order_id)">申请退款</view>
-								<view class="btn_1">查看物流</view>
-							</view>
-							<view class="btn_box" v-if="item.status==3">
-								<view class="btn_1" @tap.stop="refund(item.order_id)">申请退款</view>
-								<view class="btn_2">立即评价</view>
-							</view>
-							<view class="btn_box" v-if="item.status==4">
-								<view class="btn_1" @tap.stop="refund(item.order_id)">申请退款</view>
-							</view>
-							<view class="btn_box" v-if="item.status==-1">
-								<view class="btn_1">查看进度</view>
-							</view>
-							<view class="btn_box" v-if="item.status==-2">
-								<view class="btn_1">服务评价</view>
-							</view>
-							<view class="btn_box" v-if="item.status==-3">
-								<view class="btn_1">删除订单</view>
-							</view>
-						</view>
 					</view>
-					<loading-module v-if="isLoading != 2" :isLoading="isLoading"></loading-module>
-				</view> 
-				&lt;!&ndash;<view v-else-if="orderList.length == 0" class="flex align-center flex-column justify-center">
+
+				</view>
+          <loading-module v-if="isLoading != 2" :isLoading="isLoading"></loading-module>
+
+          <view v-if="orderList.length == 0" class="flex align-center flex-column justify-center">
 					<image src="/static/search/no_record2.svg" style="height: 400rpx; width: 400rpx;" mode=""></image>
 					<text class="text-grey font-weight-bolder mb-3 ">还没有此类订单欧～～</text>
 					<navigator style="color: #007BFF" url="/pages/drink/drink">去下单>></navigator>
-				</view>&ndash;&gt;
+				</view>
 			</view>
+      </view>
 			<view class="flex flex-column border-box w-100 position-relative" v-if="isLoading == 2 && !loading">
 				<view class="flex justify-center font text-grey">
 					<text class="">————————</text>
@@ -119,16 +73,18 @@
 					<text>————————</text>
 				</view>
 				<view class="flex flex-wrap px-1" v-if="hotGoodsList.length > 0">
-					<view v-for="item in hotGoodsList" @tap="toGoodsDetail(item.id)" :key="item.id" class="pt-1 pl-2 pr-1 mb-2" style="max-width: 330rpx;"> 
+					<view v-for="item in hotGoodsList" @tap="toGoodsDetail(item.id)" :key="item.id" class="pt-1 pl-2 pr-1 mb-2" style="max-width: 330rpx;">
 						<hot-item :src="item.image" :name="item.store_name" :price="item.price"></hot-item>
 					</view>
 				</view>
 				<loading-module :isLoading="hotLoading" notDataText="我是有底线的～～～"></loading-module>
 			</view>
-			&lt;!&ndash; #ifndef APP-PLUS &ndash;&gt;
+			 #ifndef APP-PLUS
+
 			<view style="height: 120rpx;"></view>
-			&lt;!&ndash; #endif &ndash;&gt;
-		</scroll-view>-->
+
+			#endif
+		</scroll-view>
 		<!-- #ifndef APP-PLUS --> 
 		<footer-tabbar></footer-tabbar>
 		<!-- #endif -->
@@ -196,7 +152,7 @@
 						price: '499'
 					},
 				],
-				orderList:[]
+				//orderList:[]
 				//type:1.待付款//2.代发货//3.待收货//4.待评价//5.已取消
 			}
 		},
@@ -219,9 +175,6 @@
 			await this.initOrderList()
 			this.loading = false
 			this.clearGoods('hotGoodsList')
-			if ((this.isLoading == 2 && !this.loading) || (this.orderList.length == 0 && !this.loading)) {
-				this.hotBottom(this.getHotGoods)
-			}
 		},
 		methods: {
 			/**
@@ -300,7 +253,7 @@
 			},
 			async initOrderList() {
 				let res = await this.$api.getOrderList(`?page=${this.page}&limit=10&type=${this.type}`)
-				this.checkRes(res)
+				//let  result= this.checkRes(res,res.msg)
 				this.getOrderList(res)
 				if (res.data.length < 10) {
 					this.isLoading = 2

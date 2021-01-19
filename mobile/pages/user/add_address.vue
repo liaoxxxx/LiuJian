@@ -118,27 +118,27 @@
 			}
 		},
 		methods: {
-			async initAddress() {
-				let res = await this.$api.getAddressDetail(this.id)
-
-				if (res.errCode===0) {
-					let address  = res.data.address
-					this.name = address.real_name
-					this.phone = address.phone
-					this.addressDetail = address.detail
-					this.checked = address.is_default === 1
-					this.isDefault = address.is_default
-					let arr = [address.province, address.city, address.district]
-					this.updateCityPick = arr
-				}
-			},
 			change(index) {
 				if (index == -1) {
 					this.$refs.popup.open()
 				}
 				this.isActive = index
 			},
-			close(done) {
+      async initAddress() {
+        let res = await this.$api.getAddressDetail(this.id)
+
+        if (res.errCode===0) {
+          let address  = res.data.address
+          this.name = address.real_name
+          this.phone = address.phone
+          this.addressDetail = address.detail
+          this.checked = address.is_default === 1
+          this.isDefault = address.is_default
+          let arr = [address.province, address.city, address.district]
+          this.updateCityPick = arr
+        }
+      },
+      close(done) {
 
 				done()
 			},

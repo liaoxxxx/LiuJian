@@ -14,7 +14,7 @@ import (
 )
 
 //获取移动端 首页数据
-func Create(c *gin.Context) helper.Response {
+func Create(c *gin.Context ,userId int64 ) helper.Response {
 	var orderPld orderPld.Creator
 	var err error
 	if err := helper.BindQuery(c, &orderPld); err != nil {
@@ -31,7 +31,7 @@ func Create(c *gin.Context) helper.Response {
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), orderModel)
 		return resp
 	}
-	buildByOrderCreatePld(&orderModel, orderPld)
+	buildByOrderCreatePld(&orderModel, orderPld,userId)
 	id, err := orderRepo.Create(orderModel)
 	if err != nil || id < 0 {
 		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorInsertMsg),
@@ -63,23 +63,43 @@ func AddSkeleton(userId int64) helper.Response {
 	return resp
 }
 
+//确认回收订单的页面数据
+func List(userId , pageInt, limitInt int64) helper.Response {
+	var orderM models.Order
+	var orderRepo repository.OrderRepo
+	var dataMap = make(map[string]interface{}, 3)
+	//
+	orderM.Uid=userId
+
+	orderList, err := orderRepo.OrderList(orderM,pageInt,limitInt)
+	if err !=nil {
+		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessRepositoryMsg,enum.BusinessOrderMsg,enum.SpecificErrorFindMsg),
+			helper.GetUsrAErrCode(enum.ProcessRepositoryCode,enum.BusinessOrderCode,enum.SpecificErrorFindCode), dataMap)
+		return resp
+	}
+	dataMap["OrderList"] = orderList
+	resp := helper.RespSuccess("获取订单成功", dataMap)
+	return resp
+}
+
 /**
  * @Description:
  * @param orderModel
  * @param orderPld
  */
-func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator) {
+func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator,userId int64) {
 	orderModel.OrderId = GenOrderId(enum.OrderTypeRecycleShort)
 	orderModel.Mark = orderPld.Mark
 	orderModel.UserAddressId = orderPld.AddressId
 	orderModel.IsPreengage = orderPld.IsPreengage
 
-	timeTmp, _ := time.Parse("2006-01-02 15:04", orderPld.PreengageTime)
+	timeTmp, _ := time.Parse("2006-01-02 15:04：05", orderPld.PreengageTime)
 
 	orderModel.PreengageTime = timeTmp.Unix()
 	orderModel.UserPhone = orderPld.Phone
 	orderModel.RealName = orderPld.RealName
 	orderModel.Unique = orderPld.Unique
+	orderModel.Uid=userId
 }
 
 func GenOrderId(orderType string) string {

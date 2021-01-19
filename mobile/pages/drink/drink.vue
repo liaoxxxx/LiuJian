@@ -379,10 +379,10 @@
 				this.loading = false
 			},
 			checkRes(res, msg) {
-				console.log("--------------------------")
+				console.log("----------   res  msg ----------------")
 				console.log(typeof res)
 				console.log(res)
-				if (res.Status == 200) {
+				if (res.errCode === 0) {
 					uni.showToast({
 						title: msg
 					})

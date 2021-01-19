@@ -40,8 +40,9 @@ export default {
 			state.cartForValid = temp
 		},
 		getOrderList(state, res) {
+			console.log(res)
 			let arr = state.orderList
-			arr.push(...res)
+			arr.push(...res.OrderList)
 			state.orderList = arr
 		},
 		getOrderDetail(state, res) {
@@ -65,10 +66,10 @@ export default {
 			}
 		},
 		getOrderList({commit}, res) {
-			if (res.status == 200) {
+			console.log("------ getOrderList commit --------")
+			if (res.errCode ===0) {
 				let {data} = res
-				console.log(data)
-				commit('getOrderList', data) 
+				commit('getOrderList', data)
 			}
 		},
 		getOrderDetail ({commit}, res) {

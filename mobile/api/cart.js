@@ -37,7 +37,7 @@ let cart = {
 	 * getRefund		获取退款理由
 	 */
 	getOrderList(data = '') {
-		return request('/api/order/list' + data, 'get')
+		return request('/order/list' + data, 'get')
 	},
 	getOrderDetail(data) {
 		return request('/api/order/detail/' + data, 'get')
