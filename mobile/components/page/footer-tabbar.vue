@@ -36,6 +36,7 @@
 		methods: {
 			switchTo(e) {
 				let url = e.currentTarget.dataset.url;
+				console.log(url)
 				uni.reLaunch({
 					url: '/' + url
 				});

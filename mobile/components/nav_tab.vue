@@ -45,7 +45,7 @@
 			},
 			color: {		// 文字颜色
 				type: String,
-				default: '#fff'
+				default: '#433e40'
 			},
 			active: {		// 选中下划线样式
 				type: Object,

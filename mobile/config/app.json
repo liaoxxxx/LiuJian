@@ -25,10 +25,10 @@
 				"size":"small"
 			},
 			{
-				"pagePath": "pages/order/order",
+				"pagePath": "pages/message/message",
 				"text": "消息",
-				"iconPath": "static/tabbar/order.png",
-				"selectedIconPath": "static/tabbar/order_2.png",
+				"iconPath": "static/tabbar/message.png",
+				"selectedIconPath": "static/tabbar/message_2.png",
 				"size":"small"
 			},
 			{

@@ -51,8 +51,8 @@ func Login(userLoginPld userPLd.PhoneLogin) helper.Response {
 }
 
 //用户信息
-func UserInfo(token string) *helper.Response {
-	var resp = new(helper.Response)
+func UserInfo(token string) helper.Response {
+	var resp helper.Response
 	var user model.User
 	dataMap := make(map[string]interface{}, 2)
 	jwtTool := helper.NewJWT()
@@ -81,6 +81,19 @@ func UserInfo(token string) *helper.Response {
 
 		return resp
 	}
+}
+
+
+func UCenter(userId int64)helper.Response {
+	var resp helper.Response
+	var userRepo repository.UserRepo
+	userRepo.
+
+	dataMap := make(map[string]interface{}, 2)
+
+
+	resp.Data=dataMap
+	return  resp
 }
 
 /**

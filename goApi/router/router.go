@@ -25,6 +25,7 @@ func InitRouter() *gin.Engine {
 	{
 		userGroup.POST("/statInfo", userModule.GetStateInfo)
 		userGroup.POST("/userInfo", userModule.UserInfo)
+		userGroup.POST("/userCenter", userModule.UserCenter)
 	}
 	//
 	userAddrGroup := router.Group("/userAddr")

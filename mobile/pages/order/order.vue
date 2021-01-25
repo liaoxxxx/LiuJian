@@ -22,7 +22,8 @@
 				<view v-else-if="orderList.length > 0" class="order_list">
 					<view class="order_list_box" v-for="(item,index) in orderList" :key="item.id">
 						<view class="order_top">
-							<view>{{item._add_time}}</view>
+							<text>{{item._add_time}}</text>
+              <text>{{item.order_id}}</text>
 							<view class="order_top_right">
 								<view class="delet_txt">{{type | checkStatus}}</view>
 								<image v-if="item.type===4 || item.type===5" class="delet_img" :src="item.delet_img" mode="widthFix"></image>
@@ -79,11 +80,6 @@
 				</view>
 				<loading-module :isLoading="hotLoading" notDataText="我是有底线的～～～"></loading-module>
 			</view>
-			 #ifndef APP-PLUS
-
-			<view style="height: 120rpx;"></view>
-
-			#endif
 		</scroll-view>
 		<!-- #ifndef APP-PLUS --> 
 		<footer-tabbar></footer-tabbar>

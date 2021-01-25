@@ -91,7 +91,7 @@ func Destroy(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	var phoneLoginPld userPLd.PhoneLogin
-	helper.BindQuery(c ,&phoneLoginPld)
+	helper.BindQuery(c, &phoneLoginPld)
 	resp := userService.Login(phoneLoginPld)
 	c.JSON(http.StatusOK, resp)
 }
@@ -100,6 +100,13 @@ func UserInfo(c *gin.Context) {
 	token := c.GetHeader("token")
 
 	resp := userService.UserInfo(token)
+	c.JSON(http.StatusOK, resp)
+}
+
+func UserCenter(c *gin.Context) {
+	uid, _ := c.Get("uid")
+	userId := uid.(int64)
+	resp := userService.UCenter(userId)
 	c.JSON(http.StatusOK, resp)
 }
 
