@@ -83,17 +83,15 @@ func UserInfo(token string) helper.Response {
 	}
 }
 
-
-func UCenter(userId int64)helper.Response {
+func UCenter(userId int64) helper.Response {
 	var resp helper.Response
 	var userRepo repository.UserRepo
-	userRepo.
+	//userRepo.
 
 	dataMap := make(map[string]interface{}, 2)
 
-
-	resp.Data=dataMap
-	return  resp
+	resp.Data = dataMap
+	return resp
 }
 
 /**
