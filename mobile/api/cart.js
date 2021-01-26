@@ -39,8 +39,8 @@ let cart = {
 	getOrderList(data = '') {
 		return request('/order/list' + data, 'get')
 	},
-	getOrderDetail(data) {
-		return request('/api/order/detail/' + data, 'get')
+	getOrderDetail(orderId) {
+		return request('/order/detail?orderId=' + orderId, 'get')
 	},
 	getOrderExpress(data) {
 		return request('/api/order/express/' + data, 'get')

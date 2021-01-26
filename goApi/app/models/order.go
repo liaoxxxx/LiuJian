@@ -1,7 +1,7 @@
 package models
 
 type Order struct {
-	ID            int64   `gorm:"primaryKey;autoIncrement:true"`
+	ID            int64   `gorm:"primaryKey;autoIncrement:true" json:"id"`
 	OrderId       string  `json:"order_id"`
 	Uid           int64   `json:"uid"`
 	RealName      string  `json:"real_name"`
@@ -22,8 +22,8 @@ type Order struct {
 	SiteId  int64   `json:"site_id"`
 
 	PreengageTime int64 `json:"preengage_time"`
-	PayTime       int64  `json:"pay_time"`
-	AddTime       int64  `json:"add_time"`
+	PayTime       int64 `json:"pay_time"`
+	AddTime       int64 `json:"add_time"`
 
 	IsChannel   int8    `json:"is_channel"`
 	IsDel       float64 `json:"is_del"`

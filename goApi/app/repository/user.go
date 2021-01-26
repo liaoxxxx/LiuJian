@@ -16,8 +16,8 @@ func (userRepo UserRepo) FindByPhone(phone string) (userOne models.User, err err
 }
 
 //phone 单条数据
-func (userRepo UserRepo) FindByPhone(phone string) (userOne models.User, err error) {
+func (userRepo UserRepo) FindByUid(UserId string) (userOne models.User, err error) {
 
-	err = orm.Eloquent.Model(userOne).Where("phone", phone).Select("*").Unscoped().First(&userOne).Error
+	err = orm.Eloquent.Model(userOne).Where("id", UserId).Select("*").Unscoped().First(&userOne).Error
 	return
 }

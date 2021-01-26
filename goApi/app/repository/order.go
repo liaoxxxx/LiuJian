@@ -16,6 +16,14 @@ func (orderRepo OrderRepo) FindOrderByUnique(Unique string) (order models.Order,
 	return models.Order{}, err
 }
 
+func (orderRepo OrderRepo) FindByOrderId(OrderId, userId int64) (order models.Order, err error) {
+	err = orm.Eloquent.Model(models.Order{}).Where(models.Order{ID: OrderId, Uid: userId}).Find(&order).Error
+	if err == nil {
+		return order, err
+	}
+	return models.Order{}, err
+}
+
 //添加
 func (orderRepo OrderRepo) Create(order models.Order) (id int64, err error) {
 
@@ -30,8 +38,7 @@ func (orderRepo OrderRepo) Create(order models.Order) (id int64, err error) {
 }
 
 //list
-func (orderRepo OrderRepo) OrderList(order models.Order ,pageInt, limitInt int64) (orderList []models.Order,err error) {
+func (orderRepo OrderRepo) OrderList(order models.Order, pageInt, limitInt int64) (orderList []models.Order, err error) {
 	err = orm.Eloquent.Where(&order).Limit(int(limitInt)).Offset(int((pageInt - 1) * limitInt)).Find(&orderList).Error
 	return
 }
-

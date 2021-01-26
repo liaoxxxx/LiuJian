@@ -73,10 +73,10 @@ export default {
 			}
 		},
 		getOrderDetail ({commit}, res) {
-			if (res.status == 200) {
-				let {data} = res
-				console.log(data)
-				commit('getOrderDetail', data) 
+			if (res.errCode === 0) {
+				let {orderDetail} = res.data
+				console.log(orderDetail)
+				commit('getOrderDetail', orderDetail)
 			}
 		}
 	}

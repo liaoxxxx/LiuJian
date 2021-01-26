@@ -20,8 +20,9 @@
 					</skeleton>
 				</view>
 				<view v-else-if="orderList.length > 0" class="order_list">
-					<view class="order_list_box" v-for="(item,index) in orderList" :key="item.id">
+					<view class="order_list_box" v-for="(item,index) in orderList" :key="item.id" @click="toDetail(item.id)">
 						<view class="order_top">
+              <text></text>
 							<text>{{item._add_time}}</text>
               <text>{{item.order_id}}</text>
 							<view class="order_top_right">
