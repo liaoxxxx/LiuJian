@@ -17,7 +17,7 @@
     </view>
 
     <view class="main" v-if="!loading">
-      <view class="header-bg" style="">
+      <view class="header-bg" style="" @click="toAddOrder()">
         <img src="../../static/img/header-bg.jpg" alt="">
       </view>
 
@@ -444,7 +444,11 @@ export default {
     .header-bg{
       height: 400rpx;
       background-color: #55ea55;
-      overflow: hidden
+      overflow: hidden;
+      width: 100%;
+    }
+    .header-bg img{
+      width: 100%;
     }
 
 
@@ -575,6 +579,9 @@ export default {
      font-size: 10px;
     }
 
+    .create-order-block{
+      height: 280rpx;
+    }
     .create-order-slogan {
       margin-top: 30rpx;
       text-align: center;
@@ -592,7 +599,7 @@ export default {
     }
 
     .create-order-inner {
-        background-color: #09b609;
+        background-color: #0cce0c;
         width: 128rpx;
         height: 128rpx;
         border-radius: 64rpx;

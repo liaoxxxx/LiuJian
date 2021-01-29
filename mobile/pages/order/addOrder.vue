@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<scroll-view class="position-absolute w-100 top-0 main" scroll-y="true" :style="scrollStyle">
+		<scroll-view class="position-absolute top-0 main" scroll-y="true" :style="scrollStyle">
 			<view>
         <view class="recycle-cate-block first-layer-block">
           <text class="first-layer-title">回收品类</text>
@@ -55,8 +55,15 @@
             <view>
               <text>未满100公斤，不需要添加图片</text>
             </view>
+
             <view>
-              <button class="recycle-weight-add-btn">+ 添加品类</button>
+              <button class="recycle-weight-add-btn" @click="addRecCateItem">+ 添加品类</button>
+            </view>
+          </view>
+          <view class="recycle-weight-addPic-row">
+            <halving-line bgColor="#eee"></halving-line>
+            <view class="recycle-weight-add-pic">
+              <u-upload upload-text="" width="80rpx" height="80rpx" :action="uploadAction" :file-list="weightPicList" ></u-upload>
             </view>
           </view>
 
@@ -188,6 +195,9 @@
         recycleCateSelectedIndex: 0,
         recycleCateSelectedItem: null,
 
+        showAddPicBtn:false,
+
+        uploadAction:"http:liaoxx.top.upload",
         recycleWeightSelectedIndex: 0,
         recycleWeightSelectedItem: null,
         phone: "13077703579",
@@ -200,6 +210,7 @@
           {
             weightCateId: 1,
             weightCateStr: '10 -50公斤',
+            recCate:0,
             photos: [
               "aa.jpg",
               "bb.jpg"
@@ -270,13 +281,16 @@
           }
         ],
 
-        weightList: [
+
+        weightPicList:[], //需要拍照的 回收重量分类
+        weightList: [  //回收重量分类
           {
             id: 1,
             text: '10-50公斤',
             type: 'between',
             min: 10,
             max: 50,
+            uploadPic:false
           },
           {
             id: 2,
@@ -284,6 +298,7 @@
             type: 'between',
             min: 10,
             max: 50,
+            uploadPic:false
           },
           {
             id: 3,
@@ -291,6 +306,7 @@
             type: 'more-than',
             min: 10,
             max: 50,
+            uploadPic:true
           },
         ],
 
@@ -327,10 +343,7 @@
 
       // 确认订单 方法
       async addOrder(type) {
-        // this.nowAddressKey  // 地址id
-        // this.integral  // 使用积分的值
         // this.remark  //备注信息
-        // this.radioAddress  //不确定后断要的值  支付渠道
         let data = {
           unique: this.unique,
           addressId: this.addressId,
@@ -357,6 +370,21 @@
         } else {
           this.time = result
         }
+      },
+      //添加品类的按钮
+      addRecCateItem(){
+
+        let recycleProductItem={
+          weightCateId: this.weightList[this.recycleWeightSelectedIndex].id,
+          weightCateStr: this.weightList[this.recycleWeightSelectedIndex].text,
+          recCateId:this.recycleCateList[this.recycleCateSelectedIndex].id,
+          photos: [
+            "aa.jpg",
+            "bb.jpg"
+          ]
+        }
+        this.recycleProductList.push(recycleProductItem)
+        console.log('addRecCateItem')
       },
       // 设置收货地址
       setAddress() {
@@ -387,7 +415,9 @@
         let time = moment(Date.now() + 1800000).format('YYYY-MM-DD HH:mm')
         return time
       },
+      recycleWeightSelectedIndex(){
 
+      }
 
     },
     async mounted() {
@@ -496,11 +526,18 @@
     justify-content: space-evenly;
   }
   .recycle-weight-add-btn{
+    background-color: #1AAD19;
+    color: white;
     width: 200rpx;
     height: 64rpx;
     line-height: 64rpx;
     font-size: 28rpx;
     box-sizing: border-box;
+  }
+
+  .recycle-weight-add-pic{
+    width: 80rpx;
+    height: 80rpx;
   }
   .recycle-weight-notice{
     width: 100%;
