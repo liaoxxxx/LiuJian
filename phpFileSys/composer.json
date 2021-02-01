@@ -1,0 +1,14 @@
+{
+    "require": {
+        "easyswoole/easyswoole": "3.x",
+      "ext-json": "*",
+        "easyswoole/sync-invoker": "^2.0",
+        "mongodb/mongodb": "^1.8",
+        "easyswoole/hot-reload": "^0.1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/"
+        }
+    }
+}
