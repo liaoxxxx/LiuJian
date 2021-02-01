@@ -60,8 +60,7 @@
               <button class="recycle-weight-add-btn" @click="addRecCateItem">+ 添加品类</button>
             </view>
           </view>
-          <view class="recycle-weight-addPic-row">
-            <halving-line bgColor="#eee"></halving-line>
+          <view v-show="showAddPicBtn" class="recycle-weight-addPic-row">
             <view class="recycle-weight-add-pic">
               <u-upload upload-text="" width="80rpx" height="80rpx" :action="uploadAction" :file-list="weightPicList" ></u-upload>
             </view>
@@ -197,7 +196,7 @@
 
         showAddPicBtn:false,
 
-        uploadAction:"http:liaoxx.top.upload",
+        uploadAction:"http://fileserve.liaoxx.top/upload/single",
         recycleWeightSelectedIndex: 0,
         recycleWeightSelectedItem: null,
         phone: "13077703579",
@@ -374,6 +373,11 @@
       //添加品类的按钮
       addRecCateItem(){
 
+        let recWeightItem=this.weightList[this.recycleWeightSelectedIndex]
+        let recCateItem=this.recycleCateList[this.recycleCateSelectedIndex]
+        console .log(recCateItem)
+        console .log(recWeightItem)
+        return false
         let recycleProductItem={
           weightCateId: this.weightList[this.recycleWeightSelectedIndex].id,
           weightCateStr: this.weightList[this.recycleWeightSelectedIndex].text,
@@ -383,6 +387,8 @@
             "bb.jpg"
           ]
         }
+
+
         this.recycleProductList.push(recycleProductItem)
         console.log('addRecCateItem')
       },
@@ -415,10 +421,18 @@
         let time = moment(Date.now() + 1800000).format('YYYY-MM-DD HH:mm')
         return time
       },
+    },
+    watch:{
       recycleWeightSelectedIndex(){
-
+        //改变
+        let recWeightItem=this.weightList[this.recycleWeightSelectedIndex]
+        if (recWeightItem.uploadPic){
+          this.showAddPicBtn=true
+        }else {
+          this.showAddPicBtn=false
+        }
+        console.log(recWeightItem)
       }
-
     },
     async mounted() {
        let resp = await this.$api.addOrderSkeleton({})
