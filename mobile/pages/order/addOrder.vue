@@ -62,7 +62,7 @@
           </view>
           <view v-show="showAddPicBtn" class="recycle-weight-addPic-row">
             <view class="recycle-weight-add-pic">
-              <u-upload upload-text="" width="80rpx" height="80rpx" :action="uploadAction" :file-list="weightPicList" ></u-upload>
+              <u-upload upload-text="" width="160rpx" height="160rpx"  :action="uploadAction" :file-list="weightPicList" ></u-upload>
             </view>
           </view>
 
@@ -148,9 +148,11 @@
   import {vuexData} from '@/common/commonMixin.js'
   import moment from '@/common/moment.js'
   import addressItem from '@/components/address_item.vue'
+  import ssUploadImage from '@/components/ss-upload-image/ss-upload-image.vue'
 
   export default {
     components: {
+      ssUploadImage,
       tag,
       listItem,
       pickerPlus,
@@ -193,12 +195,15 @@
 
         recycleCateSelectedIndex: 0,
         recycleCateSelectedItem: null,
+        recycleWeightSelectedIndex: 0,
+        recycleWeightSelectedItem: null,
 
         showAddPicBtn:false,
 
         uploadAction:"http://fileserve.liaoxx.top/upload/single",
-        recycleWeightSelectedIndex: 0,
-        recycleWeightSelectedItem: null,
+        fileName:'file',
+        weightPicList:[], //需要拍照的 回收重量分类
+
         phone: "13077703579",
         addressId: 0,
         unique: 'a5244f9w8fr74bhj4b3b1e89d2v3hj2',
@@ -281,7 +286,7 @@
         ],
 
 
-        weightPicList:[], //需要拍照的 回收重量分类
+
         weightList: [  //回收重量分类
           {
             id: 1,
