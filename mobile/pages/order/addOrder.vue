@@ -62,7 +62,7 @@
           </view>
           <view v-show="showAddPicBtn" class="recycle-weight-addPic-row">
             <view class="recycle-weight-add-pic">
-              <u-upload upload-text="" width="160rpx" height="160rpx"  :action="uploadAction" :file-list="weightPicList" ></u-upload>
+              <u-upload upload-text="" ref="uUpload" width="160rpx" height="160rpx"  :action="uploadAction" :file-list="weightPicList" ></u-upload>
             </view>
           </view>
 
@@ -124,6 +124,9 @@
         </view>
       </view>
       <halving-line bgColor="#eee"></halving-line>
+      <view><!--   提示語     -->
+        <u-toast ref="uToast" />
+      </view>
       <!-- 底部 -->
       <view class="bottom-block     bg-white font">
         <view class="add-order-exceptions-row">
@@ -136,27 +139,36 @@
           <button @click="addOrder('appointment')" class="add-order-button">立即预约</button>
         </view>
       </view>
+      <view>
+        <u-popup v-model="recProducPanalShow"  length="60%" mode="bottom" border-radius="14" :closeable="true">
+          <view class="content">
+            <view v-for="index in 50" :key="index">
+              第{{ index }}个Item
+            </view>
+          </view>
+        </u-popup>
+      </view>
 		</scroll-view>
 
 	</view>
 </template>
 
 <script>
-  import tag from '@/components/tag.vue'
-  import listItem from '@/components/list_item.vue'
-  import pickerPlus from '@/components/e-picker-plus/e-picker-plus.vue'
-  import {vuexData} from '@/common/commonMixin.js'
-  import moment from '@/common/moment.js'
-  import addressItem from '@/components/address_item.vue'
-  import ssUploadImage from '@/components/ss-upload-image/ss-upload-image.vue'
+import tag from '@/components/tag.vue'
+import listItem from '@/components/list_item.vue'
+import pickerPlus from '@/components/e-picker-plus/e-picker-plus.vue'
+import {vuexData} from '@/common/commonMixin.js'
+import moment from '@/common/moment.js'
+import addressItem from '@/components/address_item.vue'
+import recGoodsItem from "../../components/recGoodsItem";
 
-  export default {
+export default {
     components: {
-      ssUploadImage,
       tag,
       listItem,
       pickerPlus,
-      addressItem
+      addressItem,
+      recGoodsItem
     },
     mixins: [vuexData],
     filters: {
@@ -199,7 +211,7 @@
         recycleWeightSelectedItem: null,
 
         showAddPicBtn:false,
-
+        recProducPanalShow:true,
         uploadAction:"http://fileserve.liaoxx.top/upload/single",
         fileName:'file',
         weightPicList:[], //需要拍照的 回收重量分类
@@ -380,22 +392,37 @@
 
         let recWeightItem=this.weightList[this.recycleWeightSelectedIndex]
         let recCateItem=this.recycleCateList[this.recycleCateSelectedIndex]
-        console .log(recCateItem)
-        console .log(recWeightItem)
-        return false
+        //判断需要上传图片
+        let uploadPhotos = [];
+        if (recWeightItem.uploadPic === true) {
+          let files = [];
+          // 通过filter，筛选出上传进度为100的文件(因为某些上传失败的文件，进度值不为100，这个是可选的操作)
+          files = this.$refs.uUpload.lists.filter(val => {
+            return val.progress === 100;
+          })
+          // 如果您不需要进行太多的处理，直接如下即可
+          // files = this.$refs.uUpload.lists;
+          //判断图片列表的数量
+          if (files.length === 0) {
+            this.$refs.uToast.show({
+              title: '请先提交图片',
+              type: 'error',
+            })
+            return false
+          }
+          for (let i = 0; i < files.length; i++) {
+            uploadPhotos.push(files[i].response.fullPath)
+          }
+        }
         let recycleProductItem={
           weightCateId: this.weightList[this.recycleWeightSelectedIndex].id,
           weightCateStr: this.weightList[this.recycleWeightSelectedIndex].text,
           recCateId:this.recycleCateList[this.recycleCateSelectedIndex].id,
-          photos: [
-            "aa.jpg",
-            "bb.jpg"
-          ]
+          recCateStr:this.recycleCateList[this.recycleCateSelectedIndex].name,
+          photos: uploadPhotos
         }
-
-
         this.recycleProductList.push(recycleProductItem)
-        console.log('addRecCateItem')
+        console.log(this.recycleProductList)
       },
       // 设置收货地址
       setAddress() {
@@ -554,10 +581,17 @@
     box-sizing: border-box;
   }
 
-  .recycle-weight-add-pic{
-    width: 80rpx;
-    height: 80rpx;
+
+  .recycle-weight-addPic-row{
+    overflow: hidden;
+    height: auto;
   }
+
+   .recycle-weight-add-pic{
+    width: auto;
+    height: auto;
+  }
+
   .recycle-weight-notice{
     width: 100%;
   }
