@@ -46,6 +46,7 @@ final class Versions
   'easyswoole/hot-reload' => '0.1.2@c13a1222cec4e3c1df4c01ac51968cefe63dfc01',
   'easyswoole/http' => '1.7.19@a7fc8aec663c6ddfdb8b1db3a3167131853b22ba',
   'easyswoole/http-annotation' => '1.5.0@25628163a06b81affb458696216356ee62305dc2',
+  'easyswoole/kafka' => '1.0.6@1c3890b63b53854c6725180e2ebdba1d4884dc31',
   'easyswoole/log' => '1.0.6@06d735e64063197d46a5fec93766828e47c40542',
   'easyswoole/parsedown' => '1.0.2@ec25cae8a6196016b643315b9c0dbda01716c4f7',
   'easyswoole/session' => '2.0.7@b3b5732e9f1d769c515905cab0d78f0a2148ba5b',

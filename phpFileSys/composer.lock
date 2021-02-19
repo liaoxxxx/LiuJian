@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "802247c44e7ae20e32408df48308f15a",
+    "content-hash": "b89db71fa173b7218b8cbbdcbafed58e",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -858,6 +858,67 @@
                 "source": "https://github.com/easy-swoole/http-annotation/tree/1.5.0"
             },
             "time": "2021-01-27T02:10:18+00:00"
+        },
+        {
+            "name": "easyswoole/kafka",
+            "version": "1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/easy-swoole/kafka.git",
+                "reference": "1c3890b63b53854c6725180e2ebdba1d4884dc31"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/easy-swoole/kafka/zipball/1c3890b63b53854c6725180e2ebdba1d4884dc31",
+                "reference": "1c3890b63b53854c6725180e2ebdba1d4884dc31",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "easyswoole/component": "^2.0",
+                "easyswoole/spl": "^1.1",
+                "ext-swoole": "^4.4.5",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "easyswoole/phpunit": "^1.0",
+                "easyswoole/swoole-ide-helper": "^1.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EasySwoole\\Kafka\\": "src/",
+                    "EasySwoole\\Kafka\\Test\\": "test/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "YF",
+                    "email": "291323003@qq.com"
+                }
+            ],
+            "description": "An efficient swoole framework",
+            "homepage": "https://www.easyswoole.com/",
+            "keywords": [
+                "async",
+                "easyswoole",
+                "framework",
+                "swoole"
+            ],
+            "support": {
+                "issues": "https://github.com/easy-swoole/kafka/issues",
+                "source": "https://github.com/easy-swoole/kafka/tree/1.0.6"
+            },
+            "time": "2020-07-20T04:00:06+00:00"
         },
         {
             "name": "easyswoole/log",

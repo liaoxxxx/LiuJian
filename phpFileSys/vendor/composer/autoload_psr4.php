@@ -25,6 +25,8 @@ return array(
     'EasySwoole\\Session\\' => array($vendorDir . '/easyswoole/session/src'),
     'EasySwoole\\ParserDown\\' => array($vendorDir . '/easyswoole/parsedown/src'),
     'EasySwoole\\Log\\' => array($vendorDir . '/easyswoole/log/src'),
+    'EasySwoole\\Kafka\\Test\\' => array($vendorDir . '/easyswoole/kafka/test'),
+    'EasySwoole\\Kafka\\' => array($vendorDir . '/easyswoole/kafka/src'),
     'EasySwoole\\Http\\Tests\\' => array($vendorDir . '/easyswoole/http/tests'),
     'EasySwoole\\Http\\' => array($vendorDir . '/easyswoole/http/src'),
     'EasySwoole\\HttpAnnotation\\' => array($vendorDir . '/easyswoole/http-annotation/src'),

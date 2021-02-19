@@ -160,6 +160,15 @@ private static $installed = array (
       ),
       'reference' => '25628163a06b81affb458696216356ee62305dc2',
     ),
+    'easyswoole/kafka' => 
+    array (
+      'pretty_version' => '1.0.6',
+      'version' => '1.0.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '1c3890b63b53854c6725180e2ebdba1d4884dc31',
+    ),
     'easyswoole/log' => 
     array (
       'pretty_version' => '1.0.6',

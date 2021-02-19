@@ -53,6 +53,8 @@ class ComposerStaticInit91bb9fb91b866d129c99d27acdf86c48
             'EasySwoole\\Session\\' => 19,
             'EasySwoole\\ParserDown\\' => 22,
             'EasySwoole\\Log\\' => 15,
+            'EasySwoole\\Kafka\\Test\\' => 22,
+            'EasySwoole\\Kafka\\' => 17,
             'EasySwoole\\Http\\Tests\\' => 22,
             'EasySwoole\\Http\\' => 16,
             'EasySwoole\\HttpAnnotation\\' => 26,
@@ -158,6 +160,14 @@ class ComposerStaticInit91bb9fb91b866d129c99d27acdf86c48
         'EasySwoole\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/easyswoole/log/src',
+        ),
+        'EasySwoole\\Kafka\\Test\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/easyswoole/kafka/test',
+        ),
+        'EasySwoole\\Kafka\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/easyswoole/kafka/src',
         ),
         'EasySwoole\\Http\\Tests\\' => 
         array (
