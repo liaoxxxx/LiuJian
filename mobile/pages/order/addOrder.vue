@@ -128,7 +128,7 @@
         <u-toast ref="uToast" />
       </view>
       <!-- 底部 -->
-      <view class="bottom-block     bg-white font">
+      <view class="bottom-block  bg-white font">
         <view class="add-order-exceptions-row">
           <view>确认下单将自动默认同意
             <text class="add-order-exceptions">《小胖纸上门回收免责条款》</text>
@@ -141,12 +141,11 @@
       </view>
       <view>
         <u-popup v-model="recProducPanalShow"  length="60%" mode="bottom" border-radius="14" :closeable="true">
-          <view class="content">
-            <view v-for="index in 50" :key="index">
-              第{{ index }}个Item
-            </view>
-          </view>
+          <rec-goods-item :recycle-product-list="recycleProductList"></rec-goods-item>
         </u-popup>
+      </view>
+      <view class="rec-product-List-box" @click="recProducPanalShow = true">
+          <u-back-top   tips="返回" icon="car" >返回</u-back-top>
       </view>
 		</scroll-view>
 
@@ -223,7 +222,7 @@ export default {
         remark: '我是你爸爸',		// 备注
         preengageTime: "2020-12-29 12:00",		// 配送时间
         recycleProductList: [
-          {
+         /* {
             weightCateId: 1,
             weightCateStr: '10 -50公斤',
             recCate:0,
@@ -231,7 +230,7 @@ export default {
               "aa.jpg",
               "bb.jpg"
             ]
-          }
+          }*/
         ],
         orderInfo: {},
         addressListTemp:[], //用户的所有地址
@@ -646,6 +645,15 @@ export default {
 
   .add-order-button:nth-child(2){
     background-color: #1AAD19;
+  }
+
+  .rec-product-List-box{
+    background-color: #1d64f1;
+    position: fixed;
+    width: 100rpx;
+    height: 100rpx;
+    right: 150rpx;
+    bottom: 200rpx;
   }
 
 </style>

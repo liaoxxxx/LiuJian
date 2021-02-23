@@ -1,32 +1,51 @@
 <template>
 	<view class="goods_box" @tap="$emit('goDetail')">
-		<view class="goods_box_right">
-				<view class="goods_info_list" v-for="(item_2,index) in goodsinfo" :key="index">
-					{{item_2}}
+		<view v-if="recycleProductList.length>0" class="goods_box_right">
+				<view class="goods_info_list" v-for="(item,index) in recycleProductList" :key="index">
+					<text>{{item.recCateStr}}:{{item.weightCateStr}}</text>
+          <view v-for="picItem in item.photos" class="photos-groups">
+            <u-image width="256rpx" height="256rpx" :src="picItem"></u-image>
+          </view>
 				</view>
+    </view>
+    <view v-else class="empty-row">
+        <view>什么都没有，</view>
     </view>
 	</view>
 </template>
 
 <script>
 
-	import {
-		vuexData
-	} from '@/common/commonMixin.js'
-	export default {
-		components: {
-		},
-		mixins: [vuexData],
-		data() {
+
+export default {
+  data() {
 			return {
-				proId: '',
-			}
+
+      }
 		},
 		props: {
-			goodsinfo: {
+      recycleProductList: {
 				type: Array,
 				default: () => {
-					return ['没啥', '真没啥']
+					return  [/*{
+            weightCateId: 1,
+            weightCateStr: '10-50公斤',
+            recCateId: 1,
+            recCateStr: '旧废纸',
+            photos: [
+              'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2286765395,3894158643&fm=26&gp=0.jpg',
+              'https://img.zcool.cn/community/01f4155a90fe00a8012045b3da7387.jpeg@260w_195h_1c_1e_1o_100sh.jpg'
+            ]
+          }, {
+            weightCateId: 1,
+            weightCateStr: '100-500公斤',
+            recCateId: 1,
+            recCateStr: '旧废纸',
+            photos: [
+              'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2286765395,3894158643&fm=26&gp=0.jpg',
+              'https://img.zcool.cn/community/01f4155a90fe00a8012045b3da7387.jpeg@260w_195h_1c_1e_1o_100sh.jpg'
+            ]
+          }*/]
 				}
 			},
 		},
@@ -49,82 +68,27 @@
 		border-radius: 10rpx;
 	}
 
-	.goods_box_left {
-		flex: 1;
-		margin-right: 15rpx;
-	}
-
-	.goods_box_right {
-		flex: 2;
-	}
-
-	.goods_info {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
-	.goods_lable {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		margin-top: 10rpx;
-	}
-
-	.goods_price {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-between;
-		margin-top: 15rpx;
-		color: #ff0409;
-		font-size: 32rpx;
-		font-weight: bold;
-	}
-
-	.goods_title {
-		font-size: 28rpx;
-		padding-top: 10rpx;
-	}
-
+  .goods_box_right{
+    width: 100%;
+  }
 	.goods_info_list {
+    width: 100%;
 		font-size: 28rpx;
 		color: #9e9e9e;
 		padding-right: 20rpx;
 		border-right: #9e9e9e solid 4rpx;
 	}
 
-	.goods_lable_list {
-		font-size: 20rpx;
-		border: solid #a46a59 1px;
-		margin-right: 15rpx;
-		height: 34rpx;
-		line-height: 34rpx;
-		padding: 0 20rpx 4rpx 20rpx;
-		border-radius: 10rpx;
-	}
+  .photos-groups {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction:row
+  }
 
-	.goods_lable_list_2 {
-		font-size: 20rpx;
-		border: solid #bd2626 1px;
-		margin-right: 15rpx;
-		height: 34rpx;
-		line-height: 34rpx;
-		padding: 0 20rpx 4rpx 20rpx;
-		border-radius: 10rpx;
-	}
-
-	.goods_img {
-		width: 100%;
-		height: 100%;
-	}
-
-	.car_img {
-		width: 50rpx;
-		height: 50rpx;
-	}
-
-	.my_active {
-		opacity: .3;
-	}
+  .empty-row{
+    text-align: center;
+    width: 100%;
+    margin-top: 50rpx;
+  }
 </style>

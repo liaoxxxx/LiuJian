@@ -61,20 +61,13 @@ class EasySwooleEvent implements Event
 
 
 
+        //kafka
         // TODO: Implement mainServerCreate() method.
         // 生产者
-        ServerManager::getInstance()->getSwooleServer()->addProcess((new UploadProducerProcess())->getProcess());
+        //ServerManager::getInstance()->getSwooleServer()->addProcess((new UploadProducerProcess())->getProcess());
         // 消费者
-        ServerManager::getInstance()->getSwooleServer()->addProcess((new UploadConsumerProcess())->getProcess());
+        //ServerManager::getInstance()->getSwooleServer()->addProcess((new UploadConsumerProcess())->getProcess());
 
     }
 }
 
-/*Exception in thread "main" kafka.zookeeper.ZooKeeperClientTimeoutException: Timed out waiting for connection while in state: CONNECTING
-        at kafka.zookeeper.ZooKeeperClient.$anonfun$waitUntilConnected$3(ZooKeeperClient.scala:262)
-        at kafka.zookeeper.ZooKeeperClient.waitUntilConnected(ZooKeeperClient.scala:258)
-        at kafka.zookeeper.ZooKeeperClient.<init>(ZooKeeperClient.scala:119)
-        at kafka.zk.KafkaZkClient$.apply(KafkaZkClient.scala:1881)
-        at kafka.admin.TopicCommand$ZookeeperTopicService$.apply(TopicCommand.scala:376)
-        at kafka.admin.TopicCommand$.main(TopicCommand.scala:57)
-        at kafka.admin.TopicCommand.main(TopicCommand.scala)*/
