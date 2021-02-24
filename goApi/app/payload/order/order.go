@@ -9,15 +9,15 @@ type Creator struct {
 	Phone              string `json:"phone" swaggo:"false,手机号"`
 	PreengageTime      string
 	RealName           string
-	RecycleProductList []recycleProductList
+	RecycleProductList []RecycleProductList
 }
 
 /**
  */
-type recycleProductList struct {
+type RecycleProductList struct {
 	Photos        []string
-	weightCateId  int64
-	weightCateStr string
+	WeightCateId  int64
+	WeightCateStr string
+	RecCateStr    int64
+	RecCateId     string
 }
-
-

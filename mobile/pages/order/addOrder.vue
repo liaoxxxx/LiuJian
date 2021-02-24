@@ -139,13 +139,15 @@
           <button @click="addOrder('appointment')" class="add-order-button">立即预约</button>
         </view>
       </view>
-      <view>
-        <u-popup v-model="recProducPanalShow"  length="60%" mode="bottom" border-radius="14" :closeable="true">
+      <view class="rec-product-List-row">
+        <u-popup v-model="recProducPanalShow"  length="60%" mode="bottom" border-radius="14" :closeable="false">
           <rec-goods-item :recycle-product-list="recycleProductList"></rec-goods-item>
         </u-popup>
       </view>
-      <view class="rec-product-List-box" @click="recProducPanalShow = true">
-          <u-back-top   tips="返回" icon="car" >返回</u-back-top>
+      <view class="rec-product-box"  @click="recProducPanalShow = true">
+        <view class="rec-product-box-icon">
+          <img  src="../../static/img/recCart.png" alt="">
+        </view>
       </view>
 		</scroll-view>
 
@@ -160,9 +162,11 @@ import {vuexData} from '@/common/commonMixin.js'
 import moment from '@/common/moment.js'
 import addressItem from '@/components/address_item.vue'
 import recGoodsItem from "../../components/recGoodsItem";
+import View from "../../components/xinyi-skeleton/view";
 
 export default {
     components: {
+      View,
       tag,
       listItem,
       pickerPlus,
@@ -210,7 +214,7 @@ export default {
         recycleWeightSelectedItem: null,
 
         showAddPicBtn:false,
-        recProducPanalShow:true,
+        recProducPanalShow:false,
         uploadAction:"http://fileserve.liaoxx.top/upload/single",
         fileName:'file',
         weightPicList:[], //需要拍照的 回收重量分类
@@ -344,9 +348,16 @@ export default {
             num: 0.3,
             unit: '公斤'
           },
-        ]
+        ],
+        recCartTop:0,
+
+
       }
     },
+    onPageScroll(e) {
+      this.recCartTop = e.scrollTop;
+    },
+
     methods: {
       initSkeleton(dataBody) {
         this.unique=dataBody.Unique
@@ -647,13 +658,27 @@ export default {
     background-color: #1AAD19;
   }
 
-  .rec-product-List-box{
-    background-color: #1d64f1;
+  .rec-product-box{
+    border: 4px solid rgba(240,240,240 ,0.5);
+    border-radius: 60rpx ;
+    padding: 10rpx;
+    background-color: #cccccc;
     position: fixed;
     width: 100rpx;
     height: 100rpx;
-    right: 150rpx;
+    left: 20rpx;
     bottom: 200rpx;
+    overflow: hidden;
+  }
+
+  .rec-product-box-icon{
+    width: 100rpx;
+    height: 100rpx;
+  }
+  .rec-product-box-icon img{
+    width: 68rpx;
+    height: 68rpx;
+    object-fit: fill ;
   }
 
 </style>
