@@ -6,9 +6,9 @@ import (
 	"github.com/qiniu/qmgo"
 )
 
-var recOrderInfoMongo *qmgo.Collection
+var MongoDatabase *qmgo.Database
 
-const collectionName = "rec_order_info_main"
+const DatabaseName = "lj_recycle_mongo"
 
 func init() {
 	ctx := context.Background()
@@ -16,6 +16,5 @@ func init() {
 	if err != nil {
 		fmt.Println("warring : 【 MongoDB 】 init error")
 	}
-	db := client.Database(collectionName)
-	recOrderInfoMongo = db.Collection("user")
+	MongoDatabase = client.Database(DatabaseName)
 }
