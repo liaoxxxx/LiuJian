@@ -6,7 +6,7 @@ import (
 	"github.com/qiniu/qmgo"
 )
 
-var MongoDatabase *qmgo.Database
+var MongoClient *qmgo.Database
 
 const DatabaseName = "rec_order_info_main"
 
@@ -16,6 +16,6 @@ func init() {
 	if err != nil {
 		fmt.Println("warring : 【 MongoDB 】 init error")
 	}
-	MongoDatabase = client.Database(DatabaseName)
+	MongoClient = client.Database(DatabaseName)
 
 }

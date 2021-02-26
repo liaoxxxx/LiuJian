@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"goApi/app/models"
 	orm "goApi/app/models/database"
 	"goApi/app/models/mongodb"
@@ -26,13 +27,12 @@ func (orderRepo OrderRepo) FindByOrderId(OrderId, userId int64) (order models.Or
 }
 
 //添加
-func (orderRepo OrderRepo) Create(order models.Order) (id int64, err error) {
+func (orderRepo OrderRepo) Create(order models.Order, orderInfoExt mongodb.OrderInfoExt) (id int64, err error) {
 
 	//添加数据 到mysql
 	result := orm.Eloquent.Create(&order)
 	//添加回收的旧物数据到mongodb
-	var recOrderInfoExt mongodb.RecOrderInfoExt
-	recOrderInfoExt.Collection.InsertOne(order.)
+	_, _ = mongodb.MongoClient.Collection(orderInfoExt.CollectionName()).InsertOne(context.Background(), orderInfoExt)
 	id = order.ID
 	if result.Error != nil {
 		err = result.Error

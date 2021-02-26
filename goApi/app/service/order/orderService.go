@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goApi/app/enum"
 	"goApi/app/models"
+	"goApi/app/models/mongodb"
 	orderPld "goApi/app/payload/order"
 	"goApi/app/repository"
 	"goApi/util/helper"
@@ -24,15 +25,17 @@ func Create(c *gin.Context, userId int64) helper.Response {
 	}
 	var orderModel models.Order
 	var orderRepo repository.OrderRepo
+	orderInfoExtList := make([]mongodb.OrderInfoExt, 3)
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
-	if err != nil {
+	if err != nil || orderModel.ID > 0 { // 查询错误 || 订单已存在
 		fmt.Println(err.Error())
 		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorFindMsg),
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), orderModel)
 		return resp
 	}
 	buildByOrderCreatePld(&orderModel, orderPld, userId)
-	id, err := orderRepo.Create(orderModel)
+	buildOrderInfoExt(&orderInfoExtList, orderPld, userId)
+	id, err := orderRepo.Create(orderModel, orderInfoExtList)
 	if err != nil || id < 0 {
 		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorInsertMsg),
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorInsertCode), orderModel)
@@ -119,6 +122,28 @@ func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator, 
 	orderModel.RealName = orderPld.RealName
 	orderModel.Unique = orderPld.Unique
 	orderModel.Uid = userId
+}
+
+/**
+ * @Description:
+ * @param orderModel
+ * @param orderPld
+ */
+func buildOrderInfoExt(orderInfoExtList *[]mongodb.OrderInfoExt, orderPld orderPld.Creator, userId int64) {
+	var orderInfoExt *mongodb.OrderInfoExt
+	orderInfoExt.Unique = orderPld.Unique
+	orderInfoExt.Uid = userId
+	if len(orderPld.RecycleProductList) > 0 {
+		for _, product := range orderPld.RecycleProductList {
+			orderInfoExt.UserUploadPhotos = product.Photos
+			orderInfoExt.WeightCateId = product.WeightCateId
+			orderInfoExt.WeightCateStr = product.WeightCateStr
+			orderInfoExt.RecCateStr = product.RecCateStr
+			orderInfoExt.RecCateId = product.RecCateId
+			orderInfoExt.CreateTime = time.Now()
+			orderInfoExtList = append(orderInfoExtList, orderInfoExt)
+		}
+	}
 }
 
 func GenOrderId(orderType string) string {
