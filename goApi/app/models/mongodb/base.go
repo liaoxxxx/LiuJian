@@ -14,7 +14,10 @@ func init() {
 	ctx := context.Background()
 	client, err := qmgo.NewClient(ctx, &qmgo.Config{Uri: "mongodb://47.115.182.67:27017"})
 	if err != nil {
-		fmt.Println("warring : 【 MongoDB 】 init error")
+		fmt.Println("warring : 【 MongoDB 】 init error -> " + err.Error())
+	}
+	if client == nil {
+		fmt.Println("warring : 【 MongoDB 】 client init error ")
 	}
 	MongoClient = client.Database(DatabaseName)
 

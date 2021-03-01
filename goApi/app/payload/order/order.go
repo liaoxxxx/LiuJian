@@ -16,8 +16,8 @@ type Creator struct {
  */
 type RecycleProductList struct {
 	Photos        []string
-	WeightCateId  string
+	WeightCateId  int64
 	WeightCateStr string
 	RecCateStr    string
-	RecCateId     string
+	RecCateId     int64
 }

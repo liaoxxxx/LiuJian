@@ -34,7 +34,7 @@ func Create(c *gin.Context, userId int64) helper.Response {
 		return resp
 	}
 	buildByOrderCreatePld(&orderModel, orderPld, userId)
-	buildOrderInfoExt(&orderInfoExtList, orderPld, userId)
+	orderInfoExtList = buildOrderInfoExt(orderPld, userId)
 	id, err := orderRepo.Create(orderModel, orderInfoExtList)
 	if err != nil || id < 0 {
 		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorInsertMsg),
@@ -129,8 +129,8 @@ func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator, 
  * @param orderModel
  * @param orderPld
  */
-func buildOrderInfoExt(orderInfoExtList *[]mongodb.OrderInfoExt, orderPld orderPld.Creator, userId int64) {
-	var orderInfoExt *mongodb.OrderInfoExt
+func buildOrderInfoExt(orderPld orderPld.Creator, userId int64) (orderInfoExtList []mongodb.OrderInfoExt) {
+	var orderInfoExt mongodb.OrderInfoExt
 	orderInfoExt.Unique = orderPld.Unique
 	orderInfoExt.Uid = userId
 	if len(orderPld.RecycleProductList) > 0 {
@@ -144,6 +144,7 @@ func buildOrderInfoExt(orderInfoExtList *[]mongodb.OrderInfoExt, orderPld orderP
 			orderInfoExtList = append(orderInfoExtList, orderInfoExt)
 		}
 	}
+	return orderInfoExtList
 }
 
 func GenOrderId(orderType string) string {
