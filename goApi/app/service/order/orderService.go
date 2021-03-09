@@ -87,19 +87,22 @@ func List(userId, pageInt, limitInt int64) helper.Response {
 
 //确认回收订单的页面数据
 func Detail(orderId, userId int64) helper.Response {
-	var orderM models.Order
+
 	var orderRepo repository.OrderRepo
 	var dataMap = make(map[string]interface{}, 3)
-	//
-	orderM.Uid = userId
 
-	orderList, err := orderRepo.FindByOrderId(orderId, userId)
+	orderOne, err := orderRepo.FindByOrderId(orderId, userId)
 	if err != nil {
 		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessRepositoryMsg, enum.BusinessOrderMsg, enum.SpecificErrorFindMsg),
 			helper.GetUsrAErrCode(enum.ProcessRepositoryCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), dataMap)
 		return resp
 	}
-	dataMap["orderDetail"] = orderList
+
+	orderExtInfoList, _ := orderRepo.FindOrderExtInfo(orderOne.Unique)
+
+	dataMap["orderDetail"] = orderOne
+	dataMap["orderExtInfo"] = orderExtInfoList
+
 	resp := helper.RespSuccess("获取订单成功", dataMap)
 	return resp
 }
@@ -122,6 +125,7 @@ func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator, 
 	orderModel.RealName = orderPld.RealName
 	orderModel.Unique = orderPld.Unique
 	orderModel.Uid = userId
+	orderModel.AddTime = time.Now().Unix()
 }
 
 /**

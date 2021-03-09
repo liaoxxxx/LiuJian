@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson"
 	"goApi/app/models"
 	orm "goApi/app/models/database"
 	"goApi/app/models/mongodb"
@@ -48,4 +49,13 @@ func (orderRepo OrderRepo) Create(order models.Order, orderInfoExtList []mongodb
 func (orderRepo OrderRepo) OrderList(order models.Order, pageInt, limitInt int64) (orderList []models.Order, err error) {
 	err = orm.Eloquent.Where(&order).Limit(int(limitInt)).Offset(int((pageInt - 1) * limitInt)).Find(&orderList).Error
 	return
+}
+
+func (orderRepo OrderRepo) FindOrderExtInfo(orderUniqueId string) (orderExtInfoList []mongodb.OrderInfoExt, err error) {
+	var orderExtModel mongodb.OrderInfoExt
+	var filter = bson.M{
+		"unique": orderUniqueId,
+	}
+	err = mongodb.MongoClient.Collection(orderExtModel.CollectionName()).Find(context.Background(), filter).Limit(100).All(&orderExtInfoList)
+	return orderExtInfoList, err
 }

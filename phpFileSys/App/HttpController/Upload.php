@@ -14,6 +14,9 @@ use EasySwoole\Utility\Random;
 class Upload extends Controller
 {
 
+    /**
+     * @return false
+     */
     public function single()
     {
 
@@ -22,7 +25,10 @@ class Upload extends Controller
 
         /** @var UploadFile $file */
         $file = $this->request()->getUploadedFile('file');
-
+        if(!isset($file)|| empty($file)){
+            $this->response()->write(json_encode(['msg'=>"file not exist"]));
+            return false;
+        }
         $user="u-internal";
         $month=date("Ym");
         $day=date("d");
@@ -42,7 +48,7 @@ class Upload extends Controller
         ];
         file_put_contents(EASYSWOOLE_ROOT.'/Temp/liao.log',print_r(json_encode($data).PHP_EOL,true),FILE_APPEND);
         $this->response()->write(json_encode($data));
-
+        return  true;
         ///** @var UploadFile $file */
         //$file = $request->getUploadedFile('file');//获取一个上传文件,返回的是一个\EasySwoole\Http\Message\UploadFile的对象
 
