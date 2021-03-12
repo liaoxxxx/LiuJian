@@ -5,7 +5,8 @@
         "easyswoole/sync-invoker": "^2.0",
         "mongodb/mongodb": "^1.8",
         "easyswoole/hot-reload": "^0.1.2",
-        "easyswoole/kafka": "^1.0"
+        "easyswoole/kafka": "^1.0",
+        "easyswoole/pool": "^1.0"
     },
     "autoload": {
         "psr-4": {

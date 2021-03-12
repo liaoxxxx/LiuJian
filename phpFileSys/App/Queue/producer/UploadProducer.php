@@ -29,9 +29,6 @@ class UploadProducer extends AbstractProcess
                     'time'=>date("Y-m-d H:i:s")
                 ],
             ]);
-
-            var_dump($result);
-            var_dump('UploadProducer publish ok'.PHP_EOL);
         });
     }
 }

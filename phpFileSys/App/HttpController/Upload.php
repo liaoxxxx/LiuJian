@@ -46,7 +46,7 @@ class Upload extends Controller
             'fullPath'=> Server::DOMAIN.$nameSuffix,
 
         ];
-        file_put_contents(EASYSWOOLE_ROOT.'/Temp/liao.log',print_r(json_encode($data).PHP_EOL,true),FILE_APPEND);
+        //file_put_contents(EASYSWOOLE_ROOT.'/Temp/liao.log',print_r(json_encode($data).PHP_EOL,true),FILE_APPEND);
         $this->response()->write(json_encode($data));
         return  true;
         ///** @var UploadFile $file */

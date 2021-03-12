@@ -25,13 +25,7 @@ class UploadConsumer extends AbstractProcess
             $kafka = new Kafka($config);
             // 设置消费回调
             $func = function ($topic, $partition, $message) {
-                file_put_contents(EASYSWOOLE_ROOT . '/Temp/liao.log',
-                    print_r(json_encode([
-                            'topic' => $topic,
-                            'partition' => $partition,
-                            'message' => $message,
-                        ]) . PHP_EOL, true),
-                    FILE_APPEND);
+
             };
             $kafka->consumer()->subscribe($func);
         });
