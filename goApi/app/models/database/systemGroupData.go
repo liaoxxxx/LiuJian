@@ -1,8 +1,7 @@
-package models
+package database
 
 import (
 	"encoding/json"
-	orm "goApi/app/models/database"
 	"gorm.io/gorm"
 )
 

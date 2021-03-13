@@ -3,7 +3,8 @@ export default {
 		cartForValid: [],
 		cartForInvalid: [],
 		orderList: [],
-		orderDetail: {}
+		orderDetail: {},
+
 	},
 	getters: {
 		/**
@@ -74,8 +75,9 @@ export default {
 		},
 		getOrderDetail ({commit}, res) {
 			if (res.errCode === 0) {
-				let {orderDetail} = res.data
+				let {orderDetail,orderExtInfo} = res.data
 				console.log(orderDetail)
+				console.log(orderExtInfo)
 				commit('getOrderDetail', orderDetail)
 			}
 		}

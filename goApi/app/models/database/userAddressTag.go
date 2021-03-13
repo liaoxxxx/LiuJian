@@ -1,4 +1,4 @@
-package models
+package database
 
 type UserAddressTag struct {
 	ID   int64  `gorm:"primaryKey;autoIncrement:true"`

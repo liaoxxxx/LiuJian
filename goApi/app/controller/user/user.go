@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	model "goApi/app/models"
+	"goApi/app/models/database"
 	userPLd "goApi/app/payload/user"
 	userService "goApi/app/service/user"
 	"goApi/util/helper"
@@ -12,7 +12,7 @@ import (
 
 //列表数据
 func Users(c *gin.Context) {
-	var user model.User
+	var user database.User
 	user.Username = c.Request.FormValue("username")
 	user.Password = c.Request.FormValue("password")
 	result, err := user.Users()
@@ -33,7 +33,7 @@ func Users(c *gin.Context) {
 
 //添加数据
 func Store(c *gin.Context) {
-	var user model.User
+	var user database.User
 	user.Username = c.Request.FormValue("username")
 	user.Password = c.Request.FormValue("password")
 	id, err := user.Insert()
@@ -54,7 +54,7 @@ func Store(c *gin.Context) {
 
 //修改数据
 func Update(c *gin.Context) {
-	var user model.User
+	var user database.User
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	user.Password = c.Request.FormValue("password")
 	result, err := user.Update(id)
@@ -73,7 +73,7 @@ func Update(c *gin.Context) {
 
 //删除数据
 func Destroy(c *gin.Context) {
-	var user model.User
+	var user database.User
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	result, err := user.Destroy(id)
 	if err != nil || result.ID == 0 {

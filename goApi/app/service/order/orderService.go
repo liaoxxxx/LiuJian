@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"goApi/app/enum"
-	"goApi/app/models"
+	"goApi/app/models/database"
 	"goApi/app/models/mongodb"
 	orderPld "goApi/app/payload/order"
 	"goApi/app/repository"
@@ -23,9 +23,9 @@ func Create(c *gin.Context, userId int64) helper.Response {
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorParamUndefinedCode), orderPld)
 		return resp
 	}
-	var orderModel models.Order
+	var orderModel database.Order
 	var orderRepo repository.OrderRepo
-	orderInfoExtList := make([]mongodb.OrderInfoExt, 3)
+	orderPreCommitList := make([]mongodb.OrderInfoExt, 3)
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
 	if err != nil || orderModel.ID > 0 { // 查询错误 || 订单已存在
 		fmt.Println(err.Error())
@@ -33,9 +33,10 @@ func Create(c *gin.Context, userId int64) helper.Response {
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), orderModel)
 		return resp
 	}
+	//用户预提交的订单信息
 	buildByOrderCreatePld(&orderModel, orderPld, userId)
-	orderInfoExtList = buildOrderInfoExt(orderPld, userId)
-	id, err := orderRepo.Create(orderModel, orderInfoExtList)
+	orderPreCommitList = buildOrderPreCommitInfo(orderPld, userId)
+	id, err := orderRepo.Create(orderModel, orderPreCommitList)
 	if err != nil || id < 0 {
 		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorInsertMsg),
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorInsertCode), orderModel)
@@ -49,7 +50,7 @@ func Create(c *gin.Context, userId int64) helper.Response {
 
 //确认回收订单的页面数据
 func AddSkeleton(userId int64) helper.Response {
-	var sysGroup models.SystemGroup
+	var sysGroup database.SystemGroup
 	var userAddrRepo repository.UserAddressRepo
 	var dataMap = make(map[string]interface{}, 3)
 	///
@@ -68,7 +69,7 @@ func AddSkeleton(userId int64) helper.Response {
 
 //确认回收订单的页面数据
 func List(userId, pageInt, limitInt int64) helper.Response {
-	var orderM models.Order
+	var orderM database.Order
 	var orderRepo repository.OrderRepo
 	var dataMap = make(map[string]interface{}, 3)
 	//
@@ -112,8 +113,8 @@ func Detail(orderId, userId int64) helper.Response {
  * @param orderModel
  * @param orderPld
  */
-func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator, userId int64) {
-	orderModel.OrderId = GenOrderId(enum.OrderTypeRecycleShort)
+func buildByOrderCreatePld(orderModel *database.Order, orderPld orderPld.Creator, userId int64) {
+	orderModel.OrderId = GenOrderId(enum.OrderTypeRecyclePreShort)
 	orderModel.Mark = orderPld.Mark
 	orderModel.UserAddressId = orderPld.AddressId
 	orderModel.IsPreengage = orderPld.IsPreengage
@@ -133,7 +134,7 @@ func buildByOrderCreatePld(orderModel *models.Order, orderPld orderPld.Creator, 
  * @param orderModel
  * @param orderPld
  */
-func buildOrderInfoExt(orderPld orderPld.Creator, userId int64) (orderInfoExtList []mongodb.OrderInfoExt) {
+func buildOrderPreCommitInfo(orderPld orderPld.Creator, userId int64) (orderInfoExtList []mongodb.OrderInfoExt) {
 	var orderInfoExt mongodb.OrderInfoExt
 	orderInfoExt.Unique = orderPld.Unique
 	orderInfoExt.Uid = userId

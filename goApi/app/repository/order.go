@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
-	"goApi/app/models"
 	orm "goApi/app/models/database"
 	"goApi/app/models/mongodb"
 )
@@ -11,30 +10,30 @@ import (
 type OrderRepo struct {
 }
 
-func (orderRepo OrderRepo) FindOrderByUnique(Unique string) (order models.Order, err error) {
-	err = orm.Eloquent.Model(models.Order{}).Where("unique", Unique).Find(&order).Error
+func (orderRepo OrderRepo) FindOrderByUnique(Unique string) (order orm.Order, err error) {
+	err = orm.Eloquent.Model(orm.Order{}).Where("unique", Unique).Find(&order).Error
 	if err == nil {
 		return order, err
 	}
-	return models.Order{}, err
+	return orm.Order{}, err
 }
 
-func (orderRepo OrderRepo) FindByOrderId(OrderId, userId int64) (order models.Order, err error) {
-	err = orm.Eloquent.Model(models.Order{}).Where(models.Order{ID: OrderId, Uid: userId}).Find(&order).Error
+func (orderRepo OrderRepo) FindByOrderId(OrderId, userId int64) (order orm.Order, err error) {
+	err = orm.Eloquent.Model(orm.Order{}).Where(orm.Order{ID: OrderId, Uid: userId}).Find(&order).Error
 	if err == nil {
 		return order, err
 	}
-	return models.Order{}, err
+	return orm.Order{}, err
 }
 
 //添加
-func (orderRepo OrderRepo) Create(order models.Order, orderInfoExtList []mongodb.OrderInfoExt) (id int64, err error) {
+func (orderRepo OrderRepo) Create(order orm.Order, orderPreCommitList []mongodb.OrderInfoExt) (id int64, err error) {
 
 	//添加数据 到mysql
 	result := orm.Eloquent.Create(&order)
 	//添加回收的旧物数据到mongodb
-	for _, ext := range orderInfoExtList {
-		_, _ = mongodb.MongoClient.Collection(ext.CollectionName()).InsertOne(context.Background(), ext)
+	for _, preCommit := range orderPreCommitList {
+		_, _ = mongodb.MongoClient.Collection(preCommit.CollectionName()).InsertOne(context.Background(), preCommit)
 	}
 
 	id = order.ID
@@ -46,7 +45,7 @@ func (orderRepo OrderRepo) Create(order models.Order, orderInfoExtList []mongodb
 }
 
 //list
-func (orderRepo OrderRepo) OrderList(order models.Order, pageInt, limitInt int64) (orderList []models.Order, err error) {
+func (orderRepo OrderRepo) OrderList(order orm.Order, pageInt, limitInt int64) (orderList []orm.Order, err error) {
 	err = orm.Eloquent.Where(&order).Limit(int(limitInt)).Offset(int((pageInt - 1) * limitInt)).Find(&orderList).Error
 	return
 }

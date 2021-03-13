@@ -2,7 +2,6 @@ package repository
 
 import (
 	"fmt"
-	"goApi/app/models"
 	orm "goApi/app/models/database"
 	"goApi/app/payload/user"
 	"time"
@@ -12,20 +11,20 @@ type UserAddressRepo struct {
 }
 
 //所有地址
-func (userAddrRepo UserAddressRepo) AddressList(userId int64) (userAddressList []models.UserAddress, err error) {
-	err = orm.Eloquent.Model(models.UserAddress{}).Where("uid", userId).Find(&userAddressList).Error
+func (userAddrRepo UserAddressRepo) AddressList(userId int64) (userAddressList []orm.UserAddress, err error) {
+	err = orm.Eloquent.Model(orm.UserAddress{}).Where("uid", userId).Find(&userAddressList).Error
 	if err == nil {
 		return userAddressList, err
 	}
-	return []models.UserAddress{}, err
+	return []orm.UserAddress{}, err
 }
 
-func (userAddrRepo UserAddressRepo) Save(userAddress models.UserAddress) (models.UserAddress, int64) {
+func (userAddrRepo UserAddressRepo) Save(userAddress orm.UserAddress) (orm.UserAddress, int64) {
 	db := orm.Eloquent.Save(&userAddress)
 	return userAddress, db.RowsAffected
 }
 
-func (userAddrRepo UserAddressRepo) Find(addressId, userId int64) (uAddress models.UserAddress, err error) {
+func (userAddrRepo UserAddressRepo) Find(addressId, userId int64) (uAddress orm.UserAddress, err error) {
 	uAddress.Uid = userId
 	uAddress.ID = addressId
 	err = orm.Eloquent.Where(&uAddress).Find(&uAddress).Error
@@ -33,14 +32,14 @@ func (userAddrRepo UserAddressRepo) Find(addressId, userId int64) (uAddress mode
 }
 
 func (userAddrRepo UserAddressRepo) Del(addressId, userId int64) (int64, error) {
-	var address = models.UserAddress{Uid: userId, ID: addressId}
+	var address = orm.UserAddress{Uid: userId, ID: addressId}
 	fmt.Println(address.ID)
 	fmt.Println(address.Uid)
 	db := orm.Eloquent.Where(&address).Delete(&address)
 	return db.RowsAffected, db.Error
 }
 
-func (userAddrRepo UserAddressRepo) BuildByPayload(uAddrPld user.UAddressAdd, userId int64) (uAddress models.UserAddress) {
+func (userAddrRepo UserAddressRepo) BuildByPayload(uAddrPld user.UAddressAdd, userId int64) (uAddress orm.UserAddress) {
 
 	uAddress.AddTime = time.Now().Unix()
 	uAddress.City = uAddrPld.City
