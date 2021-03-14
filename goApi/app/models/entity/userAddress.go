@@ -1,4 +1,4 @@
-package database
+package entity
 
 type UserAddress struct {
 	ID        int64  `gorm:"primaryKey;autoIncrement:true" json:"id"`

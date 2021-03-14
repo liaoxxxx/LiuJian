@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"goApi/app/enum"
-	"goApi/app/models/database"
+	"goApi/app/models/entity"
 	"goApi/app/models/mongodb"
 	orderPld "goApi/app/payload/order"
 	"goApi/app/repository"
@@ -23,7 +23,7 @@ func Create(c *gin.Context, userId int64) helper.Response {
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorParamUndefinedCode), orderPld)
 		return resp
 	}
-	var orderModel database.Order
+	var orderModel entity.Order
 	var orderRepo repository.OrderRepo
 	orderPreCommitList := make([]mongodb.OrderInfoExt, 3)
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
@@ -50,7 +50,7 @@ func Create(c *gin.Context, userId int64) helper.Response {
 
 //确认回收订单的页面数据
 func AddSkeleton(userId int64) helper.Response {
-	var sysGroup database.SystemGroup
+	var sysGroup entity.SystemGroup
 	var userAddrRepo repository.UserAddressRepo
 	var dataMap = make(map[string]interface{}, 3)
 	///
@@ -69,7 +69,7 @@ func AddSkeleton(userId int64) helper.Response {
 
 //确认回收订单的页面数据
 func List(userId, pageInt, limitInt int64) helper.Response {
-	var orderM database.Order
+	var orderM entity.Order
 	var orderRepo repository.OrderRepo
 	var dataMap = make(map[string]interface{}, 3)
 	//
@@ -102,7 +102,7 @@ func Detail(orderId, userId int64) helper.Response {
 	orderExtInfoList, _ := orderRepo.FindOrderExtInfo(orderOne.Unique)
 
 	dataMap["orderDetail"] = orderOne
-	dataMap["orderExtInfo"] = orderExtInfoList
+	dataMap["orderUserPreCommitInfo"] = orderExtInfoList
 
 	resp := helper.RespSuccess("获取订单成功", dataMap)
 	return resp
@@ -113,7 +113,7 @@ func Detail(orderId, userId int64) helper.Response {
  * @param orderModel
  * @param orderPld
  */
-func buildByOrderCreatePld(orderModel *database.Order, orderPld orderPld.Creator, userId int64) {
+func buildByOrderCreatePld(orderModel *entity.Order, orderPld orderPld.Creator, userId int64) {
 	orderModel.OrderId = GenOrderId(enum.OrderTypeRecyclePreShort)
 	orderModel.Mark = orderPld.Mark
 	orderModel.UserAddressId = orderPld.AddressId

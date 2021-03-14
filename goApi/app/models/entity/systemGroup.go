@@ -1,8 +1,9 @@
-package database
+package entity
 
 import (
 	"encoding/json"
-	h "goApi/util/helper"
+	h  "goApi/util/helper"
+	orm "goApi/app/models/database"
 )
 
 type SystemGroup struct {

@@ -1,4 +1,4 @@
-package database
+package entity
 
 type Order struct {
 	ID            int64   `gorm:"primaryKey;autoIncrement:true" json:"id"`

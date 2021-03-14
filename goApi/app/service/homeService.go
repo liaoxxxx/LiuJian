@@ -1,7 +1,7 @@
 package service
 
 import (
-	"goApi/app/models/database"
+	"goApi/app/models/entity"
 	"goApi/util/helper"
 	"net/http"
 )
@@ -9,7 +9,7 @@ import (
 //获取移动端 首页数据
 func GetHomeMobileData(uid int64) *helper.Response {
 	var resp = new(helper.Response)
-	var sysGroup database.SystemGroup
+	var sysGroup entity.SystemGroup
 
 	dataMap := make(map[string]interface{}, 5)
 	//轮播图
@@ -25,7 +25,7 @@ func GetHomeMobileData(uid int64) *helper.Response {
 
 	//未登录的用户统计数据
 	//rollNotice, _ := sysGroup.GetDataByConfigName("routine_home_roll_news")
-	dataMap["UserStatInfo"] = database.UserStatInfo{}
+	dataMap["UserStatInfo"] = entity.UserStatInfo{}
 
 	//其他功能
 	anotherOption, _ := sysGroup.GetDataByConfigName("user_client_home_another_option")

@@ -3,7 +3,7 @@ package user
 import (
 	"fmt"
 	"goApi/app/enum"
-	"goApi/app/models/database"
+	"goApi/app/models/entity"
 	userPLd "goApi/app/payload/user"
 	"goApi/app/repository"
 	"goApi/util/helper"
@@ -53,7 +53,7 @@ func Login(userLoginPld userPLd.PhoneLogin) helper.Response {
 //用户信息
 func UserInfo(token string) helper.Response {
 	var resp helper.Response
-	var user database.User
+	var user entity.User
 	dataMap := make(map[string]interface{}, 2)
 	jwtTool := helper.NewJWT()
 	userClaims, _ := jwtTool.ParseToken(token)
@@ -102,7 +102,7 @@ func GetMd5Pwd(password string, salt string) (md5Pwd string) {
 }
 func GetStateInfo(uid int64) *helper.Response {
 
-	var userModel database.User
+	var userModel entity.User
 	var resp = new(helper.Response)
 
 	userStatInfo, _ := userModel.GetStateInfo(uid)

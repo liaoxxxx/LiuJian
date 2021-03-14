@@ -1,7 +1,8 @@
-package database
+package entity
 
 import (
 	"fmt"
+	orm "goApi/app/models/database"
 	"gorm.io/gorm"
 )
 
@@ -73,6 +74,7 @@ func (user *User) Find(id int64) (userOne User, err error) {
 	}
 	return
 }
+
 
 //删除数据
 func (user *User) Destroy(id int64) (Result User, err error) {
