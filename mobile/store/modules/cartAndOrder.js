@@ -4,6 +4,7 @@ export default {
 		cartForInvalid: [],
 		orderList: [],
 		orderDetail: {},
+		orderInfoUserPreCommitList:[],
 
 	},
 	getters: {
@@ -13,7 +14,8 @@ export default {
 		cartForValid: state => state.cartForValid,		// 过期购物车列表
 		cartForInvalid: state => state.cartForInvalid,	// 有效购物车列表
 		orderList: state => state.orderList,			// 订单列表
-		orderDetail: state => state.orderDetail			// 订单详情
+		orderDetail: state => state.orderDetail,			// 订单详情
+		orderInfoUserPreCommitList:state => state.orderInfoUserPreCommitList, 	// 订单详情
 	},
 	mutations: {
 		/**
@@ -48,7 +50,12 @@ export default {
 		},
 		getOrderDetail(state, res) {
 			state.orderDetail = res
-		}
+		},
+		getOrderInfoUserPreCommitList(state, orderInfoUserPreCommitList) {
+			console.log('-----------getOrderInfoUserPreCommitList---------------')
+			console.log(orderInfoUserPreCommitList)
+			state.orderInfoUserPreCommitList = orderInfoUserPreCommitList
+		},
 	},
 	actions: {
 		/**
@@ -75,10 +82,11 @@ export default {
 		},
 		getOrderDetail ({commit}, res) {
 			if (res.errCode === 0) {
-				let {orderDetail,orderExtInfo} = res.data
-				console.log(orderDetail)
-				console.log(orderExtInfo)
+				let {orderDetail,orderUserPreCommitInfo} = res.data
+
 				commit('getOrderDetail', orderDetail)
+
+				commit('getOrderInfoUserPreCommitList', orderUserPreCommitInfo)
 			}
 		}
 	}

@@ -79,7 +79,18 @@
 				<list-item :showContent="false" :title="'下单时间：' + orderDetail._add_time" :leftFont="{fontSize: '30rpx', color: '#999999',fontWeight: 400}">
 				</list-item>
 			</view>
-			<halving-line bgColor="#f0f0f0" v-for="item in 8" :key="item"></halving-line>
+
+      <halving-line bgColor="#f0f0f0"></halving-line>
+      <view>
+        <view>预约信息</view>
+        <view>
+          <user-pre-commit class="order-info-user-pre-commit-list" :orderInfoUserPreCommitList="orderInfoUserPreCommitList"></user-pre-commit>
+        </view>
+      </view>
+
+
+
+      <halving-line bgColor="#f0f0f0" v-for="item in 8" :key="item"></halving-line>
 			<view class="position-fixed bottom-0 flex justify-end w-100 py-2 bg-white">
 				<view class="mr-2" v-if="type == 0">
 					<my-btn bgColor="#fff" :py="1" border content="取消订单"></my-btn>
@@ -115,10 +126,16 @@
 		vuexData
 	} from '@/common/commonMixin.js'
 	import listItem from '@/components/list_item.vue'
-	export default {
+  import recGoodsItem from "../../components/recGoodsItem";
+  import userPreCommit from "../../components/userPreCommit";
+
+
+  export default {
 		mixins: [vuexData],
 		components: {
-			listItem
+			listItem,
+      recGoodsItem,
+      userPreCommit
 		},
 		data() {
 			return {

@@ -36,6 +36,7 @@ export const vuexData = {
 			'expenseIntegral',	// 积分支出
 			'hotGoodsList',		// 推荐商品
 			'orderDetail',		// 订单详情
+			'orderInfoUserPreCommitList',  //回收订单额外信息 用户预先提交
 			'findList',			// 发现页面数据
 		])
 	},
@@ -55,6 +56,7 @@ export const vuexData = {
 			'getUserIntegra',
 			'getHotGoodsList',
 			'getOrderDetail',		// 获取订单详情
+			'getOrderInfoUserPreCommitList',		// 获取订单详情
 			'getFind',				// 获取发现页面列表
 		]),
 		...mapMutations(['setNowAddress', 'changeCartNum', 'removeAddress', 'clearCartAndOrder', 'clearGoods', 'clearUser']),
