@@ -1,3 +1,7 @@
+
+### 项目结构遵循规范  `    ` https://github.com/golang-standards/project-layout
+
+
 ### 1.目录结构
 ```
  app

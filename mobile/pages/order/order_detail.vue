@@ -81,7 +81,7 @@
 			</view>
 
       <halving-line bgColor="#f0f0f0"></halving-line>
-      <view>
+      <view v-if="orderInfoUserPreCommitList !=null ">
         <view>预约信息</view>
         <view>
           <user-pre-commit class="order-info-user-pre-commit-list" :orderInfoUserPreCommitList="orderInfoUserPreCommitList"></user-pre-commit>
