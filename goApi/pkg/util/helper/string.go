@@ -5,9 +5,13 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/hex"
+	"fmt"
+	"math/rand"
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
+	"unsafe"
 )
 
 // 获取MD5
@@ -62,4 +66,42 @@ func parseStr2Int(str string) int64 {
 		return 0
 	}
 	return parseInt
+}
+
+var r *rand.Rand
+
+func init() {
+	r = rand.New(rand.NewSource(time.Now().Unix()))
+}
+
+func Str2bytes(s string) []byte {
+	x := (*[2]uintptr)(unsafe.Pointer(&s))
+	h := [3]uintptr{x[0], x[1], x[1]}
+	return *(*[]byte)(unsafe.Pointer(&h))
+}
+
+func Bytes2str(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
+}
+
+// RandString 生成随机字符串
+func RandString(len int) string {
+	bytes := make([]byte, len)
+	for i := 0; i < len; i++ {
+		b := r.Intn(26) + 65
+		bytes[i] = byte(b)
+	}
+	return string(bytes)
+}
+
+// Code 生成6位数随机码-- int  短信
+func RandSmsCode() (res string) {
+	rand.Seed(time.Now().Unix())
+	rnd := rand.New(rand.NewSource(time.Now().Unix()))
+	res = fmt.Sprintf("%06v", rnd.Intn(1000000))
+	// 可能大家都已经发现了，如果随机生成的Code以0开头就会被阿里去掉，所以要稍微解决一下
+	if res[0] == '0' {
+		res = RandSmsCode()
+	}
+	return
 }
