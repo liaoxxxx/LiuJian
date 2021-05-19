@@ -3,8 +3,8 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	userPld "goApi/api/user_module/payload/user"
-	userService "goApi/api/user_module/service/user"
+	userPld "goApi/internal/app/user_module/payload/user"
+	userService "goApi/internal/app/user_module/service/user"
 	"goApi/pkg/util/helper"
 	"net/http"
 	"strconv"

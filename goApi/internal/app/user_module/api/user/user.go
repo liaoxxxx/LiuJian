@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	userPLd "goApi/api/user_module/payload/user"
-	userService "goApi/api/user_module/service/user"
+	userPLd "goApi/internal/app/user_module/payload/user"
+	userService "goApi/internal/app/user_module/service/user"
 	"goApi/internal/models/entity"
 	"goApi/pkg/util/helper"
 	"net/http"

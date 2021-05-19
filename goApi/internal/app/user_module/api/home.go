@@ -1,9 +1,9 @@
-package controller
+package api
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	homeService "goApi/api/user_module/service"
+	homeService "goApi/internal/app/user_module/service"
 	"net/http"
 )
 

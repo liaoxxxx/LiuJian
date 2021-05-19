@@ -2,7 +2,7 @@ package user
 
 import (
 	"fmt"
-	userPLd "goApi/api/user_module/payload/user"
+	userPLd "goApi/internal/app/user_module/payload/user"
 	"goApi/internal/enum"
 	"goApi/internal/models/entity"
 	"goApi/internal/repository"

@@ -4,23 +4,45 @@
 
 ### 1.目录结构
 ```
- app
- |---.
- |   |--- contoller         (控制器)
- |   |
- |   |--- enum              (枚举常量)
- |   |
- |   |--- middleware        (中间件)
- |   |
- |   |--- models           （模型实体）
- |   |
- |   |--- payload          （请求载体）    
- |   |
- |   |--- respository      （数据存储）
- |   |
- |   |--- service          （业务逻辑）
+ |----. internal
+ |    | 
+ |    | ---.app
+ |    |    | 
+ |    |    |---. moduleXXX       (应用模块)
+ |    |    |    |
+ |    |    |    |--- api         (控制器)
+ |    |    |    |
+ |    |    |    |--- payload     （请求载体） 
+ |    |    |    |
+ |    |    |    |--- service     （服务） 
+ |    |    |    |    
+ |    |    |    |--- exports     （输出数据载体）     
+ |    |    |
+ |    |    |
+ |    |    |---. moduleYYYY
+ |    |    |
+ |    |    |
+ |    |    |---. moduleZZZZ
+ |    |   
+ |    |      
+ |    | 
+ |    |--- middleware        (中间件)
+ |    | 
+ |    |--- models           （模型实体）
+ |    |
+ |    |--- respository      （数据存储）
+ |   
+
  |
- |--- router
+ |---. pkg
+ |   |
+ |   |--- enum           (枚举常量)
+ |   |
+ |   |--- util           (工具类)
+ | 
+ |
+ |---. router
+ |
  |
  |____________
 ```
@@ -34,7 +56,7 @@
 
 3. ----->                 【router  分发路由】 
 
-4. ----->                          【contoller(context) 控制器】
+4. ----->                          【api(context) 控制器】
 
 5. ----->                                 【payload  从context 获取请求载体】 
 

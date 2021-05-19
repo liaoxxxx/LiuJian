@@ -24,9 +24,9 @@ type Error struct {
 const (
 	/*应用模块*/
 	AppUserCode       = 1
-	AppUserMsg        = "api-用戶端 "
+	AppUserMsg        = "app-用戶端 "
 	AppRecycleManCode = 2
-	AppRecycleManMsg  = "api-回收员端 "
+	AppRecycleManMsg  = "app-回收员端 "
 
 	/*流程*/
 	ProcessRouteCode = 01

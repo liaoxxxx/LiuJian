@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	"goApi/api/user_module/payload/user"
+	"goApi/internal/app/user_module/payload/user"
 	"goApi/internal/models/database"
 	"goApi/internal/models/entity"
 	"time"

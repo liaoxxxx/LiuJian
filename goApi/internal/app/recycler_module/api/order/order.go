@@ -3,7 +3,7 @@ package order
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	orderService "goApi/api/user_module/service/order"
+	orderService "goApi/internal/app/user_module/service/order"
 	"net/http"
 	"strconv"
 )

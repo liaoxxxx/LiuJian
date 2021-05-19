@@ -2,9 +2,9 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	. "goApi/api/user_module/controller"
-	orderModule "goApi/api/user_module/controller/order"
-	userModule "goApi/api/user_module/controller/user"
+	. "goApi/internal/app/user_module/api"
+	orderModule "goApi/internal/app/user_module/api/order"
+	userModule "goApi/internal/app/user_module/api/user"
 	"goApi/internal/middleware"
 )
 

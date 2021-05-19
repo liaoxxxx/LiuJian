@@ -3,11 +3,12 @@ package order
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	orderPld "goApi/api/user_module/payload/order"
+	orderPld "goApi/internal/app/user_module/payload/order"
 	"goApi/internal/enum"
 	"goApi/internal/models/entity"
 	"goApi/internal/models/mongodb"
 	"goApi/internal/repository"
+	enum2 "goApi/pkg/enum"
 	"goApi/pkg/util/helper"
 	"math/rand"
 	"strconv"
@@ -114,7 +115,7 @@ func Detail(orderId, userId int64) helper.Response {
  * @param orderPld
  */
 func buildByOrderCreatePld(orderModel *entity.Order, orderPld orderPld.Creator, userId int64) {
-	orderModel.OrderId = GenOrderId(enum.OrderTypeRecyclePreShort)
+	orderModel.OrderId = GenOrderId(enum2.OrderTypeRecyclePreShort)
 	orderModel.Mark = orderPld.Mark
 	orderModel.UserAddressId = orderPld.AddressId
 	orderModel.IsPreengage = orderPld.IsPreengage
