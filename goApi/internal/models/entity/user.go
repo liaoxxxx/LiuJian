@@ -9,9 +9,9 @@ import (
 type User struct {
 	ID              int64   `gorm:"primaryKey;autoIncrement:true"`
 	Username        string  `json:"username"` // 列名为 `username`
-	Password        string  `json:"password"` // 列名为 `password`
+	Password        string  `json:"-"`        // 列名为 `password`
 	Phone           string  `json:"phone"`
-	Salt            string  `json:"salt"`
+	Salt            string  `json:"-"`
 	RecycleIncome   float64 `json:"recycle_income"`
 	RecycleIntegral int64   `json:"recycle_integral"`
 	RecycleWeight   float64 `json:"recycle_weight"`

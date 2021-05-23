@@ -5,9 +5,9 @@ import (
 	"strconv"
 )
 
-func GetErrCode(appModule, processCode, businessCode, specificCode int64) int64 {
+func GetErrCode(appModule, processCode, businessCode, specificCode int64) string {
 	codeStr := strconv.FormatInt(appModule, 10) + strconv.FormatInt(processCode, 10) + strconv.FormatInt(businessCode, 10) + strconv.FormatInt(specificCode, 10)
-	return parseStr2Int(codeStr)
+	return codeStr
 }
 
 func GetErrMsg(appModule, processMsg, businessMsg, specificMsg string) string {
@@ -15,7 +15,7 @@ func GetErrMsg(appModule, processMsg, businessMsg, specificMsg string) string {
 	return msgStr
 }
 
-func GetUsrAErrCode(processCode, businessCode, specificCode int64) int64 {
+func GetUsrAErrCode(processCode, businessCode, specificCode int64) string {
 	codeStr := GetErrCode(enum.AppUserCode, processCode, businessCode, specificCode)
 	return codeStr
 }

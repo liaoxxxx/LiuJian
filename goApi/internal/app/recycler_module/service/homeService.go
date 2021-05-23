@@ -2,13 +2,12 @@ package service
 
 import (
 	"goApi/internal/models/entity"
+	"goApi/pkg/enum"
 	"goApi/pkg/util/helper"
-	"net/http"
 )
 
 //获取移动端 首页数据
-func GetHomeMobileData(uid int64) *helper.Response {
-	var resp = new(helper.Response)
+func GetHomeMobileData(uid int64) (resp helper.ServiceResp) {
 	var sysGroup entity.SystemGroup
 
 	dataMap := make(map[string]interface{}, 5)
@@ -32,11 +31,10 @@ func GetHomeMobileData(uid int64) *helper.Response {
 	dataMap["AnotherOption"] = anotherOption
 
 	///
-	resp.ErrCode = 0
-	resp.Msg = "success"
-	resp.Code = http.StatusOK
+
+	resp.Message = "success"
+	resp.Code = enum.DefaultSuccessCode
 	resp.Data = dataMap
-	resp.Status = "ok"
 	return resp
 
 }

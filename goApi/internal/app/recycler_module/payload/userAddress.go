@@ -1,4 +1,4 @@
-package user
+package payload
 
 type UAddressAdd struct {
 	Id        int64  `form:"id" json:"id"   `

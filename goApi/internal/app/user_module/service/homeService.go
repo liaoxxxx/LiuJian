@@ -2,6 +2,7 @@ package service
 
 import (
 	"goApi/internal/models/entity"
+	"goApi/pkg/enum"
 	"goApi/pkg/util/helper"
 	"net/http"
 )
@@ -32,7 +33,7 @@ func GetHomeMobileData(uid int64) *helper.Response {
 	dataMap["AnotherOption"] = anotherOption
 
 	///
-	resp.ErrCode = 0
+	resp.ErrCode = enum.DefaultSuccessCode
 	resp.Msg = "success"
 	resp.Code = http.StatusOK
 	resp.Data = dataMap
