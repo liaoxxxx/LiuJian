@@ -43,6 +43,21 @@ func GetUidByCtx(ctx *gin.Context) int64 {
 }
 
 /**
+ * @Description: 通过上下文 获取 绑定的uid
+ * @param ctx
+ * @param obj
+ * @return int64
+ */
+func GetRecIdByCtx(ctx *gin.Context) int64 {
+	uid, exist := ctx.Get("recyclerId")
+	if exist == false {
+		//fmt.Println(exist)
+		return 0
+	}
+	return uid.(int64)
+}
+
+/**
  * @Description: 获取查询的页数
  * @param ctx
  * @return int64

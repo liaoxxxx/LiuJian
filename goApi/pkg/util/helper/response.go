@@ -11,7 +11,7 @@ const (
 )
 
 type Response struct {
-	Code    int16       `json:"code"`
+	Code    int64       `json:"code"`
 	ErrCode string      `json:"errCode"`
 	Status  string      `json:"status"`
 	Empty   bool        `json:"empty"`
@@ -32,7 +32,7 @@ func RespSuccess(message string, data interface{}) Response {
 
 func RespError(message string, errCode string, data interface{}) Response {
 	var resp Response
-	resp.Code = http.StatusOK
+	resp.Code = http.StatusBadRequest
 	resp.ErrCode = errCode
 	resp.Empty = true
 	resp.Status = StatusErrorString

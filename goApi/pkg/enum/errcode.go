@@ -24,7 +24,7 @@ const (
 	DatabaseUpdateErrCode = "40 00 02"
 	DatabaseUpdateErrMsg  = "数据更新错误"
 
-	DatabaseFindErrCode = "40 00 03"
+	DatabaseFindErrCode = 400003
 	DatabaseFindErrMsg  = "数据获取错误"
 
 	//############# 具体错误    #############
