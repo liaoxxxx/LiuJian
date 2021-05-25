@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	orderService "goApi/internal/app/user_module/service/order"
+	"goApi/pkg/util/helper"
 	"net/http"
 	"strconv"
 )
@@ -35,19 +36,12 @@ func AddSkeleton(c *gin.Context) {
 	c.JSON(http.StatusOK, orderService.AddSkeleton(userId))
 }
 
-//列表数据
+// List 列表数据
 func List(ctx *gin.Context) {
-	uid, err := ctx.Get("uid")
-	if err == false {
-		fmt.Println(err)
-	}
-	userId := uid.(int64)
-	page := ctx.DefaultQuery("page", "0")
-	limit := ctx.DefaultQuery("limit", "10")
-	pageInt, _ := strconv.ParseInt(page, 10, 64)
-	limitInt, _ := strconv.ParseInt(limit, 10, 64)
-
-	ctx.JSON(http.StatusOK, orderService.List(userId, pageInt, limitInt))
+	userId := helper.GetUidByCtx(ctx)
+	page := helper.GetPage(ctx)
+	limit := helper.GetLimit(ctx)
+	ctx.JSON(http.StatusOK, orderService.List(userId, page, limit))
 }
 
 //列表数据

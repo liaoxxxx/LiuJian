@@ -43,6 +43,7 @@ export default {
 			state.cartForValid = temp
 		},
 		getOrderList(state, res) {
+			console.log("-------------------------- mutations getOrderList")
 			console.log(res)
 			let arr = state.orderList
 			arr.push(...res.OrderList)
@@ -75,13 +76,13 @@ export default {
 		},
 		getOrderList({commit}, res) {
 			console.log("------ getOrderList commit --------")
-			if (res.errCode ===0) {
+			if (res.errCode ==="0") {
 				let {data} = res
 				commit('getOrderList', data)
 			}
 		},
 		getOrderDetail ({commit}, res) {
-			if (res.errCode === 0) {
+			if (res.errCode === "0") {
 				let {orderDetail,orderUserPreCommitInfo} = res.data
 
 				commit('getOrderDetail', orderDetail)
