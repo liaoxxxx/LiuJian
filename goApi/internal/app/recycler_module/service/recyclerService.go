@@ -5,6 +5,7 @@ import (
 	pLd "goApi/internal/app/recycler_module/payload"
 	"goApi/internal/enum"
 	pkgEnum "goApi/pkg/enum"
+	"goApi/pkg/logger"
 	"strings"
 
 	"goApi/internal/models/entity"
@@ -40,7 +41,7 @@ func (*recyclerService) Login(smsCodePld pLd.SmsCodeLogin) helper.ServiceResp {
 	//fmt.Println(recycler.Password)
 	//if strings.Compare(pwdMd5, recycler.Password) == 0 {
 	jwtTool := helper.NewJWT()
-	userClaims := helper.CustomClaims{ID: recycler.ID, Phone: recycler.Phone, Name: recycler.Username}
+	userClaims := helper.CustomClaims{ID: recycler.ID, Phone: recycler.Phone, Name: recycler.Nickname}
 	token, _ := jwtTool.CreateToken(userClaims)
 
 	resp.Code = pkgEnum.DefaultSuccessCode
@@ -77,12 +78,13 @@ func (*recyclerService) PwdLogin(pwdPld pLd.PasswordLogin) helper.ServiceResp {
 	pwdMd5 := helper.GetMd5Pwd(pwdPld.Password, recycler.Salt)
 
 	fmt.Println("-------------  GetMd5Pwd -------------")
+	fmt.Println(recycler)
 	fmt.Println(pwdMd5)
 	fmt.Println(recycler.Pwd)
 	fmt.Println(recycler.Salt)
 	if strings.Compare(pwdMd5, recycler.Pwd) == 0 {
 		jwtTool := helper.NewJWT()
-		userClaims := helper.CustomClaims{ID: recycler.ID, Phone: recycler.Phone, Name: recycler.Username}
+		userClaims := helper.CustomClaims{ID: recycler.ID, Phone: recycler.Phone, Name: recycler.Nickname}
 		token, _ := jwtTool.CreateToken(userClaims)
 
 		resp.Code = pkgEnum.DefaultSuccessCode
@@ -100,33 +102,26 @@ func (*recyclerService) PwdLogin(pwdPld pLd.PasswordLogin) helper.ServiceResp {
 }
 
 //用户信息
-func UserInfo(token string) helper.Response {
+func (*recyclerService) UserInfo(recId int64) (bool, helper.Response) {
 	var resp helper.Response
-	var user entity.User
+	var recycler entity.Recycler
 	dataMap := make(map[string]interface{}, 2)
-	jwtTool := helper.NewJWT()
-	userClaims, _ := jwtTool.ParseToken(token)
-	fmt.Println("++++++++++++++++++++++++++++++")
-	fmt.Println(token)
-	fmt.Println(userClaims)
-	fmt.Println(userClaims.ID)
-	fmt.Println("++++++++++++++++++++++++++++++")
-
-	recycler, err := user.Find(userClaims.ID)
+	recycler, err := repository.RecyclerRepo.FindByUid(recId)
 
 	if err != nil {
-		resp.Code = http.StatusBadRequest
-		resp.Msg = "未注册的用户"
+		logger.Logger.Info("--------未注册的用户" + err.Error())
+		resp.Code = pkgEnum.DatabaseFindErrCode
+		resp.Msg = pkgEnum.DatabaseFindErrMsg
 
-		return resp
+		return false, resp
 	} else {
-
-		dataMap["user"] = recycler
+		logger.Logger.Info("--------获取用户成功")
+		dataMap["recyclerInfo"] = recycler
 		resp.Code = http.StatusOK
 		resp.Msg = "获取用户成功"
 		resp.Data = dataMap
 
-		return resp
+		return true, resp
 	}
 }
 
@@ -141,7 +136,7 @@ func UCenter(userId int64) helper.Response {
 	return resp
 }
 
-func GetStateInfo(uid int64) *helper.Response {
+func (recyclerService) GetStateInfo(uid int64) *helper.Response {
 
 	var userModel entity.User
 	var resp = new(helper.Response)

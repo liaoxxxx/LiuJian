@@ -4,9 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	recPLd "goApi/internal/app/recycler_module/payload"
 	"goApi/internal/app/recycler_module/service"
-	userService "goApi/internal/app/user_module/service/user"
 	"goApi/pkg/util/helper"
 	"net/http"
+	"strconv"
 )
 
 type recyclerServer struct{}
@@ -27,25 +27,27 @@ func (*recyclerServer) PwdLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func UserInfo(c *gin.Context) {
-	token := c.GetHeader("token")
+func UserInfo(ctx *gin.Context) {
 
-	resp := userService.UserInfo(token)
-	c.JSON(http.StatusOK, resp)
+	recId := helper.GetRecIdByCtx(ctx)
+	b, resp := service.RecyclerService.UserInfo(recId)
+	if b {
+		ctx.JSON(http.StatusOK, helper.RespSuccess(resp.Msg, resp.Data))
+	} else {
+		ctx.JSON(http.StatusOK, helper.RespError(resp.Msg, strconv.Itoa(int(resp.Code)), resp.Data))
+	}
+
 }
 
-func UserCenter(c *gin.Context) {
-	uid, _ := c.Get("uid")
-	userId := uid.(int64)
-	resp := userService.UCenter(userId)
-	c.JSON(http.StatusOK, resp)
+func UserCenter(ctx *gin.Context) {
+	recId := helper.GetRecIdByCtx(ctx)
+	resp := service.UCenter(recId)
+	ctx.JSON(http.StatusOK, resp)
 }
 
-//删除数据
-func GetStateInfo(c *gin.Context) {
-	//用户统计数据
-	uid, _ := c.Get("uid")
-	userId := uid.(int64)
-	resp := userService.GetStateInfo(userId)
-	c.JSON(http.StatusOK, resp)
+// GetStateInfo 用户统计数据
+func GetStateInfo(ctx *gin.Context) {
+	recId := helper.GetRecIdByCtx(ctx)
+	resp := service.RecyclerService.GetStateInfo(recId)
+	ctx.JSON(http.StatusOK, helper.RespSuccess(resp.Msg, resp.Data))
 }

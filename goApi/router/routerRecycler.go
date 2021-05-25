@@ -20,13 +20,14 @@ func InitRecRouter() *gin.Engine {
 		userGroup.POST("/login", recModule.RecyclerServer.Login)
 		userGroup.POST("/pwd_login", recModule.RecyclerServer.PwdLogin)
 	}
-	/*	//  之后使用中间件
-		userGroup.Use(middleware.UserAuth(), middleware.Cors())
-		{
-			userGroup.POST("/statInfo", userModule.GetStateInfo)
-			userGroup.POST("/userInfo", userModule.UserInfo)
-			userGroup.POST("/userCenter", userModule.UserCenter)
-		}
+	//  之后使用中间件
+	userGroup.Use(middleware.RecyclerAuth(), middleware.Cors())
+	{
+		userGroup.POST("/workStat", recModule.GetStateInfo)
+		userGroup.POST("/userInfo", recModule.UserInfo)
+		userGroup.POST("/userCenter", recModule.UserCenter)
+	}
+	/*
 		//
 		userAddrGroup := routerREC.Group("/userAddr")
 		userAddrGroup.Use(middleware.UserAuth())
