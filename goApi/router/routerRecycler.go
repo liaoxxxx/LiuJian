@@ -3,7 +3,6 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	recModule "goApi/internal/app/recycler_module/api"
-	. "goApi/internal/app/user_module/api"
 	"goApi/internal/middleware"
 )
 
@@ -12,7 +11,7 @@ var routerREC *gin.Engine
 func InitRecRouter() *gin.Engine {
 	routerREC = gin.Default()
 	routerREC.Use(middleware.Cors())
-	routerREC.GET("/", Index)
+	//routerREC.GET("/", Index)
 
 	// 路由组:  user 模块
 	userGroup := routerREC.Group("/recycler")
@@ -27,6 +26,16 @@ func InitRecRouter() *gin.Engine {
 		userGroup.POST("/userInfo", recModule.UserInfo)
 		userGroup.POST("/userCenter", recModule.UserCenter)
 	}
+
+	orderGroup := routerREC.Group("/order")
+	orderGroup.Use(middleware.UserAuth())
+	{
+		//orderGroup.GET("/find", userModule.AddrFind)
+		orderGroup.GET("/list", recModule.OrderServer.List)
+		//orderGroup.POST("/save", userModule.AddrSave)
+		//orderGroup.GET("/del", userModule.AddrDel)
+	}
+
 	/*
 		//
 		userAddrGroup := routerREC.Group("/userAddr")

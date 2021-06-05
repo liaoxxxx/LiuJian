@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	pLd "goApi/internal/app/recycler_module/payload"
-	"goApi/internal/enum"
+	"goApi/pkg/enum"
 	pkgEnum "goApi/pkg/enum"
 	"goApi/pkg/logger"
 	"strings"
@@ -136,14 +136,14 @@ func UCenter(userId int64) helper.Response {
 	return resp
 }
 
-func (recyclerService) GetStateInfo(uid int64) *helper.Response {
+func (recyclerService) GetStateInfo(uid int64) helper.ServiceResp {
 
-	var userModel entity.User
-	var resp = new(helper.Response)
-
-	userStatInfo, _ := userModel.GetStateInfo(uid)
+	var resp helper.ServiceResp
+	recycler, _ := repository.RecyclerRepo.GetStateInfo(uid)
 	dataMap := make(map[string]interface{}, 2)
-	dataMap["UserStatInfo"] = userStatInfo
+	dataMap["recyclerStatInfo"] = recycler
+	resp.Message = pkgEnum.DefaultSuccessMsg
+	resp.Code = pkgEnum.DefaultSuccessCode
 	resp.Data = dataMap
 	return resp
 

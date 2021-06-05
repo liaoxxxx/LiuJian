@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"goApi/internal/enum"
+	"goApi/pkg/enum"
 	"strconv"
 )
 

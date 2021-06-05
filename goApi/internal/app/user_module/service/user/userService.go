@@ -3,9 +3,9 @@ package user
 import (
 	"fmt"
 	userPLd "goApi/internal/app/user_module/payload/user"
-	"goApi/internal/enum"
 	"goApi/internal/models/entity"
 	"goApi/internal/repository"
+	"goApi/pkg/enum"
 	"goApi/pkg/util/helper"
 	"net/http"
 	"strings"

@@ -1,4 +1,4 @@
-package order
+package api
 
 import (
 	"fmt"
@@ -8,35 +8,20 @@ import (
 	"strconv"
 )
 
+type orderSerer struct {
+}
+
+var OrderServer = new(orderSerer)
+
 //列表数据
-func Confirm(c *gin.Context) {
+func (*orderSerer) Confirm(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"html": "<b>Hello, world!</b>",
 	})
 }
 
 //列表数据
-func Create(ctx *gin.Context) {
-	uid, err := ctx.Get("uid")
-	if err == false {
-		fmt.Println(err)
-	}
-	userId := uid.(int64)
-	ctx.JSON(http.StatusOK, orderService.Create(ctx, userId))
-}
-
-//列表数据
-func AddSkeleton(c *gin.Context) {
-	uid, err := c.Get("uid")
-	if err == false {
-		fmt.Println(err)
-	}
-	userId := uid.(int64)
-	c.JSON(http.StatusOK, orderService.AddSkeleton(userId))
-}
-
-//列表数据
-func List(ctx *gin.Context) {
+func (server *orderSerer) List(ctx *gin.Context) {
 	uid, err := ctx.Get("uid")
 	if err == false {
 		fmt.Println(err)

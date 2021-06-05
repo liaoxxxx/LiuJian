@@ -49,5 +49,5 @@ func UserCenter(ctx *gin.Context) {
 func GetStateInfo(ctx *gin.Context) {
 	recId := helper.GetRecIdByCtx(ctx)
 	resp := service.RecyclerService.GetStateInfo(recId)
-	ctx.JSON(http.StatusOK, helper.RespSuccess(resp.Msg, resp.Data))
+	ctx.JSON(http.StatusOK, helper.RespSuccess(resp.Message, resp.Data))
 }

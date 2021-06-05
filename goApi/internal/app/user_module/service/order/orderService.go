@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	orderPld "goApi/internal/app/user_module/payload/order"
-	"goApi/internal/enum"
 	"goApi/internal/models/entity"
 	"goApi/internal/models/mongodb"
 	"goApi/internal/repository"
+	"goApi/pkg/enum"
 	enum2 "goApi/pkg/enum"
 	"goApi/pkg/util/helper"
 	"math/rand"
@@ -82,7 +82,7 @@ func List(userId, pageInt, limitInt int64) helper.Response {
 			helper.GetUsrAErrCode(enum.ProcessRepositoryCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), dataMap)
 		return resp
 	}
-	dataMap["OrderList"] = orderList
+	dataMap["orderList"] = orderList
 	resp := helper.RespSuccess("获取订单成功", dataMap)
 	return resp
 }

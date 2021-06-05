@@ -2,8 +2,8 @@ package user
 
 import (
 	userPld "goApi/internal/app/user_module/payload/user"
-	"goApi/internal/enum"
 	"goApi/internal/repository"
+	"goApi/pkg/enum"
 	"goApi/pkg/util/helper"
 )
 
