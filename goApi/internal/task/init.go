@@ -2,7 +2,6 @@ package task
 
 import (
 	"fmt"
-	"github.com/Shopify/sarama"
 	"goApi/configs"
 	"goApi/pkg/logger"
 	"goApi/pkg/util"
@@ -13,22 +12,13 @@ func Init() {
 	ListenInit()
 }
 
+var ChanOrderUserIssue chan string
+
+/**
+ * @Description:  初始化必要的 topic
+ */
 func initTopic() {
-	/*topics, err := util.KafkaClient.Consumer.Topics()
-	var taskTopicsTmp =configs.TaskTopicsList
-	if err !=nil {
-		logger.Logger.Info(fmt.Sprintf( "get mq topic err:%v",err.Error()))
-	}
-	logger.Logger.Info(fmt.Sprintf("exist topics is ：%v",topics))
-	for tIndex, tmp := range taskTopicsTmp {
-		for _, topic := range topics {
-			if topic ==tmp {
-				taskTopicsTmp=append(taskTopicsTmp[0:tIndex], taskTopicsTmp[tIndex+1:len(taskTopicsTmp)]...)
-			}
-		}
-	}
-	logger.Logger.Info(fmt.Sprintf("%v",taskTopicsTmp))
-	*/
+	logger.Logger.Info(fmt.Sprintf("init topic start -----------"))
 	err := util.KafkaClient.CreateTopics(configs.TaskTopicsList)
 
 	if err != nil {
@@ -37,16 +27,26 @@ func initTopic() {
 }
 
 func ListenInit() {
-	logger.Logger.Info(fmt.Sprintf("ListenInit TOPICS_ORDER_USER_ISSUE  ----------> "))
-	orderIssueMsgList := listenTopic(configs.TOPICS_ORDER_USER_ISSUE)
-	for i, message := range orderIssueMsgList {
-		logger.Logger.Warn(fmt.Sprintf("TOPICS_ORDER_USER_ISSUE %v is: %v", i, *message))
-	}
+	logger.Logger.Info(fmt.Sprintf("listen topic start -----------"))
+	go func() {
+		for {
+			logger.Logger.Info(fmt.Sprintf("ListenInit TOPICS_ORDER_USER_ISSUE  ----------> "))
+			err := listenTopic(configs.TOPICS_ORDER_USER_ISSUE, &ChanOrderUserIssue)
+			if err != nil {
+				logger.Logger.Warn(fmt.Sprintf("topic get message err:%v ", err))
+			}
+			for issueMsg := range ChanOrderUserIssue {
+				logger.Logger.Warn(fmt.Sprintf("TOPICS_ORDER_USER_ISSUE get message and content is: %v", issueMsg))
+			}
+		}
+	}()
+
 }
 
-func listenTopic(topicName string) []*sarama.ConsumerMessage {
-	err := util.KafkaClient.SubscribeMsg(topicName)
+func listenTopic(topicName string, taskChannel *chan string) error {
+	err := util.KafkaClient.SubscribeMsg(topicName, taskChannel)
 	if err != nil {
+		return err
 		logger.Logger.Info(fmt.Sprintf(" SubscribeMsg0 err:%v", err))
 	}
 	return nil

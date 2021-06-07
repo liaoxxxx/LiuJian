@@ -32,7 +32,6 @@ func Create(c *gin.Context, userId int64) helper.Response {
 	orderPreCommitList := make([]mongodb.OrderInfoExt, 3)
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
 	if err != nil || orderModel.ID > 0 { // 查询错误 || 订单已存在
-		fmt.Println(err.Error())
 		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorFindMsg),
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), orderModel)
 		return resp

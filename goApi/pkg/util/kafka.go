@@ -6,6 +6,7 @@ import (
 	"goApi/configs"
 	"goApi/pkg/logger"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -58,12 +59,6 @@ func KafkaInit() {
 			log.Print(err)
 			return
 		}
-		defer func(producer sarama.SyncProducer) {
-			err := producer.Close()
-			if err != nil {
-
-			}
-		}(producer)
 		KafkaClient.Producer = producer
 	}
 
@@ -116,42 +111,35 @@ func (client *kafkaClient) ProduceMsg(msgContent string, topicName string) error
 	msg.Topic = topicName
 	msg.Value = sarama.StringEncoder(msgContent)
 	// 发送消息
-	message, offset, err := client.Producer.SendMessage(msg)
+	logger.Logger.Info(fmt.Sprintf("ProduceMsg Start  topic name is:%v ---------------------", topicName))
+	partition, offset, err := client.Producer.SendMessage(msg)
 	if err != nil {
 		logger.Logger.Info(fmt.Sprintf("ProduceMsg to topic [%v] err :%v", topicName, err.Error()))
 		return err
 	}
-	fmt.Println(message, " ", offset)
+	logger.Logger.Info(fmt.Sprintf("ProduceMsg to topic:%v  success,   content :%v,   partition :%v  offset:%v ", topicName, msg, partition, offset))
 	return nil
 }
 
-func (client *kafkaClient) SubscribeMsg(topicName string) []*sarama.ConsumerMessage {
-	logger.Logger.Info(fmt.Sprintf("SubscribeMsg Start  topic name is:%v ---------------------", topicName))
-
-	var messageListTemp []*sarama.ConsumerMessage
-	partitionList, err := client.Consumer.Partitions(topicName) // 根据topic取到所有的分区
-	logger.Logger.Info(fmt.Sprintf("partitionList length :%v", len(partitionList)))
+func (client *kafkaClient) SubscribeMsg(topicName string, channel *chan string) error {
+	consumer := client.Consumer
+	partitions, err := consumer.Partitions(topicName)
 	if err != nil {
-		fmt.Printf("fail to get list of partition err:%v", err)
-		return nil
+		logger.Logger.Info(fmt.Sprintf("get topic failed, error[%v]", err.Error()))
+		return err
 	}
-	for partition := range partitionList { // 遍历所有的分区
-		var messageList []*sarama.ConsumerMessage
-		// 针对每个分区创建一个对应的分区消费者
-		pc, err := client.Consumer.ConsumePartition(topicName, int32(partition), sarama.OffsetNewest)
+	for _, p := range partitions {
+		partitionConsumer, err := consumer.ConsumePartition(topicName, p, sarama.OffsetNewest)
 		if err != nil {
-			fmt.Printf("failed to start consumer for partition %d,err:%v", partition, err)
-			return nil
+			logger.Logger.Info(fmt.Sprintf("get partition consumer failed, error[%v]", err.Error()))
+			continue
 		}
-		//defer pc.AsyncClose()
-		// 异步从每个分区消费信息
-		go func(sarama.PartitionConsumer) {
-			for msg := range pc.Messages() {
-				messageList = append(messageList, msg)
-				fmt.Printf("Partition:%d Offset:%d Key:%v Value:%v", msg.Partition, msg.Offset, msg.Key, msg.Value)
-			}
-			messageListTemp = messageList
-		}(pc)
+
+		for message := range partitionConsumer.Messages() {
+			logger.Logger.Info(fmt.Sprintf("message:[%v], key:[%v], offset:[%v]\n", string(message.Value), string(message.Key), strconv.FormatInt(message.Offset, 10)))
+			*channel <- string(message.Value)
+		}
 	}
-	return messageListTemp
+	return nil
+
 }
