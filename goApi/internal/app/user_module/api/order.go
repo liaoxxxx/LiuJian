@@ -1,4 +1,4 @@
-package order
+package api
 
 import (
 	"fmt"
@@ -18,11 +18,7 @@ func Confirm(c *gin.Context) {
 
 //列表数据
 func Create(ctx *gin.Context) {
-	uid, err := ctx.Get("uid")
-	if err == false {
-		fmt.Println(err)
-	}
-	userId := uid.(int64)
+	userId := helper.GetUidByCtx(ctx)
 	ctx.JSON(http.StatusOK, orderService.Create(ctx, userId))
 }
 

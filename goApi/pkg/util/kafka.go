@@ -25,24 +25,20 @@ func KafkaInit() {
 		broker := sarama.NewBroker(kafKaSource)
 		// Additional configurations. Check sarama doc for more info
 		config := sarama.NewConfig()
-		config.Version = sarama.V1_0_0_0
+		config.Version = sarama.V2_8_0_0
 		// Open broker connection with configs defined above
 		err := broker.Open(config)
 		if err != nil {
 			return
 		}
 		// check if the connection was OK
-		connected, err := broker.Connected()
+		logger.Logger.Info("start to connect kafka broker")
+		connBool, err := broker.Connected()
 		if err != nil {
-			log.Print(err.Error())
+			logger.Logger.Info(fmt.Sprintf("kafka's broker connect err: %v", err.Error()))
 		} else {
 			KafkaClient.Broker = broker
-			log.Print(connected)
-		}
-		// close connection to broker
-		err = broker.Close()
-		if err != nil {
-			return
+			logger.Logger.Info(fmt.Sprintf("kafka's brokerrrr connect success : %v", connBool))
 		}
 	}
 
@@ -76,28 +72,27 @@ func KafkaInit() {
 		//consumer, err := sarama.NewConsumer([]string{ fmt.Sprintf("%v:%v",configs.SERVER_IP,configs.KAFKA_PORT)}, nil)
 
 		consumer, err := sarama.NewConsumer([]string{kafKaSource}, nil)
-
 		if err != nil {
 			logger.Logger.Info(fmt.Sprintf("fail to connnetc server:%v , err:%v", kafKaSource, err))
-
 			return
 		} else {
-			logger.Logger.Info(fmt.Sprintf("connet to kafka source 47.115.182.67:9092 success"))
+			logger.Logger.Info(fmt.Sprintf("kafkaClient's consumer connet to source:%v ", kafKaSource))
 		}
 		KafkaClient.Consumer = consumer
 	}
 
 }
 
-func (client *kafkaClient) CreateTopic(topicName string) {
+func (client *kafkaClient) CreateTopics(topicNames []string) error {
 
-	// Setup the Topic details in CreateTopicRequest struct
-	topicDetail := &sarama.TopicDetail{}
-	topicDetail.NumPartitions = int32(1)
-	topicDetail.ReplicationFactor = int16(1)
-	topicDetail.ConfigEntries = make(map[string]*string)
 	topicDetails := make(map[string]*sarama.TopicDetail)
-	topicDetails[topicName] = topicDetail
+	for _, topicName := range topicNames {
+		topicDetail := &sarama.TopicDetail{}
+		topicDetail.NumPartitions = int32(1)
+		topicDetail.ReplicationFactor = int16(1)
+		topicDetail.ConfigEntries = make(map[string]*string)
+		topicDetails[topicName] = topicDetail
+	}
 
 	request := sarama.CreateTopicsRequest{
 		Timeout:      time.Second * 15,
@@ -107,18 +102,15 @@ func (client *kafkaClient) CreateTopic(topicName string) {
 	response, err := client.Broker.CreateTopics(&request)
 	// handle errors if any
 	if err != nil {
-		log.Printf("%#v", &err)
+		logger.Logger.Info(fmt.Sprintf("Create Topics err: %v", err.Error()))
+		return err
 	}
-	t := response.TopicErrors
-	for key, val := range t {
-		log.Printf("Key is %s", key)
-		log.Printf("Value is %#v", val.Err.Error())
-		log.Printf("Value3 is %#v", val.ErrMsg)
-	}
-	log.Printf("the response is %#v", response)
+	_ = response.TopicErrors
+
+	return nil
 }
 
-func (client *kafkaClient) ProduceMsg(msgContent string, topicName string) {
+func (client *kafkaClient) ProduceMsg(msgContent string, topicName string) error {
 	// 构建 消息
 	msg := &sarama.ProducerMessage{}
 	msg.Topic = topicName
@@ -126,33 +118,40 @@ func (client *kafkaClient) ProduceMsg(msgContent string, topicName string) {
 	// 发送消息
 	message, offset, err := client.Producer.SendMessage(msg)
 	if err != nil {
-		log.Println(err)
-		return
+		logger.Logger.Info(fmt.Sprintf("ProduceMsg to topic [%v] err :%v", topicName, err.Error()))
+		return err
 	}
 	fmt.Println(message, " ", offset)
+	return nil
 }
 
-func (client *kafkaClient) subscribeMsg(topicName string) {
+func (client *kafkaClient) SubscribeMsg(topicName string) []*sarama.ConsumerMessage {
+	logger.Logger.Info(fmt.Sprintf("SubscribeMsg Start  topic name is:%v ---------------------", topicName))
+
+	var messageListTemp []*sarama.ConsumerMessage
 	partitionList, err := client.Consumer.Partitions(topicName) // 根据topic取到所有的分区
 	logger.Logger.Info(fmt.Sprintf("partitionList length :%v", len(partitionList)))
 	if err != nil {
-		fmt.Printf("fail to get list of partition:err%v", err)
-		return
+		fmt.Printf("fail to get list of partition err:%v", err)
+		return nil
 	}
-	fmt.Println(partitionList)
 	for partition := range partitionList { // 遍历所有的分区
+		var messageList []*sarama.ConsumerMessage
 		// 针对每个分区创建一个对应的分区消费者
 		pc, err := client.Consumer.ConsumePartition(topicName, int32(partition), sarama.OffsetNewest)
 		if err != nil {
 			fmt.Printf("failed to start consumer for partition %d,err:%v", partition, err)
-			return
+			return nil
 		}
-		defer pc.AsyncClose()
+		//defer pc.AsyncClose()
 		// 异步从每个分区消费信息
 		go func(sarama.PartitionConsumer) {
 			for msg := range pc.Messages() {
+				messageList = append(messageList, msg)
 				fmt.Printf("Partition:%d Offset:%d Key:%v Value:%v", msg.Partition, msg.Offset, msg.Key, msg.Value)
 			}
+			messageListTemp = messageList
 		}(pc)
 	}
+	return messageListTemp
 }

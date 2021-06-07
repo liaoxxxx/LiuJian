@@ -3,12 +3,15 @@ package order
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goApi/configs"
 	orderPld "goApi/internal/app/user_module/payload/order"
 	"goApi/internal/models/entity"
 	"goApi/internal/models/mongodb"
 	"goApi/internal/repository"
 	"goApi/pkg/enum"
 	enum2 "goApi/pkg/enum"
+	"goApi/pkg/logger"
+	"goApi/pkg/util"
 	"goApi/pkg/util/helper"
 	"math/rand"
 	"strconv"
@@ -36,6 +39,12 @@ func Create(c *gin.Context, userId int64) helper.Response {
 	}
 	//用户预提交的订单信息
 	buildByOrderCreatePld(&orderModel, orderPld, userId)
+	msg := helper.JsonMarshal(orderModel)
+	err = util.KafkaClient.ProduceMsg(msg, configs.TOPICS_ORDER_USER_ISSUE)
+	if err != nil {
+		logger.Logger.Info(fmt.Sprintf(" ProduceMsg to topic 【%v】 err :%v", configs.TOPICS_ORDER_USER_ISSUE, err.Error()))
+		return helper.Response{}
+	}
 	orderPreCommitList = buildOrderPreCommitInfo(orderPld, userId)
 	id, err := orderRepo.Create(orderModel, orderPreCommitList)
 	if err != nil || id < 0 {

@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"goApi/pkg/util"
 	"goApi/router"
 )
 
 func main() {
-	fmt.Println("-------------------------------------------")
+	util.Init()
 	//客户api
 	initRouter := router.InitUserRouter()
 	_ = initRouter.Run(":8008")

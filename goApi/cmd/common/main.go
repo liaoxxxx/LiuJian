@@ -1,8 +1,11 @@
-package common
+package main
 
-import "goApi/pkg/util"
+import (
+	"goApi/internal/task"
+	"goApi/pkg/util"
+)
 
 func main() {
 	util.Init()
-
+	task.Init()
 }

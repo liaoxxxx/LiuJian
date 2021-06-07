@@ -3,8 +3,6 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	. "goApi/internal/app/user_module/api"
-	orderModule "goApi/internal/app/user_module/api/order"
-	userModule "goApi/internal/app/user_module/api/user"
 	"goApi/internal/middleware"
 )
 
@@ -18,23 +16,23 @@ func InitUserRouter() *gin.Engine {
 	// 路由组:  user 模块
 	userGroup := router.Group("/user")
 	{
-		userGroup.POST("/login", userModule.Login)
+		userGroup.POST("/login", Login)
 	}
 	//  之后使用中间件
 	userGroup.Use(middleware.UserAuth(), middleware.Cors())
 	{
-		userGroup.POST("/statInfo", userModule.GetStateInfo)
-		userGroup.POST("/userInfo", userModule.UserInfo)
-		userGroup.POST("/userCenter", userModule.UserCenter)
+		userGroup.POST("/statInfo", GetStateInfo)
+		userGroup.POST("/userInfo", UserInfo)
+		userGroup.POST("/userCenter", UserCenter)
 	}
 	//
 	userAddrGroup := router.Group("/userAddr")
 	userAddrGroup.Use(middleware.UserAuth())
 	{
-		userAddrGroup.GET("/find", userModule.AddrFind)
-		userAddrGroup.GET("/list", userModule.AddrList)
-		userAddrGroup.POST("/save", userModule.AddrSave)
-		userAddrGroup.GET("/del", userModule.AddrDel)
+		userAddrGroup.GET("/find", AddrFind)
+		userAddrGroup.GET("/list", AddrList)
+		userAddrGroup.POST("/save", AddrSave)
+		userAddrGroup.GET("/del", AddrDel)
 	}
 
 	//################################################
@@ -48,11 +46,11 @@ func InitUserRouter() *gin.Engine {
 	//  order 模块
 	orderGroup := router.Group("/order", middleware.UserAuth())
 	{
-		orderGroup.POST("/create", orderModule.Create)
-		orderGroup.POST("/confirm", orderModule.Confirm)
-		orderGroup.POST("/addSkeleton", orderModule.AddSkeleton)
-		orderGroup.GET("/list", orderModule.List)
-		orderGroup.GET("/detail", orderModule.Detail)
+		orderGroup.POST("/create", Create)
+		orderGroup.POST("/confirm", Confirm)
+		orderGroup.POST("/addSkeleton", AddSkeleton)
+		orderGroup.GET("/list", List)
+		orderGroup.GET("/detail", Detail)
 	}
 
 	return router
