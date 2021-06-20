@@ -5,6 +5,7 @@ import (
 	"goApi/configs"
 	"goApi/pkg/logger"
 	"goApi/pkg/util"
+	"sync"
 )
 
 func Init() {
@@ -27,27 +28,33 @@ func initTopic() {
 }
 
 func ListenInit() {
+
 	logger.Logger.Info(fmt.Sprintf("listen topic start -----------"))
 	go func() {
-		for {
-			logger.Logger.Info(fmt.Sprintf("ListenInit TOPICS_ORDER_USER_ISSUE  ----------> "))
-			err := listenTopic(configs.TOPICS_ORDER_USER_ISSUE, &ChanOrderUserIssue)
-			if err != nil {
-				logger.Logger.Warn(fmt.Sprintf("topic get message err:%v ", err))
-			}
-			for issueMsg := range ChanOrderUserIssue {
-				logger.Logger.Warn(fmt.Sprintf("TOPICS_ORDER_USER_ISSUE get message and content is: %v", issueMsg))
-			}
+		logger.Logger.Info(fmt.Sprintf("listen to topic： TOPICS_ORDER_USER_ISSUE"))
+		err := listenTopic(configs.TOPICS_ORDER_USER_ISSUE, &ChanOrderUserIssue)
+		if err != nil {
+			logger.Logger.Warn(fmt.Sprintf("topic get message err:%v ", err))
 		}
+		for {
+			logger.Logger.Info(fmt.Sprintf("userOrderIssueMsg := <-ChanOrderUserIssue----------"))
+			userOrderIssueMsg := <-ChanOrderUserIssue
+			logger.Logger.Warn(fmt.Sprintf("TOPICS_ORDER_USER_ISSUE get message and content is: %v", userOrderIssueMsg))
+		}
+
 	}()
+	//等待
+	var taskWG = &sync.WaitGroup{}
+	taskWG.Add(1)
+	taskWG.Wait()
 
 }
 
 func listenTopic(topicName string, taskChannel *chan string) error {
-	err := util.KafkaClient.SubscribeMsg(topicName, taskChannel)
-	if err != nil {
+	util.KafkaClient.SubscribeMsg(topicName)
+	/*if err != nil {
 		return err
 		logger.Logger.Info(fmt.Sprintf(" SubscribeMsg0 err:%v", err))
-	}
+	}*/
 	return nil
 }

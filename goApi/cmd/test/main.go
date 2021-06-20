@@ -15,7 +15,7 @@ var Topic = configs.TOPICS_ORDER_USER_ISSUE
 var partition = int32(0)
 
 func main() {
-	sarama.Logger = log{}
+	//sarama.Logger = log{}
 	cfg := sarama.NewConfig()
 	cfg.Version = sarama.V2_2_0_0
 	cfg.Producer.Return.Errors = true
@@ -43,7 +43,7 @@ func NewAsyncProducer(client sarama.Client, i int) error {
 	}
 
 	defer c.Close()
-	p, o, err := c.SendMessage(&sarama.ProducerMessage{Topic: Topic, Value: sarama.StringEncoder("消息发送成功拉ssssssss！！！！" + strconv.Itoa(i))})
+	p, o, err := c.SendMessage(&sarama.ProducerMessage{Topic: Topic, Value: sarama.StringEncoder("消息发送成功拉！！！！" + strconv.Itoa(i))})
 	if err != nil {
 		fmt.Printf("err:", err)
 		return err
@@ -75,6 +75,7 @@ func NewKafkaClient(cfg KafkaConfig) (sarama.Client, func(), error) {
 
 	//创建链接 创建客户机
 	c, err := sarama.NewClient(cfg.Addrs, cfg.Config)
+
 	if err != nil {
 		return nil, nil, err
 	}
@@ -163,18 +164,4 @@ func (m *MainHandler) ConsumeClaim(sess sarama.ConsumerGroupSession, claim saram
 		sess.MarkMessage(message, "")
 	}
 	return nil
-}
-
-type log struct{}
-
-func (log) Print(v ...interface{}) {
-	fmt.Println(v...)
-}
-
-func (log) Printf(format string, v ...interface{}) {
-	fmt.Printf(format, v...)
-}
-
-func (log) Println(v ...interface{}) {
-	fmt.Println(v...)
 }

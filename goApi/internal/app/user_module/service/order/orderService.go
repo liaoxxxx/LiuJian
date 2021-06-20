@@ -39,6 +39,7 @@ func Create(c *gin.Context, userId int64) helper.Response {
 	//用户预提交的订单信息
 	buildByOrderCreatePld(&orderModel, orderPld, userId)
 	msg := helper.JsonMarshal(orderModel)
+	logger.Logger.Info("Order create ProduceMsg to  TOPICS_ORDER_USER_ISSUE---------------------------")
 	err = util.KafkaClient.ProduceMsg(msg, configs.TOPICS_ORDER_USER_ISSUE)
 	if err != nil {
 		logger.Logger.Info(fmt.Sprintf(" ProduceMsg to topic 【%v】 err :%v", configs.TOPICS_ORDER_USER_ISSUE, err.Error()))
