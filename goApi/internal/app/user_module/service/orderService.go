@@ -1,7 +1,6 @@
-package order
+package service
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	orderPld "goApi/internal/app/user_module/payload/order"
 	"goApi/internal/models/entity"
@@ -29,15 +28,22 @@ func Create(c *gin.Context, userId int64) helper.Response {
 	orderPreCommitList := make([]mongodb.OrderInfoExt, 3)
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
 	if err != nil || orderModel.ID > 0 { // 查询错误 || 订单已存在
-		fmt.Println(err.Error())
 		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorFindMsg),
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), orderModel)
 		return resp
 	}
 	//用户预提交的订单信息
 	buildByOrderCreatePld(&orderModel, orderPld, userId)
+	/*msg := helper.JsonMarshal(orderModel)
+	logger.Logger.Info("Order create ProduceMsg to  TOPICS_ORDER_USER_ISSUE---------------------------")
+	err = util.KafkaClient.ProduceMsg(msg, configs.TOPICS_ORDER_USER_ISSUE)
+	if err != nil {
+		logger.Logger.Info(fmt.Sprintf(" ProduceMsg to topic 【%v】 err :%v", configs.TOPICS_ORDER_USER_ISSUE, err.Error()))
+		return helper.Response{}
+	}*/
+	orderRec := buildOrderRecycleInfo(orderPld, userId)
 	orderPreCommitList = buildOrderPreCommitInfo(orderPld, userId)
-	id, err := orderRepo.Create(orderModel, orderPreCommitList)
+	id, err := orderRepo.Create(orderModel, orderPreCommitList, orderRec)
 	if err != nil || id < 0 {
 		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorInsertMsg),
 			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorInsertCode), orderModel)
@@ -82,7 +88,7 @@ func List(userId, pageInt, limitInt int64) helper.Response {
 			helper.GetUsrAErrCode(enum.ProcessRepositoryCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), dataMap)
 		return resp
 	}
-	dataMap["OrderList"] = orderList
+	dataMap["orderList"] = orderList
 	resp := helper.RespSuccess("获取订单成功", dataMap)
 	return resp
 }
@@ -151,6 +157,28 @@ func buildOrderPreCommitInfo(orderPld orderPld.Creator, userId int64) (orderInfo
 		}
 	}
 	return orderInfoExtList
+}
+
+/**
+ * @Description:
+ * @param orderModel
+ * @param orderPld
+ */
+func buildOrderRecycleInfo(orderPld orderPld.Creator, userId int64) entity.OrderRecycle {
+	var orderRec = entity.OrderRecycle{
+		UserId: userId,
+		Unique: orderPld.Unique,
+
+		IsWithdrawFinish: 0,
+		IsWithdrawApply:  0,
+		IsDelete:         0,
+		IsSystemDel:      0,
+		SystemConfirm:    0,
+		CreateAt:         time.Now(),
+		UpdateAt:         time.Now(),
+	}
+
+	return orderRec
 }
 
 func GenOrderId(orderType string) string {

@@ -1,4 +1,4 @@
-package user
+package service
 
 import (
 	userPld "goApi/internal/app/user_module/payload/user"

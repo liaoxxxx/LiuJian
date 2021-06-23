@@ -28,7 +28,7 @@ func InitRecRouter() *gin.Engine {
 	}
 
 	orderGroup := routerREC.Group("/order")
-	orderGroup.Use(middleware.UserAuth())
+	orderGroup.Use(middleware.RecyclerAuth())
 	{
 		//orderGroup.GET("/find", userModule.AddrFind)
 		orderGroup.GET("/list", recModule.OrderServer.List)

@@ -8,10 +8,12 @@ import (
 	"goApi/internal/models/mongodb"
 )
 
-type OrderRepo struct {
+type orderRecycleRepo struct {
 }
 
-func (orderRepo OrderRepo) FindOrderByUnique(Unique string) (order entity.Order, err error) {
+var OrderRecycleRepo orderRecycleRepo
+
+func (orderRepo orderRecycleRepo) FindOrderByUnique(Unique string) (order entity.Order, err error) {
 	err = database.Eloquent.Model(entity.Order{}).Where("unique", Unique).Find(&order).Error
 	if err == nil {
 		return order, err
@@ -19,7 +21,7 @@ func (orderRepo OrderRepo) FindOrderByUnique(Unique string) (order entity.Order,
 	return entity.Order{}, err
 }
 
-func (orderRepo OrderRepo) FindByOrderId(OrderId, userId int64) (order entity.Order, err error) {
+func (orderRepo orderRecycleRepo) FindByOrderId(OrderId, userId int64) (order entity.Order, err error) {
 	err = database.Eloquent.Model(entity.Order{}).Where(entity.Order{ID: OrderId, Uid: userId}).Find(&order).Error
 	if err == nil {
 		return order, err
@@ -28,31 +30,26 @@ func (orderRepo OrderRepo) FindByOrderId(OrderId, userId int64) (order entity.Or
 }
 
 //添加
-func (orderRepo OrderRepo) Create(order entity.Order, orderPreCommitList []mongodb.OrderInfoExt, recycleOrder entity.OrderRecycle) (id int64, err error) {
+func (orderRepo orderRecycleRepo) Create(order entity.OrderRecycle) (id int64, err error) {
 
 	//添加数据 到mysql
-	errRes := database.Eloquent.Create(&order).Error
-	_ = database.Eloquent.Create(&recycleOrder).Error
-	//添加回收的旧物数据到mongodb
-	for _, preCommit := range orderPreCommitList {
-		_, _ = mongodb.MongoClient.Collection(preCommit.CollectionName()).InsertOne(context.Background(), preCommit)
-	}
+	result := database.Eloquent.Create(&order)
 
 	id = order.ID
-	if errRes != nil {
-		err = errRes
+	if result.Error != nil {
+		err = result.Error
 		return
 	}
 	return
 }
 
 //list
-func (orderRepo OrderRepo) OrderList(order entity.Order, pageInt, limitInt int64) (orderList []entity.Order, err error) {
+func (orderRepo orderRecycleRepo) OrderList(order entity.Order, pageInt, limitInt int64) (orderList []entity.Order, err error) {
 	err = database.Eloquent.Where(&order).Limit(int(limitInt)).Offset(int((pageInt - 1) * limitInt)).Find(&orderList).Error
 	return
 }
 
-func (orderRepo OrderRepo) FindOrderExtInfo(orderUniqueId string) (orderExtInfoList []mongodb.OrderInfoExt, err error) {
+func (orderRepo orderRecycleRepo) FindOrderExtInfo(orderUniqueId string) (orderExtInfoList []mongodb.OrderInfoExt, err error) {
 	var orderExtModel mongodb.OrderInfoExt
 	var filter = bson.M{
 		"unique": orderUniqueId,

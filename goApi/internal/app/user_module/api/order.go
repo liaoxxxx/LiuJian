@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	orderService "goApi/internal/app/user_module/service/order"
+	"goApi/internal/app/user_module/service"
 	"goApi/pkg/util/helper"
 	"net/http"
 	"strconv"
@@ -19,7 +19,7 @@ func Confirm(c *gin.Context) {
 //列表数据
 func Create(ctx *gin.Context) {
 	userId := helper.GetUidByCtx(ctx)
-	ctx.JSON(http.StatusOK, orderService.Create(ctx, userId))
+	ctx.JSON(http.StatusOK, service.Create(ctx, userId))
 }
 
 //列表数据
@@ -29,7 +29,7 @@ func AddSkeleton(c *gin.Context) {
 		fmt.Println(err)
 	}
 	userId := uid.(int64)
-	c.JSON(http.StatusOK, orderService.AddSkeleton(userId))
+	c.JSON(http.StatusOK, service.AddSkeleton(userId))
 }
 
 // List 列表数据
@@ -37,7 +37,7 @@ func List(ctx *gin.Context) {
 	userId := helper.GetUidByCtx(ctx)
 	page := helper.GetPage(ctx)
 	limit := helper.GetLimit(ctx)
-	ctx.JSON(http.StatusOK, orderService.List(userId, page, limit))
+	ctx.JSON(http.StatusOK, service.List(userId, page, limit))
 }
 
 //列表数据
@@ -50,5 +50,5 @@ func Detail(ctx *gin.Context) {
 	OrderIdStr := ctx.DefaultQuery("orderId", "0")
 	OrderId, _ := strconv.ParseInt(OrderIdStr, 10, 64)
 
-	ctx.JSON(http.StatusOK, orderService.Detail(OrderId, userId))
+	ctx.JSON(http.StatusOK, service.Detail(OrderId, userId))
 }

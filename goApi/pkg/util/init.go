@@ -1,5 +1,5 @@
 package util
 
 func Init() {
-	KafkaInit()
+	//KafkaInit()
 }

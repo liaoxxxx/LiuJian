@@ -3,7 +3,8 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	orderService "goApi/internal/app/user_module/service/order"
+	"goApi/internal/app/recycler_module/service"
+	"goApi/pkg/util/helper"
 	"net/http"
 	"strconv"
 )
@@ -22,17 +23,10 @@ func (*orderSerer) Confirm(c *gin.Context) {
 
 //列表数据
 func (server *orderSerer) List(ctx *gin.Context) {
-	uid, err := ctx.Get("uid")
-	if err == false {
-		fmt.Println(err)
-	}
-	userId := uid.(int64)
-	page := ctx.DefaultQuery("page", "0")
-	limit := ctx.DefaultQuery("limit", "10")
-	pageInt, _ := strconv.ParseInt(page, 10, 64)
-	limitInt, _ := strconv.ParseInt(limit, 10, 64)
-
-	ctx.JSON(http.StatusOK, orderService.List(userId, pageInt, limitInt))
+	recId := helper.GetRecIdByCtx(ctx)
+	page := helper.GetPage(ctx)
+	limit := helper.GetLimit(ctx)
+	ctx.JSON(http.StatusOK, service.List(recId, page, limit))
 }
 
 //列表数据
@@ -45,5 +39,5 @@ func Detail(ctx *gin.Context) {
 	OrderIdStr := ctx.DefaultQuery("orderId", "0")
 	OrderId, _ := strconv.ParseInt(OrderIdStr, 10, 64)
 
-	ctx.JSON(http.StatusOK, orderService.Detail(OrderId, userId))
+	ctx.JSON(http.StatusOK, service.Detail(OrderId, userId))
 }

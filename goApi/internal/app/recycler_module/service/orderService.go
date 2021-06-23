@@ -1,17 +1,13 @@
-package order
+package service
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"goApi/configs"
 	orderPld "goApi/internal/app/user_module/payload/order"
 	"goApi/internal/models/entity"
 	"goApi/internal/models/mongodb"
 	"goApi/internal/repository"
 	"goApi/pkg/enum"
 	enum2 "goApi/pkg/enum"
-	"goApi/pkg/logger"
-	"goApi/pkg/util"
 	"goApi/pkg/util/helper"
 	"math/rand"
 	"strconv"
@@ -20,41 +16,9 @@ import (
 
 //获取移动端 首页数据
 func Create(c *gin.Context, userId int64) helper.Response {
-	var orderPld orderPld.Creator
-	var err error
-	if err := helper.BindQuery(c, &orderPld); err != nil {
-		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorParamUndefinedMsg),
-			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorParamUndefinedCode), orderPld)
-		return resp
-	}
-	var orderModel entity.Order
-	var orderRepo repository.OrderRepo
-	orderPreCommitList := make([]mongodb.OrderInfoExt, 3)
-	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
-	if err != nil || orderModel.ID > 0 { // 查询错误 || 订单已存在
-		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorFindMsg),
-			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), orderModel)
-		return resp
-	}
-	//用户预提交的订单信息
-	buildByOrderCreatePld(&orderModel, orderPld, userId)
-	msg := helper.JsonMarshal(orderModel)
-	logger.Logger.Info("Order create ProduceMsg to  TOPICS_ORDER_USER_ISSUE---------------------------")
-	err = util.KafkaClient.ProduceMsg(msg, configs.TOPICS_ORDER_USER_ISSUE)
-	if err != nil {
-		logger.Logger.Info(fmt.Sprintf(" ProduceMsg to topic 【%v】 err :%v", configs.TOPICS_ORDER_USER_ISSUE, err.Error()))
-		return helper.Response{}
-	}
-	orderPreCommitList = buildOrderPreCommitInfo(orderPld, userId)
-	id, err := orderRepo.Create(orderModel, orderPreCommitList)
-	if err != nil || id < 0 {
-		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorInsertMsg),
-			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorInsertCode), orderModel)
-		return resp
-	} else {
-		resp := helper.RespSuccess("新增订单成功", orderModel)
-		return resp
-	}
+
+	resp := helper.RespSuccess("新增订单成功", nil)
+	return resp
 
 }
 
@@ -91,7 +55,7 @@ func List(userId, pageInt, limitInt int64) helper.Response {
 			helper.GetUsrAErrCode(enum.ProcessRepositoryCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), dataMap)
 		return resp
 	}
-	dataMap["orderList"] = orderList
+	dataMap["OrderList"] = orderList
 	resp := helper.RespSuccess("获取订单成功", dataMap)
 	return resp
 }
