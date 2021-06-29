@@ -1,13 +1,15 @@
 package service
 
 import (
-	"github.com/gin-gonic/gin"
+	"encoding/json"
 	orderPld "goApi/internal/app/user_module/payload/order"
+	"goApi/internal/logic"
 	"goApi/internal/models/entity"
 	"goApi/internal/models/mongodb"
 	"goApi/internal/repository"
 	"goApi/pkg/enum"
 	enum2 "goApi/pkg/enum"
+	"goApi/pkg/logger"
 	"goApi/pkg/util/helper"
 	"math/rand"
 	"strconv"
@@ -15,42 +17,48 @@ import (
 )
 
 //获取移动端 首页数据
-func Create(c *gin.Context, userId int64) helper.Response {
-	var orderPld orderPld.Creator
-	var err error
-	if err := helper.BindQuery(c, &orderPld); err != nil {
-		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorParamUndefinedMsg),
-			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorParamUndefinedCode), orderPld)
-		return resp
-	}
+func Create(orderPld orderPld.Creator, userId int64) helper.ServiceResp {
+	var svcResp helper.ServiceResp
 	var orderModel entity.Order
 	var orderRepo repository.OrderRepo
-	orderPreCommitList := make([]mongodb.OrderInfoExt, 3)
+	var err error
+	var orderPreCommitList = make([]mongodb.OrderInfoExt, 0)
+	usrAddr, err := repository.UserAddressRepo.Find(orderPld.AddressId, userId)
+	if err != nil {
+		svcResp.Message = enum.UserAddressNotFoundMsg
+		svcResp.Code = enum.UserAddressNotFoundCode
+		return svcResp
+	}
+	if usrAddr.Longitude == "" || usrAddr.Latitude == "" {
+		err = logic.UserAddressLogic.LocationEmptyHandle(&usrAddr)
+		if err != nil {
+			logger.Logger.Info(err.Error())
+			svcResp.Code = enum.DefaultRequestErrCode
+			svcResp.Message = enum.DefaultRequestErrMsg
+			return svcResp
+		}
+	}
 	orderModel, err = orderRepo.FindOrderByUnique(orderPld.Unique)
 	if err != nil || orderModel.ID > 0 { // 查询错误 || 订单已存在
-		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorFindMsg),
-			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), orderModel)
-		return resp
+		svcResp.Message = enum.OrderMainExistMsg
+		svcResp.Code = enum.OrderMainExistCode
+		return svcResp
 	}
 	//用户预提交的订单信息
-	buildByOrderCreatePld(&orderModel, orderPld, userId)
-	/*msg := helper.JsonMarshal(orderModel)
-	logger.Logger.Info("Order create ProduceMsg to  TOPICS_ORDER_USER_ISSUE---------------------------")
-	err = util.KafkaClient.ProduceMsg(msg, configs.TOPICS_ORDER_USER_ISSUE)
-	if err != nil {
-		logger.Logger.Info(fmt.Sprintf(" ProduceMsg to topic 【%v】 err :%v", configs.TOPICS_ORDER_USER_ISSUE, err.Error()))
-		return helper.Response{}
-	}*/
-	orderRec := buildOrderRecycleInfo(orderPld, userId)
+	buildByOrderCreatePld(&orderModel, orderPld, userId, usrAddr)
+	orderRec := buildOrderRecycleInfo(orderPld, userId, usrAddr)
 	orderPreCommitList = buildOrderPreCommitInfo(orderPld, userId)
 	id, err := orderRepo.Create(orderModel, orderPreCommitList, orderRec)
 	if err != nil || id < 0 {
-		resp := helper.RespError(helper.GetErrMsg(enum.AppRecycleManMsg, enum.ProcessServiceMsg, enum.BusinessOrderMsg, enum.SpecificErrorInsertMsg),
-			helper.GetErrCode(enum.AppUserCode, enum.ProcessServiceCode, enum.BusinessOrderCode, enum.SpecificErrorInsertCode), orderModel)
-		return resp
+		svcResp.Message = enum.OrderMainCreateMsg
+		svcResp.Code = enum.OrderMainCreateCode
+		return svcResp
 	} else {
-		resp := helper.RespSuccess("新增订单成功", orderModel)
-		return resp
+
+		svcResp.Message = "新增订单成功"
+		svcResp.Code = enum.DefaultSuccessCode
+		svcResp.Data = map[string]interface{}{"order": orderModel}
+		return svcResp
 	}
 
 }
@@ -58,7 +66,6 @@ func Create(c *gin.Context, userId int64) helper.Response {
 //确认回收订单的页面数据
 func AddSkeleton(userId int64) helper.Response {
 	var sysGroup entity.SystemGroup
-	var userAddrRepo repository.UserAddressRepo
 	var dataMap = make(map[string]interface{}, 3)
 	///
 	//回收种类
@@ -68,7 +75,7 @@ func AddSkeleton(userId int64) helper.Response {
 	uniqueId := genUniqueId(userId)
 	dataMap["Unique"] = uniqueId
 	//
-	addressList, _ := userAddrRepo.AddressList(userId)
+	addressList, _ := repository.UserAddressRepo.AddressList(userId)
 	dataMap["AddressList"] = addressList
 	resp := helper.RespSuccess("", dataMap)
 	return resp
@@ -120,10 +127,13 @@ func Detail(orderId, userId int64) helper.Response {
  * @param orderModel
  * @param orderPld
  */
-func buildByOrderCreatePld(orderModel *entity.Order, orderPld orderPld.Creator, userId int64) {
+func buildByOrderCreatePld(orderModel *entity.Order, orderPld orderPld.Creator, userId int64, address entity.UserAddress) {
+	addrJson, _ := json.Marshal(address)
+
 	orderModel.OrderId = GenOrderId(enum2.OrderTypeRecyclePreShort)
 	orderModel.Mark = orderPld.Mark
 	orderModel.UserAddressId = orderPld.AddressId
+	orderModel.UserAddress = string(addrJson)
 	orderModel.IsPreengage = orderPld.IsPreengage
 
 	timeTmp, _ := time.Parse("2006-01-02 15:04：05", orderPld.PreengageTime)
@@ -164,11 +174,26 @@ func buildOrderPreCommitInfo(orderPld orderPld.Creator, userId int64) (orderInfo
  * @param orderModel
  * @param orderPld
  */
-func buildOrderRecycleInfo(orderPld orderPld.Creator, userId int64) entity.OrderRecycle {
+func buildOrderRecycleInfo(orderPld orderPld.Creator, userId int64, address entity.UserAddress) entity.OrderRecycle {
+	addrJson, _ := json.Marshal(address)
+	startLng, _ := strconv.ParseFloat(address.Longitude, 64)
+	startLat, _ := strconv.ParseFloat(address.Latitude, 64)
 	var orderRec = entity.OrderRecycle{
 		UserId: userId,
 		Unique: orderPld.Unique,
-
+		//RecyclerId    int64  `json:"recycler_id"` //回收员
+		UserAddressId: address.ID,
+		UserAddress:   string(addrJson),
+		StartLat:      startLat, //起点纬度
+		StartLng:      startLng, //起点经度
+		//EndLat         float64 `json:"end_lat"`         //终点纬度
+		//EndLng         float64 `json:"end_lng"`         //终点经度
+		//LinearDistance float64 `json:"linear_distance"` //直线距离，千米
+		//RouteDistance  float64 `json:"route_distance"`  //路线距离
+		//RecycleAmount float64 `json:"recycle_amount"` //回收费用
+		//RecycleStatus int8    `json:"recycle_status"` //回收状态码
+		//SiteId        int64   `json:"site_id"`        // 站点
+		//AgentId       int64   `json:"agent_id"`       //代理
 		IsWithdrawFinish: 0,
 		IsWithdrawApply:  0,
 		IsDelete:         0,

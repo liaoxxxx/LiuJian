@@ -7,16 +7,14 @@ import (
 	"goApi/pkg/util/helper"
 )
 
-var userAddrRepo repository.UserAddressRepo
-
 /*func init()  {
-	userAddrRepo
+	 repository.UserAddressRepo
 }*/
 
 //用户信息
 func AddrList(userId int64) helper.Response {
 	var dataMap = make(map[string]interface{}, 2)
-	addrList, err := userAddrRepo.AddressList(userId)
+	addrList, err := repository.UserAddressRepo.AddressList(userId)
 	//todo
 	if err != nil {
 		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessServiceMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorFindMsg),
@@ -30,8 +28,8 @@ func AddrList(userId int64) helper.Response {
 
 func Save(userId int64, userAddrAddPld userPld.UAddressAdd) helper.Response {
 	var dataMap = make(map[string]interface{}, 2)
-	uAddrModel := userAddrRepo.BuildByPayload(userAddrAddPld, userId)
-	uAddrModel, effectRow := userAddrRepo.Save(uAddrModel)
+	uAddrModel := repository.UserAddressRepo.BuildByPayload(userAddrAddPld, userId)
+	uAddrModel, effectRow := repository.UserAddressRepo.Save(uAddrModel)
 	if effectRow <= 1 && userAddrAddPld.Id > 0 {
 		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessServiceMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorInsertMsg),
 			helper.GetUsrAErrCode(enum.ProcessServiceCode, enum.BusinessUserAddressCode, enum.SpecificErrorInsertCode), dataMap)
@@ -47,7 +45,7 @@ func Save(userId int64, userAddrAddPld userPld.UAddressAdd) helper.Response {
 
 func AddrFind(addrId, userId int64) helper.Response {
 	var dataMap = make(map[string]interface{}, 2)
-	userAddress, err := userAddrRepo.Find(addrId, userId)
+	userAddress, err := repository.UserAddressRepo.Find(addrId, userId)
 	if err != nil {
 		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessServiceMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorFindMsg),
 			helper.GetUsrAErrCode(enum.ProcessServiceCode, enum.BusinessUserAddressCode, enum.SpecificErrorFindCode), dataMap)
@@ -60,7 +58,7 @@ func AddrFind(addrId, userId int64) helper.Response {
 
 func AddrDel(addrId, userId int64) helper.Response {
 	var dataMap = make(map[string]interface{}, 2)
-	userAddress, err := userAddrRepo.Find(addrId, userId)
+	userAddress, err := repository.UserAddressRepo.Find(addrId, userId)
 	if err != nil {
 		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessServiceMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorFindMsg),
 			helper.GetUsrAErrCode(enum.ProcessServiceCode, enum.BusinessUserAddressCode, enum.SpecificErrorFindCode), dataMap)
@@ -71,7 +69,7 @@ func AddrDel(addrId, userId int64) helper.Response {
 			helper.GetUsrAErrCode(enum.ProcessRepositoryCode, enum.BusinessUserAddressCode, enum.SpecificErrorDataNotFoundCode), dataMap)
 		return resp
 	}
-	rowsAffect, err := userAddrRepo.Del(addrId, userId)
+	rowsAffect, err := repository.UserAddressRepo.Del(addrId, userId)
 	if err != nil || rowsAffect <= 0 {
 		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessServiceMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorDeleteMsg),
 			helper.GetUsrAErrCode(enum.ProcessServiceCode, enum.BusinessUserAddressCode, enum.SpecificErrorDeleteCode), dataMap)

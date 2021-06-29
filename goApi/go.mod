@@ -11,9 +11,11 @@ require (
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/go-resty/resty/v2 v2.4.0
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
+	github.com/panjf2000/ants/v2 v2.4.6
 	github.com/qiniu/qmgo v0.9.1
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/swaggo/swag v1.7.0 // indirect

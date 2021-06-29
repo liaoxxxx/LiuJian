@@ -22,7 +22,7 @@ type Response struct {
 func RespSuccess(message string, data interface{}) Response {
 	var resp Response
 	resp.Code = http.StatusOK
-	resp.ErrCode = "0"
+	resp.ErrCode = enum.DefaultErrCode
 	resp.Empty = false
 	resp.Status = StatusSuccessString
 	resp.Msg = message

@@ -32,6 +32,7 @@ func (orderRepo OrderRepo) Create(order entity.Order, orderPreCommitList []mongo
 
 	//添加数据 到mysql
 	errRes := database.Eloquent.Create(&order).Error
+	recycleOrder.OrderId = order.ID
 	_ = database.Eloquent.Create(&recycleOrder).Error
 	//添加回收的旧物数据到mongodb
 	for _, preCommit := range orderPreCommitList {

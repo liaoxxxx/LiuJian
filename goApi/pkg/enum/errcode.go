@@ -11,9 +11,6 @@ const (
 	DefaultRequestErrCode = "20 00 01"
 	DefaultRequestErrMsg  = "请求错误"
 
-	RequestAuthFailErrCode = "20 01 01"
-	RequestAuthFailErrMsg  = "用户信息丢失，鉴权失败"
-
 	//#############  验证错误    #############
 	SmsCodeCheckErrCode = "30 00 01"
 	SmsCodeCheckErrMsg  = "短信验证码错误"
@@ -31,9 +28,6 @@ const (
 	//############# 具体错误    #############
 	PasswordAuthErrCode = "99 00 01"
 	PasswordAuthErrMsg  = "登陆密码错误"
-
-	PhoneNotRegisterErrCode = "990002"
-	PhoneNotRegisterErrMsg  = "手机号未注册"
 
 	JsonUnmarshalErrCode = "990003"
 	JsonUnmarshalErrMsg  = "json解析失败："

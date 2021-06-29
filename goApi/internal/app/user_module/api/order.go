@@ -3,7 +3,9 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	orderPld "goApi/internal/app/user_module/payload/order"
 	"goApi/internal/app/user_module/service"
+	"goApi/pkg/enum"
 	"goApi/pkg/util/helper"
 	"net/http"
 	"strconv"
@@ -19,10 +21,26 @@ func Confirm(c *gin.Context) {
 //列表数据
 func Create(ctx *gin.Context) {
 	userId := helper.GetUidByCtx(ctx)
-	ctx.JSON(http.StatusOK, service.Create(ctx, userId))
+	var orderPld orderPld.Creator
+	if err := helper.BindQuery(ctx, &orderPld); err != nil {
+		ctx.JSON(http.StatusOK, helper.RespError(enum.RequestParamUnexpectErrMsg, enum.RequestParamUnexpectErrCode, nil))
+		return
+	}
+	resp := service.Create(orderPld, userId)
+
+	if resp.Code == enum.DefaultSuccessCode {
+		ctx.JSON(http.StatusOK, helper.RespSuccess(resp.Message, resp.Data))
+	} else {
+		ctx.JSON(http.StatusOK, helper.RespError(resp.Message, resp.Code, resp.Data))
+	}
+
 }
 
-//列表数据
+// AddSkeleton 列表数据
+/**
+ * @Description:
+ * @param c
+ */
 func AddSkeleton(c *gin.Context) {
 	uid, err := c.Get("uid")
 	if err == false {

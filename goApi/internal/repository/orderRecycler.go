@@ -44,7 +44,7 @@ func (orderRepo orderRecycleRepo) Create(order entity.OrderRecycle) (id int64, e
 }
 
 //list
-func (orderRepo orderRecycleRepo) OrderList(order entity.Order, pageInt, limitInt int64) (orderList []entity.Order, err error) {
+func (orderRepo orderRecycleRepo) OrderList(order entity.OrderRecycle, pageInt, limitInt int64) (orderList []entity.Order, err error) {
 	err = database.Eloquent.Where(&order).Limit(int(limitInt)).Offset(int((pageInt - 1) * limitInt)).Find(&orderList).Error
 	return
 }
