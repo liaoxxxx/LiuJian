@@ -5,7 +5,7 @@ import (
 )
 
 type Recycler struct {
-	ID       int64  `gorm:"primaryKey;autoIncrement:true"`
+	ID       int64  `gorm:"primaryKey;autoIncrement:true" json:"id"`
 	Nickname string `json:"nickname"` // 列名为 `username`
 	Pwd      string `json:"-"`        // 列名为 `password`
 	Phone    string `json:"phone"`
