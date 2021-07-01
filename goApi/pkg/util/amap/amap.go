@@ -43,8 +43,8 @@ func (at *amapTool) GetLocation(geoCodeResp GeocodeResp) (location Location, err
 	locationStr := geoCodeResp.GeoCodes[0].Location
 	locationArr := strings.Split(locationStr, ",")
 
-	location.Lng, _ = strconv.ParseFloat(locationArr[0], 64)
-	location.Lat, _ = strconv.ParseFloat(locationArr[1], 64)
+	location.Lng, err = strconv.ParseFloat(locationArr[0], 64)
+	location.Lat, err = strconv.ParseFloat(locationArr[1], 64)
 	return location, nil
 }
 

@@ -4,6 +4,8 @@ const (
 	DefaultSuccessCode = "0"
 	DefaultSuccessMsg  = "请求成功"
 
+	DbSaveScsMsg = "数据保存成功"
+
 	DefaultErrCode = "10 00 01"
 	DefaultErrMsg  = "内部错误"
 

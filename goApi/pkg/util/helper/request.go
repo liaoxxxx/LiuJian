@@ -7,11 +7,12 @@ import (
 
 func BindQuery(ctx *gin.Context, obj interface{}) error {
 	if err := ctx.ShouldBind(obj); err != nil {
+		fmt.Println("解析请求payload错误form-data,无效的请求参数")
 		if err = ctx.ShouldBindJSON(obj); err != nil {
-			fmt.Println("解析请求payload错误,无效的请求参数")
+			fmt.Println("解析请求payload错误(json),无效的请求参数")
 			fmt.Println(err.Error())
+			return err
 		}
-		return err
 	}
 	return nil
 }
@@ -27,6 +28,7 @@ func BindJson(ctx *gin.Context, obj interface{}) error {
 
 }
 
+// GetUidByCtx
 /**
  * @Description: 通过上下文 获取 绑定的uid
  * @param ctx
@@ -42,6 +44,7 @@ func GetUidByCtx(ctx *gin.Context) int64 {
 	return uid.(int64)
 }
 
+// GetRecIdByCtx
 /**
  * @Description: 通过上下文 获取 绑定的uid
  * @param ctx

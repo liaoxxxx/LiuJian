@@ -2,10 +2,8 @@ package repository
 
 import (
 	"fmt"
-	"goApi/internal/app/user_module/payload/user"
 	"goApi/internal/models/database"
 	"goApi/internal/models/entity"
-	"time"
 )
 
 type userAddressRepo struct {
@@ -40,19 +38,4 @@ func (userAddrRepo userAddressRepo) Del(addressId, userId int64) (int64, error) 
 	fmt.Println(address.Uid)
 	db := database.Eloquent.Where(&address).Delete(&address)
 	return db.RowsAffected, db.Error
-}
-
-func (userAddrRepo userAddressRepo) BuildByPayload(uAddrPld user.UAddressAdd, userId int64) (uAddress entity.UserAddress) {
-
-	uAddress.AddTime = time.Now().Unix()
-	uAddress.City = uAddrPld.City
-	uAddress.Phone = uAddrPld.Phone
-	uAddress.PostCode = uAddrPld.PostCode
-	uAddress.Province = uAddrPld.Province
-	uAddress.City = uAddrPld.City
-	uAddress.District = uAddrPld.District
-	uAddress.Detail = uAddrPld.Detail
-	uAddress.Uid = userId
-	uAddress.RealName = uAddrPld.RealName
-	return uAddress
 }

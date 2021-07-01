@@ -1,9 +1,12 @@
 package user
 
 import (
+	"fmt"
 	userPld "goApi/internal/app/user_module/payload/user"
+	"goApi/internal/logic"
 	"goApi/internal/repository"
 	"goApi/pkg/enum"
+	"goApi/pkg/logger"
 	"goApi/pkg/util/helper"
 )
 
@@ -12,35 +15,48 @@ import (
 }*/
 
 //用户信息
-func AddrList(userId int64) helper.Response {
+func AddrList(userId int64) (svcResp helper.ServiceResp) {
 	var dataMap = make(map[string]interface{}, 2)
 	addrList, err := repository.UserAddressRepo.AddressList(userId)
 	//todo
 	if err != nil {
-		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessServiceMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorFindMsg),
-			helper.GetUsrAErrCode(enum.ProcessServiceCode, enum.BusinessUserAddressCode, enum.SpecificErrorFindCode), userId)
-		return resp
+		svcResp.Message = "获取用户地址列表失败"
+		svcResp.Code = enum.DatabaseFindErrMsg
+		return svcResp
 	}
 	dataMap["addressList"] = addrList
-	resp := helper.RespSuccess("获取用户地址列表成功", dataMap)
-	return resp
+	svcResp.Message = "获取用户地址列表失败"
+	svcResp.Code = enum.DefaultSuccessCode
+	svcResp.Data = dataMap
+	logger.Logger.Info(fmt.Sprintf("%v", svcResp.Code))
+	return svcResp
 }
 
-func Save(userId int64, userAddrAddPld userPld.UAddressAdd) helper.Response {
+func Save(userId int64, userAddrAddPld userPld.UAddressAdd) (svcResp helper.ServiceResp) {
 	var dataMap = make(map[string]interface{}, 2)
-	uAddrModel := repository.UserAddressRepo.BuildByPayload(userAddrAddPld, userId)
+	uAddrModel := logic.UserAddressLogic.BuildByPayload(userAddrAddPld, userId)
+	if uAddrModel.Longitude == "" || uAddrModel.Latitude == "" {
+		err := logic.UserAddressLogic.LocationEmptyHandle(&uAddrModel)
+		if err != nil {
+			logger.Logger.Info(err.Error())
+			svcResp.Code = enum.DefaultRequestErrCode
+			svcResp.Message = enum.DefaultRequestErrMsg
+			return svcResp
+		}
+	}
 	uAddrModel, effectRow := repository.UserAddressRepo.Save(uAddrModel)
-	if effectRow <= 1 && userAddrAddPld.Id > 0 {
-		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessServiceMsg, enum.BusinessUserAddressMsg, enum.SpecificErrorInsertMsg),
-			helper.GetUsrAErrCode(enum.ProcessServiceCode, enum.BusinessUserAddressCode, enum.SpecificErrorInsertCode), dataMap)
-		return resp
+	if effectRow < 1 && userAddrAddPld.Id == 0 {
+		svcResp.Code = enum.DatabaseUpdateErrCode
+		svcResp.Message = enum.DatabaseUpdateErrMsg
+		return svcResp
 	}
 	dataMap["address"] = uAddrModel
+	svcResp.Data = dataMap
 	if userAddrAddPld.Id > 0 {
-		return helper.RespSuccess("修改地址数据成功", uAddrModel)
-	} else {
-		return helper.RespSuccess("新增地址数据成功", uAddrModel)
+		svcResp.Code = enum.DefaultSuccessCode
+		svcResp.Message = enum.DbSaveScsMsg
 	}
+	return svcResp
 }
 
 func AddrFind(addrId, userId int64) helper.Response {

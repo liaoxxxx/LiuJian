@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	userPld "goApi/internal/app/user_module/payload/user"
 	userService "goApi/internal/app/user_module/service/user"
+	"goApi/pkg/enum"
+	"goApi/pkg/logger"
 	"goApi/pkg/util/helper"
 	"net/http"
 	"strconv"
@@ -18,7 +20,7 @@ func AddrList(ctx *gin.Context) {
 	}
 	userId := uid.(int64)
 	resp := userService.AddrList(userId)
-	ctx.JSON(http.StatusOK, resp)
+	helper.RespJson(ctx, resp)
 }
 
 func AddrFind(ctx *gin.Context) {
@@ -35,20 +37,16 @@ func AddrFind(ctx *gin.Context) {
 }
 
 func AddrSave(ctx *gin.Context) {
-	uid, err := ctx.Get("uid")
-	if !err {
-		fmt.Println("fmt.Println(err)")
-		fmt.Println(err)
-	}
-	userId := uid.(int64)
+	userId := helper.GetUidByCtx(ctx)
 	var userAddrAddPld userPld.UAddressAdd
 	bindErr := helper.BindQuery(ctx, &userAddrAddPld)
 	if bindErr != nil {
-		fmt.Println("helper.BindQuery(ctx, &userAddrAddPld)")
-		fmt.Println(err)
+		logger.Logger.Info(fmt.Sprintf("UAddressAdd %v", userAddrAddPld))
+		ctx.JSON(http.StatusOK, helper.RespError(enum.RequestParamUnexpectErrCode, fmt.Sprintf("%v", bindErr), nil))
+		return
 	}
 	resp := userService.Save(userId, userAddrAddPld)
-	ctx.JSON(http.StatusOK, resp)
+	helper.RespJson(ctx, resp)
 
 }
 

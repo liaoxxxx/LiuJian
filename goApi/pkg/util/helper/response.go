@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"github.com/gin-gonic/gin"
 	"goApi/pkg/enum"
 	"net/http"
 )
@@ -60,4 +61,13 @@ type ServiceResp struct {
 	Code    string      `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
+}
+
+func RespJson(ctx *gin.Context, srvResp ServiceResp) {
+	if srvResp.Code == enum.DefaultSuccessCode {
+		ctx.JSON(http.StatusOK, RespSuccess(srvResp.Message, srvResp.Data))
+		return
+	}
+	ctx.JSON(http.StatusOK, RespError(srvResp.Message, srvResp.Code, srvResp.Data))
+	return
 }
