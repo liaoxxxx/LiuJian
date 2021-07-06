@@ -58,7 +58,7 @@ func Create(orderPld orderPld.Creator, userId int64) helper.ServiceResp {
 		return helper.ServiceResp{}
 	}
 	orderPreCommitList = buildOrderPreCommitInfo(orderPld, userId)
-	id, err := orderRepo.Create(orderModel, orderPreCommitList, orderRec)
+	id, err := orderRepo.Create(orderModel, orderPreCommitList)
 	if err != nil || id < 0 {
 		svcResp.Message = enum.OrderMainCreateMsg
 		svcResp.Code = enum.OrderMainCreateCode

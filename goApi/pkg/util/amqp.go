@@ -1,12 +1,9 @@
 package util
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/streadway/amqp"
 	"goApi/configs"
-	"goApi/internal/models/entity"
-	"goApi/internal/repository"
 	"goApi/pkg/logger"
 	"log"
 )
@@ -80,7 +77,7 @@ func (rClient *rabbitMqClient) Publish(topicName string, messageBody []byte) (er
 
 }
 
-func (rClient *rabbitMqClient) Received(topicName string, handle func(delivery amqp.Delivery) error) error {
+func (rClient *rabbitMqClient) Received(topicName string, handle func([]byte) error) error {
 	q, err := rClient.channel.QueueDeclare(
 		topicName, // name
 		false,     // durable
@@ -113,19 +110,9 @@ func (rClient *rabbitMqClient) Received(topicName string, handle func(delivery a
 	go func() {
 		for msg := range msgList {
 			log.Printf("Received a message: %s", msg.Body)
-			orderRec := new(entity.OrderRecycle)
-			err = json.Unmarshal(msg.Body, orderRec)
+			err = handle(msg.Body)
 			if err != nil {
-				logger.Logger.Warn("unmarshal to OrderRecycle err:" + err.Error())
-				continue
-			}
-			if (*orderRec).OrderId == 0 {
-				logger.Logger.Warn("unmarshal to OrderRecycle err:" + err.Error())
-				continue
-			}
-			insertedId, err := repository.OrderRecycleRepo.Create(*orderRec)
-			if err != nil || insertedId == 0 {
-				logger.Logger.Warn("OrderRecycle Create err")
+				logger.Logger.Warn("OrderRecycle Create err: " + err.Error())
 				continue
 			}
 		}

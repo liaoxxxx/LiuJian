@@ -28,12 +28,11 @@ func (orderRepo OrderRepo) FindByOrderId(OrderId, userId int64) (order entity.Or
 }
 
 //添加
-func (orderRepo OrderRepo) Create(order entity.Order, orderPreCommitList []mongodb.OrderInfoExt, recycleOrder entity.OrderRecycle) (id int64, err error) {
+func (orderRepo OrderRepo) Create(order entity.Order, orderPreCommitList []mongodb.OrderInfoExt) (id int64, err error) {
 
 	//添加数据 到mysql
 	errRes := database.Eloquent.Create(&order).Error
-	recycleOrder.OrderId = order.ID
-	_ = database.Eloquent.Create(&recycleOrder).Error
+
 	//添加回收的旧物数据到mongodb
 	for _, preCommit := range orderPreCommitList {
 		_, _ = mongodb.MongoClient.Collection(preCommit.CollectionName()).InsertOne(context.Background(), preCommit)
