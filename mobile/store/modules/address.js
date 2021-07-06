@@ -26,13 +26,13 @@ export default {
 	},
 	actions: {
 		getAddressList({commit}, res) {
-			if (res.errCode === 0) {
+			if (res.errCode === '0') {
 				let {addressList} = res.data
 				commit('getAddressList', addressList)
 			}
 		},
 		getDefAddress({commit}, res) {
-			if (res.errCode === 0) {
+			if (res.errCode === '0') {
 				let {data} = res
 				commit('getDefAddress', data)
 			}

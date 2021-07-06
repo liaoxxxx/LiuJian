@@ -144,7 +144,7 @@
           <rec-goods-item :recycle-product-list="recycleProductList"></rec-goods-item>
         </u-popup>
       </view>
-      <view class="rec-product-box"  @click="recProducPanalShow = true">
+      <view :class="[{recProductBoxShow: recProductBoxActive  },recProductBoxDefault]"  @click="recProducPanalShow = true">
         <view class="rec-product-box-icon">
           <img  src="../../static/img/recCart.png" alt="">
         </view>
@@ -162,11 +162,11 @@ import {vuexData} from '@/common/commonMixin.js'
 import moment from '@/common/moment.js'
 import addressItem from '@/components/address_item.vue'
 import recGoodsItem from "../../components/recGoodsItem";
-import View from "../../components/xinyi-skeleton/view";
+/*import View from "../../components/xinyi-skeleton/view";*/
 
 export default {
     components: {
-      View,
+    /*  View,*/
       tag,
       listItem,
       pickerPlus,
@@ -207,6 +207,8 @@ export default {
       return {
         windowHeight: 0, // 滚动view高度
 
+        recProductBoxDefault:"rec-product-box",
+        recProductBoxActive:false,
 
         recycleCateSelectedIndex: 0,
         recycleCateSelectedItem: null,
@@ -369,6 +371,15 @@ export default {
 
       // 确认订单 方法
       async addOrder(type) {
+        if (this.recycleProductList.length===0){
+          uni.showToast({
+            title: "请先添加需要回收的废旧物品",
+            image:"/static//user/cha.png",
+            duration:2000,
+            mask:true
+          })
+          return false
+        }
         // this.remark  //备注信息
         let data = {
           unique: this.unique,
@@ -400,6 +411,12 @@ export default {
       //添加品类的按钮
       addRecCateItem(){
 
+        this.recProductBoxActive=true
+        let this_=this
+        setTimeout(function (){
+          console.log("----------------------6666")
+          this_.recProductBoxActive=false
+        },700)
         let recWeightItem=this.weightList[this.recycleWeightSelectedIndex]
         let recCateItem=this.recycleCateList[this.recycleCateSelectedIndex]
         //判断需要上传图片
@@ -662,13 +679,18 @@ export default {
     border: 4px solid rgba(240,240,240 ,0.5);
     border-radius: 60rpx ;
     padding: 10rpx;
-    background-color: #cccccc;
+    background-color: #1ff821;
     position: fixed;
     width: 100rpx;
     height: 100rpx;
     left: 20rpx;
     bottom: 200rpx;
     overflow: hidden;
+  }
+
+  .recProductBoxShow{
+    background-color: #1AAD19;
+    transform:scale(1.5,1.5);
   }
 
   .rec-product-box-icon{

@@ -46,7 +46,7 @@ export default {
 			console.log("-------------------------- mutations getOrderList")
 			console.log(res)
 			let arr = state.orderList
-			arr.push(...res.OrderList)
+			arr.push(...res.orderList)
 			state.orderList = arr
 		},
 		getOrderDetail(state, res) {

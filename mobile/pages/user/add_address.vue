@@ -57,8 +57,8 @@
 			<view class="lable_box">
 				<view class="lable_box_left">标签</view>
 				<view class="lable_box_right">
-					<view v-for="(item, index) in tags" :class="{'active':isActive==index}" :key="index" class="backnavbar_item"
-					 @click="change(index)">{{item}}</view>
+					<view v-for="(item, index) in tags" :class="{'active':isActive===index}" :key="index" class="backnavbar_item"
+                @click="change(index)">{{item}}</view>
 					<!-- <view :class="{'active':isActive==1}" class="backnavbar_item" @click="change(1)">家</view>
 					<view :class="{'active':isActive==2}" class="backnavbar_item" @click="change(2)">公司</view>
 					<view :class="{'active':isActive==3}" class="backnavbar_item" @click="change(3)">学校</view> -->
@@ -127,7 +127,7 @@
       async initAddress() {
         let res = await this.$api.getAddressDetail(this.id)
 
-        if (res.errCode===0) {
+        if (res.errCode==='0') {
           let address  = res.data.address
           this.name = address.real_name
           this.phone = address.phone
@@ -200,10 +200,11 @@
 					detail: this.addressDetail
 				}
 				if (this.id) {
-					data.id = this.id
+					data.id = this.id*1
 				}
 				let res = await this.$api.editAddress(data)
 				let flag = this.checkRes(res, `${this.id ? '地址修改成功' : '地址添加成功'}`)
+        console.log(flag)
 				if (flag) {
 					uni.navigateTo({
 						url: '/pages/user/address_list'
@@ -223,6 +224,7 @@
 				// 根据 label 获取
 				if (this.defSite) {
 					let index = this.$refs.simpleAddress.queryIndex(this.defSite, 'label')
+          console.log(index)
 					this.cityPickerValueDefault = index.index
 					this.$refs.simpleAddress.open()
 				} else {

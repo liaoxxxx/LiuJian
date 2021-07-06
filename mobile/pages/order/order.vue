@@ -249,8 +249,9 @@
 				}
 			},
 			async initOrderList() {
-				let res = await this.$api.getOrderList(`?page=${this.page}&limit=10&type=${this.type}`)
+				let res = await this.$api.getOrderList(`?page=${this.page}&limit=10`)
 				//let  result= this.checkRes(res,res.msg)
+        console.log(res)
 				this.getOrderList(res)
 				if (res.data.length < 10) {
 					this.isLoading = 2

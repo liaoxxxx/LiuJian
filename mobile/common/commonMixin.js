@@ -1,8 +1,4 @@
-import {
-	mapActions,
-	mapGetters,
-	mapMutations
-} from 'vuex'
+import {mapActions, mapGetters, mapMutations} from 'vuex'
 
 export const vuexData = {
 	data() {
@@ -67,16 +63,16 @@ export const vuexData = {
 			}, deep)
 		},
 		checkRes(promise, msg) {
-			promise.then(function (res){
-				console.log('-----------------------')
-				console.log(res)
-				if (res.errCode && res.errCode === 0) {
-					if (msg) {
+			promise.then(function (res) {
+				if (res.errCode && res.errCode === '0') {
+					if (msg !== null && msg.length > 0) {
 						uni.showToast({
 							title: msg
 						})
 					} else {
-
+						uni.showToast({
+							title: res.msg
+						})
 					}
 					return 200
 				} else {
@@ -88,7 +84,6 @@ export const vuexData = {
 					return false
 				}
 			})
-
 		}
 	},
 	async created() {
