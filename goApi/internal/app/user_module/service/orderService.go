@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"goApi/configs"
 	orderPld "goApi/internal/app/user_module/payload/order"
 	"goApi/internal/logic"
 	"goApi/internal/models/entity"
@@ -10,6 +11,7 @@ import (
 	"goApi/pkg/enum"
 	enum2 "goApi/pkg/enum"
 	"goApi/pkg/logger"
+	"goApi/pkg/util"
 	"goApi/pkg/util/helper"
 	"math/rand"
 	"strconv"
@@ -47,6 +49,14 @@ func Create(orderPld orderPld.Creator, userId int64) helper.ServiceResp {
 	//用户预提交的订单信息
 	buildByOrderCreatePld(&orderModel, orderPld, userId, usrAddr)
 	orderRec := buildOrderRecycleInfo(orderPld, userId, usrAddr)
+	orderRecJson, _ := json.Marshal(orderRec)
+	err = util.RabbitMQClient.Publish(configs.TOPICS_ORDER_USER_ISSUE, orderRecJson)
+	if err != nil {
+		logger.Logger.Info("RabbitMQConnect.Publish(orderRecJson )  err: " + err.Error())
+	}
+	if err != nil {
+		return helper.ServiceResp{}
+	}
 	orderPreCommitList = buildOrderPreCommitInfo(orderPld, userId)
 	id, err := orderRepo.Create(orderModel, orderPreCommitList, orderRec)
 	if err != nil || id < 0 {
