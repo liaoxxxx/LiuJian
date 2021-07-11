@@ -53,6 +53,8 @@ func Create(orderPld orderPld.Creator, userId int64) helper.ServiceResp {
 	err = util.RabbitMQClient.Publish(configs.TOPICS_ORDER_USER_ISSUE, orderRecJson)
 	if err != nil {
 		logger.Logger.Info("RabbitMQConnect.Publish(orderRecJson )  err: " + err.Error())
+	} else {
+		err = repository.DebugLog.InsertLog("RabbitMQConnect.Publish to TOPICS_ORDER_USER_ISSUE success")
 	}
 	if err != nil {
 		return helper.ServiceResp{}
@@ -194,6 +196,7 @@ func buildOrderRecycleInfo(orderPld orderPld.Creator, userId int64, address enti
 		//RecyclerId    int64  `json:"recycler_id"` //回收员
 		UserAddressId: address.ID,
 		UserAddress:   string(addrJson),
+		CityId:        address.CityId,
 		StartLat:      startLat, //起点纬度
 		StartLng:      startLng, //起点经度
 		//EndLat         float64 `json:"end_lat"`         //终点纬度

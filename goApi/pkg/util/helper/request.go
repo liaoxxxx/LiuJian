@@ -60,8 +60,9 @@ func GetRecIdByCtx(ctx *gin.Context) int64 {
 	return uid.(int64)
 }
 
+// GetPage
 /**
- * @Description: 获取查询的页数
+ * @Description:
  * @param ctx
  * @return int64
  */
@@ -78,4 +79,24 @@ func GetPage(ctx *gin.Context) int64 {
 func GetLimit(ctx *gin.Context) int64 {
 	page := ctx.DefaultQuery("limit", "10")
 	return parseStr2Int(page)
+}
+
+// GetToken
+/**
+ * @Description:
+ * @param ctx
+ * @return string
+ */
+func GetToken(ctx *gin.Context) string {
+	token := ctx.GetHeader("token")
+	if token != "" {
+		return token
+	}
+	if token == "" {
+		token = ctx.Param("token")
+	}
+	if token == "" {
+		token = ctx.Query("token")
+	}
+	return token
 }
