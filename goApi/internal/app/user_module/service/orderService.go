@@ -26,7 +26,7 @@ func Create(orderPld orderPld.Creator, userId int64) helper.ServiceResp {
 	var err error
 	var orderPreCommitList = make([]mongodb.OrderInfoExt, 0)
 	usrAddr, err := repository.UserAddressRepo.Find(orderPld.AddressId, userId)
-	if err != nil {
+	if err != nil || usrAddr.ID == 0 {
 		svcResp.Message = enum.UserAddressNotFoundMsg
 		svcResp.Code = enum.UserAddressNotFoundCode
 		return svcResp
@@ -55,6 +55,10 @@ func Create(orderPld orderPld.Creator, userId int64) helper.ServiceResp {
 		logger.Logger.Info("RabbitMQConnect.Publish(orderRecJson )  err: " + err.Error())
 	} else {
 		err = repository.DebugLog.InsertLog("RabbitMQConnect.Publish to TOPICS_ORDER_USER_ISSUE success")
+		logger.Logger.Info("RabbitMQConnect.Publish to TOPICS_ORDER_USER_ISSUE success")
+		logger.Logger.Info("RabbitMQConnect.Publish to TOPICS_ORDER_USER_ISSUE success")
+		logger.Logger.Info("RabbitMQConnect.Publish to TOPICS_ORDER_USER_ISSUE success")
+		logger.Logger.Info("___________________________________________________________")
 	}
 	if err != nil {
 		return helper.ServiceResp{}

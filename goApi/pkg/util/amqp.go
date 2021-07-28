@@ -104,20 +104,17 @@ func (rClient *rabbitMqClient) Received(topicName string, handle func([]byte) er
 		failOnError(err, "Failed to register a consumer")
 		return err
 	}
-
 	forever := make(chan bool)
-
 	go func() {
 		for msg := range msgList {
-			log.Printf("Received a message: %s", msg.Body)
+			logger.Logger.Warn(fmt.Sprintf("consumer listen %v Received message handle start ---->", topicName))
 			err = handle(msg.Body)
 			if err != nil {
-				logger.Logger.Warn("OrderRecycle Create err: " + err.Error())
+				logger.Logger.Warn(fmt.Sprintf("consumer listen %v Received message but handle err: %v", topicName, err.Error()))
 				continue
 			}
 		}
 	}()
-
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 	<-forever
 	return nil

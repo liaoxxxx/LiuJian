@@ -1,6 +1,7 @@
 package recycler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"goApi/internal/app/websocket/api"
@@ -39,16 +40,17 @@ func (*orderServer) OrderDistribute(ctx *gin.Context) {
 	} else {
 		OrderDistributeClients[cityId][recerId] = wsConn
 	}
+	logger.Logger.Info(fmt.Sprintf("OrderDistributeClients city-code: %v lenght is %v  ", cityId, len(OrderDistributeClients[cityId])))
 	for {
 		mt, message, err := wsConn.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			log.Println("read message:", err)
 			break
 		}
-		log.Printf("recv: %s", message)
+		log.Printf("receive message : %s", message)
 		err = wsConn.WriteMessage(mt, message)
 		if err != nil {
-			log.Println("write:", err)
+			log.Println("write message:", err)
 			break
 		}
 	}
