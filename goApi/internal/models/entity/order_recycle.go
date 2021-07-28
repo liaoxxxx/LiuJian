@@ -4,7 +4,7 @@ import "time"
 
 type OrderRecycle struct {
 	ID            int64  `gorm:"primaryKey;autoIncrement:true" json:"id"`
-	OrderId       string `json:"order_id"`
+	OrderId       int64  `json:"order_id"`
 	Unique        string `json:"unique"`
 	UserId        int64  `json:"user_id"`
 	RecyclerId    int64  `json:"recycler_id"` //回收员
