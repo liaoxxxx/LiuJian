@@ -36,6 +36,15 @@ func InitRecRouter() *gin.Engine {
 		//orderGroup.GET("/del", userModule.AddrDel)
 	}
 
+	mapGroup := routerREC.Group("/map")
+	mapGroup.Use(middleware.RecyclerAuth())
+	{
+		//orderGroup.GET("/find", userModule.AddrFind)
+		mapGroup.POST("/path/planning", recModule.MapServer.PathPlanning)
+		//orderGroup.POST("/save", userModule.AddrSave)
+		//orderGroup.GET("/del", userModule.AddrDel)
+	}
+
 	/*
 		//
 		userAddrGroup := routerREC.Group("/userAddr")

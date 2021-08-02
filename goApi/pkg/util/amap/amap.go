@@ -15,6 +15,9 @@ type amapTool struct {
 
 const (
 	geoCodeUrl = "https://restapi.amap.com/v3/geocode/geo"
+
+	drivingPlanningURL     = "https://restapi.amap.com/v5/direction/driving?parameters"     //驾车
+	electrobikePlanningURL = "https://restapi.amap.com/v5/direction/electrobike?parameters" //电动自行车
 )
 
 var AmapTool amapTool
