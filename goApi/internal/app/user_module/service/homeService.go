@@ -23,9 +23,9 @@ func GetHomeMobileData(uid int64) *helper.Response {
 	rollNotice, _ := sysGroup.GetDataByConfigName("routine_home_roll_news")
 	dataMap["RollNoticeList"] = rollNotice
 	//当前城市
+	dataMap["CurrentCity"] = map[string]interface{}{} //todo  这里需要通过客户端定位的ip 确定
 
 	//未登录的用户统计数据
-	//rollNotice, _ := sysGroup.GetDataByConfigName("routine_home_roll_news")
 	dataMap["UserStatInfo"] = entity.UserStatInfo{}
 
 	//其他功能
@@ -34,7 +34,7 @@ func GetHomeMobileData(uid int64) *helper.Response {
 
 	///
 	resp.ErrCode = enum.DefaultSuccessCode
-	resp.Msg = "success"
+	resp.Msg = enum.DefaultSuccessMsg
 	resp.Code = http.StatusOK
 	resp.Data = dataMap
 	resp.Status = "ok"

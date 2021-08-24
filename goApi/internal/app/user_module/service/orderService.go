@@ -18,8 +18,12 @@ import (
 	"time"
 )
 
+type orderService struct{}
+
+var OrderService orderService
+
 //获取移动端 首页数据
-func Create(orderPld orderPld.Creator, userId int64) helper.ServiceResp {
+func (orderService) Create(orderPld orderPld.Creator, userId int64) helper.ServiceResp {
 	var svcResp helper.ServiceResp
 	var orderModel entity.Order
 	var orderRepo repository.OrderRepo
@@ -80,7 +84,7 @@ func Create(orderPld orderPld.Creator, userId int64) helper.ServiceResp {
 }
 
 //确认回收订单的页面数据
-func AddSkeleton(userId int64) helper.Response {
+func (orderService) AddSkeleton(userId int64) helper.Response {
 	var sysGroup entity.SystemGroup
 	var dataMap = make(map[string]interface{}, 3)
 	///
@@ -98,7 +102,8 @@ func AddSkeleton(userId int64) helper.Response {
 }
 
 //确认回收订单的页面数据
-func List(userId, pageInt, limitInt int64) helper.Response {
+func (orderService) List(userId, pageInt, limitInt int64) (helper.ServiceResp, error) {
+	var resp helper.ServiceResp
 	var orderM entity.Order
 	var orderRepo repository.OrderRepo
 	var dataMap = make(map[string]interface{}, 3)
@@ -107,17 +112,24 @@ func List(userId, pageInt, limitInt int64) helper.Response {
 
 	orderList, err := orderRepo.OrderList(orderM, pageInt, limitInt)
 	if err != nil {
-		resp := helper.RespError(helper.GetUsrAErrMsg(enum.ProcessRepositoryMsg, enum.BusinessOrderMsg, enum.SpecificErrorFindMsg),
-			helper.GetUsrAErrCode(enum.ProcessRepositoryCode, enum.BusinessOrderCode, enum.SpecificErrorFindCode), dataMap)
-		return resp
+		resp = helper.ServiceResp{
+			Code:    string(rune(enum.DatabaseFindErrCode)),
+			Data:    dataMap,
+			Message: enum.DatabaseFindErrMsg,
+		}
+		return resp, err
 	}
 	dataMap["orderList"] = orderList
-	resp := helper.RespSuccess("获取订单成功", dataMap)
-	return resp
+	resp = helper.ServiceResp{
+		Code:    enum.DefaultSuccessCode,
+		Data:    dataMap,
+		Message: enum.DefaultSuccessMsg,
+	}
+	return resp, nil
 }
 
 //确认回收订单的页面数据
-func Detail(orderId, userId int64) helper.Response {
+func (orderService) Detail(orderId, userId int64) helper.Response {
 
 	var orderRepo repository.OrderRepo
 	var dataMap = make(map[string]interface{}, 3)

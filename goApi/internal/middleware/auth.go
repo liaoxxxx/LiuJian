@@ -19,6 +19,8 @@ func UserAuth() gin.HandlerFunc {
 
 			if err != nil {
 				c.JSON(http.StatusUnauthorized, gin.H{"message": "token错误，原因：" + err.Error()})
+				c.Abort()
+				return
 			} else {
 				c.Set("uid", userClaims.ID)
 				// 验证通过，会继续访问下一个中间件

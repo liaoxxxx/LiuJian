@@ -11,22 +11,26 @@ import (
 	"strconv"
 )
 
+type orderServer struct{}
+
+var OrderServer orderServer
+
 //列表数据
-func Confirm(c *gin.Context) {
+func (orderServer) Confirm(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"html": "<b>Hello, world!</b>",
 	})
 }
 
 //列表数据
-func Create(ctx *gin.Context) {
+func (orderServer) Create(ctx *gin.Context) {
 	userId := helper.GetUidByCtx(ctx)
 	var orderPld orderPld.Creator
 	if err := helper.BindQuery(ctx, &orderPld); err != nil {
 		ctx.JSON(http.StatusOK, helper.RespError(enum.RequestParamUnexpectErrMsg, enum.RequestParamUnexpectErrCode, nil))
 		return
 	}
-	resp := service.Create(orderPld, userId)
+	resp := service.OrderService.Create(orderPld, userId)
 
 	if resp.Code == enum.DefaultSuccessCode {
 		ctx.JSON(http.StatusOK, helper.RespSuccess(resp.Message, resp.Data))
@@ -41,25 +45,26 @@ func Create(ctx *gin.Context) {
  * @Description:
  * @param c
  */
-func AddSkeleton(c *gin.Context) {
+func (orderServer) AddSkeleton(c *gin.Context) {
 	uid, err := c.Get("uid")
 	if err == false {
 		fmt.Println(err)
 	}
 	userId := uid.(int64)
-	c.JSON(http.StatusOK, service.AddSkeleton(userId))
+	c.JSON(http.StatusOK, service.OrderService.AddSkeleton(userId))
 }
 
 // List 列表数据
-func List(ctx *gin.Context) {
+func (orderServer) List(ctx *gin.Context) {
 	userId := helper.GetUidByCtx(ctx)
 	page := helper.GetPage(ctx)
 	limit := helper.GetLimit(ctx)
-	ctx.JSON(http.StatusOK, service.List(userId, page, limit))
+	service.OrderService.List(userId, page, limit)
+	ctx.JSON(http.StatusOK)
 }
 
 //列表数据
-func Detail(ctx *gin.Context) {
+func (orderServer) Detail(ctx *gin.Context) {
 	uid, err := ctx.Get("uid")
 	if err == false {
 		fmt.Println(err)
@@ -68,5 +73,5 @@ func Detail(ctx *gin.Context) {
 	OrderIdStr := ctx.DefaultQuery("orderId", "0")
 	OrderId, _ := strconv.ParseInt(OrderIdStr, 10, 64)
 
-	ctx.JSON(http.StatusOK, service.Detail(OrderId, userId))
+	ctx.JSON(http.StatusOK, service.OrderService.Detail(OrderId, userId))
 }

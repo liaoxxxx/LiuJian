@@ -11,7 +11,7 @@ var router *gin.Engine
 func InitUserRouter() *gin.Engine {
 	router = gin.Default()
 	router.Use(middleware.Cors())
-	router.GET("/", Index)
+	router.GET("/", HomeServer.Index)
 
 	// 路由组:  user 模块
 	userGroup := router.Group("/user")
@@ -39,18 +39,18 @@ func InitUserRouter() *gin.Engine {
 	//  homeGroup 模块
 	homeGroup := router.Group("/home")
 	{
-		homeGroup.POST("/skeleton", Skeleton)
+		homeGroup.POST("/skeleton", HomeServer.Skeleton)
 	}
 
 	//################################################
 	//  order 模块
 	orderGroup := router.Group("/order", middleware.UserAuth())
 	{
-		orderGroup.POST("/create", Create)
-		orderGroup.POST("/confirm", Confirm)
-		orderGroup.POST("/addSkeleton", AddSkeleton)
-		orderGroup.GET("/list", List)
-		orderGroup.GET("/detail", Detail)
+		orderGroup.POST("/create", OrderServer.Create)
+		orderGroup.POST("/confirm", OrderServer.Confirm)
+		orderGroup.POST("/addSkeleton", OrderServer.AddSkeleton)
+		orderGroup.GET("/list", OrderServer.List)
+		orderGroup.GET("/detail", OrderServer.Detail)
 	}
 
 	return router
